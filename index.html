@@ -14,6 +14,7 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 const TPL_VER = '2.0';
 // ═══════════════════════════════════════════════════
 const _sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+let _editId = null; // 編集中のレコードID（nullなら新規）
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700;800&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
@@ -44,6 +45,11 @@ body{font-family:'Noto Sans JP',-apple-system,BlinkMacSystemFont,sans-serif;back
 #authWall{position:fixed;inset:0;background:var(--navy);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:24px}
 #authWall.gone{display:none}
 .lb{background:#fff;border-radius:16px;padding:32px 24px;width:100%;max-width:360px;box-shadow:0 8px 32px rgba(0,0,0,.3)}
+.eb{display:none;background:#FEF3C7;border-bottom:2px solid var(--warn);padding:10px 16px;text-align:center;font-size:13px;font-weight:600;color:#92400E}
+.eb.on{display:block}
+.eb button{margin-left:12px;background:#92400E;color:#fff;border:none;border-radius:6px;padding:4px 14px;font-size:12px;cursor:pointer;font-family:'Noto Sans JP',sans-serif}
+.csv-btn{background:var(--navy);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:13px;cursor:pointer;font-family:'Noto Sans JP',sans-serif;font-weight:600;margin-top:8px;width:100%}
+.det-edit{background:var(--orange);color:#fff;border:none;border-radius:10px;padding:10px;font-size:14px;cursor:pointer;font-family:'Noto Sans JP',sans-serif;font-weight:700;width:100%;margin-top:12px}
 .lb h2{font-family:'Oswald',sans-serif;color:var(--navy);font-size:22px;text-align:center;margin-bottom:4px}
 .lb p{color:var(--g500);font-size:13px;text-align:center;margin-bottom:20px}
 .lb .fi{margin-bottom:12px}
@@ -154,6 +160,7 @@ body{font-family:'Noto Sans JP',-apple-system,BlinkMacSystemFont,sans-serif;back
       <button class="dmx" onclick="document.getElementById('detMo').classList.remove('on')">閉じる</button>
     </div>
     <div id="detBody"></div>
+    <button class="det-edit" id="detEditBtn" onclick="">このデータを編集する</button>
   </div>
 </div>
 
@@ -191,6 +198,12 @@ body{font-family:'Noto Sans JP',-apple-system,BlinkMacSystemFont,sans-serif;back
   </div>
 </div>
 
+<!-- EDIT BANNER -->
+<div class="eb" id="editBanner">
+  ✏️ 編集モード：保存すると上書きされます
+  <button onclick="clearEditMode()">キャンセル</button>
+</div>
+
 <div class="hp" id="hp">
   <div class="ht">保存履歴</div>
   <div id="hl"><div class="he">まだ保存データはありません</div></div>
@@ -218,6 +231,7 @@ body{font-family:'Noto Sans JP',-apple-system,BlinkMacSystemFont,sans-serif;back
     </div>
   </div>
   <div class="srl" id="sRes"><div class="sr0">検索条件を入力して「検索」を押してください</div></div>
+  <button class="csv-btn" onclick="exportCSV()">📥 検索結果をCSVダウンロード</button>
 </div>
 
 <!-- Player Info -->
@@ -258,7 +272,7 @@ body{font-family:'Noto Sans JP',-apple-system,BlinkMacSystemFont,sans-serif;back
 <!-- Items Container -->
 <div id="mainContent"></div>
 
-<div class="ft">© spozania / SPONOBA Digital Assessment System<br>v3.0 — Supabase Connected</div>
+<div class="ft">© spozania / SPONOBA Digital Assessment System<br>v3.1 — Supabase Connected + Edit/CSV</div>
 
 <div class="bb">
   <button class="ab bc" onclick="clearAll()">クリア</button>
@@ -586,7 +600,14 @@ async function saveData(){
     created_by:(await _sb.auth.getUser()).data.user?.id||null,
   };
 
-  const{error}=await _sb.from('assessments').insert(row);
+  let error;
+  if(_editId){
+    // 上書き更新
+    ({error}=await _sb.from('assessments').update(row).eq('id',_editId));
+  } else {
+    // 新規追加
+    ({error}=await _sb.from('assessments').insert(row));
+  }
 
   if(error){
     alert('保存エラー: '+error.message);
@@ -601,7 +622,9 @@ async function saveData(){
   renderHist();
 
   const t=document.getElementById('toast');t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000);
-  b.textContent='✓ 保存済み';b.classList.add('ok');b.disabled=false;
+  const msg=_editId?'✓ 更新済み':'✓ 保存済み';
+  b.textContent=msg;b.classList.add('ok');b.disabled=false;
+  clearEditMode();
   setTimeout(()=>{b.textContent='保存する';b.classList.remove('ok');},2500);
 }
 
@@ -683,6 +706,8 @@ async function doSearch(){
 }
 
 // ═══ DETAIL VIEW ═══
+let _lastSearchResults = []; // CSV出力用
+
 function showDetail(r){
   document.getElementById('detTitle').textContent=r.player_name+' — '+(r.chart_type||'').toUpperCase()+' ('+r.assessment_date+')';
   let h='<table class="dtbl"><tr><th>選手名</th><td>'+r.player_name+'</td></tr>';
@@ -704,7 +729,100 @@ function showDetail(r){
     h+='</table>';
   }
   document.getElementById('detBody').innerHTML=h;
+
+  // Wire edit button
+  const eb=document.getElementById('detEditBtn');
+  eb.onclick=function(){loadRecord(r);};
+
   document.getElementById('detMo').classList.add('on');
+}
+
+// ═══ LOAD RECORD FOR EDITING ═══
+function loadRecord(r){
+  // Close modals
+  document.getElementById('detMo').classList.remove('on');
+  document.getElementById('searchP').classList.remove('open');
+
+  // Set edit mode
+  _editId=r.id;
+  document.getElementById('editBanner').classList.add('on');
+
+  // Fill player info
+  document.getElementById('pN').value=r.player_name||'';
+  document.getElementById('pA').value=r.player_age||'';
+  document.getElementById('pT').value=r.player_team||'';
+  document.getElementById('pH').value=r.height_cm||'';
+  document.getElementById('pW').value=r.weight_kg||'';
+  document.getElementById('pD').value=r.assessment_date||'';
+  document.getElementById('pC').value=r.c_degree||'';
+
+  // Switch to correct tab
+  if(r.chart_type) sw(r.chart_type);
+
+  // Load values into current chart
+  vals[r.chart_type||cur]=r.values||{};
+  render();
+
+  // Scroll to top
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function clearEditMode(){
+  _editId=null;
+  document.getElementById('editBanner').classList.remove('on');
+}
+
+// ═══ CSV EXPORT ═══
+async function exportCSV(){
+  // Use same search filters
+  let q=_sb.from('assessments').select('*').order('assessment_date',{ascending:false}).limit(1000);
+  const name=document.getElementById('sQ').value.trim();
+  if(name) q=q.ilike('player_name','%'+name+'%');
+  const from=document.getElementById('sFrom').value;
+  const to=document.getElementById('sTo').value;
+  if(from) q=q.gte('assessment_date',from);
+  if(to) q=q.lte('assessment_date',to);
+  const tab=document.getElementById('sTab').value;
+  if(tab) q=q.eq('chart_type',tab);
+
+  const{data,error}=await q;
+  if(error){alert('エラー: '+error.message);return;}
+  if(!data||!data.length){alert('ダウンロードするデータがありません');return;}
+
+  // Collect all value keys across all records
+  const allKeys=new Set();
+  data.forEach(r=>{if(r.values)Object.keys(r.values).forEach(k=>allKeys.add(k));});
+  const vKeys=[...allKeys].sort();
+
+  // Build CSV header
+  const headers=['選手名','年齢','チーム','身長cm','体重kg','測定日','C度','チャート',...vKeys];
+  const rows=[headers.join(',')];
+
+  data.forEach(r=>{
+    const base=[
+      '"'+(r.player_name||'').replace(/"/g,'""')+'"',
+      r.player_age||'',
+      '"'+(r.player_team||'').replace(/"/g,'""')+'"',
+      r.height_cm||'',
+      r.weight_kg||'',
+      r.assessment_date||'',
+      '"'+(r.c_degree||'')+'"',
+      (r.chart_type||'').toUpperCase()
+    ];
+    const vCols=vKeys.map(k=>{
+      const v=(r.values||{})[k];
+      return v!==undefined?'"'+String(v).replace(/"/g,'""')+'"':'';
+    });
+    rows.push([...base,...vCols].join(','));
+  });
+
+  const bom='\uFEFF';
+  const blob=new Blob([bom+rows.join('\n')],{type:'text/csv;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;
+  const d=new Date().toISOString().slice(0,10);
+  a.download='SPONOBA_assessment_'+d+'.csv';
+  a.click();URL.revokeObjectURL(url);
 }
 function exportJSON(){
   const data={
