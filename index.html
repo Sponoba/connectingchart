@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>SPONOBA Assessment System</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// ═══════════════════════════════════════════════════
+// ★ ここにSupabaseの情報を貼る（2箇所だけ）★
+// ═══════════════════════════════════════════════════
+const SUPABASE_URL = 'https://cfwevkbfkkeehvlzdwbd.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd2V2a2Jma2tlZWh2bHpkd2JkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1NjQxMzUsImV4cCI6MjA4ODE0MDEzNX0.szx_qnr7hP1BtQb-VZX7g4Q0JpN-ziUv-H_ECQvHuh4';
+const TPL_VER = '2.0';
+// ═══════════════════════════════════════════════════
+const _sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700;800&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#152C53;--orange:#E83E0B;--orange-light:#FFF3ED;--g50:#F9FAFB;--g100:#F3F4F6;--g200:#E5E7EB;--g300:#D1D5DB;--g400:#9CA3AF;--g500:#6B7280;--g700:#374151;--g800:#1F2937;--ok:#059669;--ok-bg:#ECFDF5;--warn:#D97706}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'Noto Sans JP',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--g50);color:var(--g700);min-height:100vh;max-width:640px;margin:0 auto;padding-bottom:80px}
+.hd{background:var(--navy);color:#fff;padding:14px 16px 12px;position:sticky;top:0;z-index:200;box-shadow:0 2px 12px rgba(21,44,83,.3)}
+.hd-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.logo{font-family:'Oswald',sans-serif;font-weight:700;font-size:18px;letter-spacing:2px}
+.logo-s{font-size:10px;color:rgba(255,255,255,.6);letter-spacing:.5px}
+.li{width:32px;height:32px;background:var(--orange);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-weight:700;font-size:14px;color:#fff}
+.hd-r{margin-left:auto;display:flex;gap:6px}
+.hb{background:rgba(255,255,255,.12);border:none;color:#fff;border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;font-family:'Noto Sans JP',sans-serif;font-weight:500}
+.tabs{display:flex;background:rgba(255,255,255,.08);border-radius:10px;padding:3px;overflow-x:auto;gap:2px;scrollbar-width:none;-ms-overflow-style:none}
+.tabs::-webkit-scrollbar{display:none}
+.tb{flex-shrink:0;padding:8px 12px;border:none;border-radius:8px;background:transparent;color:rgba(255,255,255,.55);font-family:'Oswald',sans-serif;font-weight:600;font-size:12px;letter-spacing:.5px;cursor:pointer;transition:all .25s;white-space:nowrap}
+.tb.on{background:var(--orange);color:#fff}
+.pi{background:#fff;padding:14px 16px;border-bottom:1px solid var(--g200)}
+.ir{display:grid;gap:8px;margin-bottom:8px}
+.ir.c2{grid-template-columns:1fr 80px}
+.ir.eq{grid-template-columns:1fr 1fr}
+.ir.cr{grid-template-columns:80px 1fr;align-items:center;margin-bottom:0}
+.fl{font-size:11px;color:var(--g500);font-weight:600;margin-bottom:2px;display:block}
+.fi{width:100%;padding:8px 10px;border:1.5px solid var(--g300);border-radius:8px;font-size:14px;font-family:'Noto Sans JP',sans-serif;outline:none;transition:border-color .2s;background:#fff}
+.fi:focus{border-color:var(--orange)}
+/* Login */
+#authWall{position:fixed;inset:0;background:var(--navy);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:24px}
+#authWall.gone{display:none}
+.lb{background:#fff;border-radius:16px;padding:32px 24px;width:100%;max-width:360px;box-shadow:0 8px 32px rgba(0,0,0,.3)}
+.lb h2{font-family:'Oswald',sans-serif;color:var(--navy);font-size:22px;text-align:center;margin-bottom:4px}
+.lb p{color:var(--g500);font-size:13px;text-align:center;margin-bottom:20px}
+.lb .fi{margin-bottom:12px}
+.lbt{width:100%;padding:14px;background:var(--orange);color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:700;font-family:'Noto Sans JP',sans-serif;cursor:pointer}
+.lbt:disabled{opacity:.5}
+.lerr{color:#B91C1C;font-size:13px;text-align:center;margin-top:8px;min-height:18px}
+.llogo{font-family:'Oswald',sans-serif;font-size:32px;color:#fff;letter-spacing:3px;margin-bottom:24px}
+/* Search */
+.sp{display:none;background:#fff;border-bottom:2px solid var(--orange);padding:14px 16px}
+.sp.open{display:block}
+.srow{display:flex;gap:8px;margin-bottom:8px;align-items:end}
+.srow .fi{flex:1}
+.sbtn{padding:8px 18px;background:var(--navy);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Noto Sans JP',sans-serif;white-space:nowrap}
+.scls{padding:8px 12px;background:var(--g200);color:var(--g700);border:none;border-radius:8px;font-size:13px;cursor:pointer;font-family:'Noto Sans JP',sans-serif}
+.srl{margin-top:8px;max-height:320px;overflow-y:auto}
+.sri{padding:10px 12px;border:1px solid var(--g200);border-radius:10px;margin-bottom:6px;cursor:pointer;transition:background .15s}
+.sri:hover,.sri:active{background:var(--g50)}
+.sri b{color:var(--navy);font-size:14px}
+.sri small{display:block;font-size:12px;color:var(--g500);margin-top:2px}
+.sr0{color:var(--g400);font-size:13px;text-align:center;padding:16px}
+/* Detail modal */
+.dmo{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;display:none;align-items:center;justify-content:center;padding:16px}
+.dmo.on{display:flex}
+.dmd{background:#fff;border-radius:16px;width:100%;max-width:560px;max-height:85vh;overflow-y:auto;padding:20px}
+.dmh{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.dmt{font-family:'Oswald',sans-serif;font-size:18px;color:var(--navy)}
+.dmx{background:var(--g200);border:none;border-radius:8px;padding:6px 14px;font-size:13px;cursor:pointer}
+.dtbl{width:100%;border-collapse:collapse;font-size:13px}
+.dtbl th{background:var(--navy);color:#fff;padding:6px 10px;text-align:left;font-size:12px}
+.dtbl td{padding:6px 10px;border-bottom:1px solid var(--g200)}
+.dtbl tr:nth-child(even){background:var(--g50)}
+/* PW change modal */
+.pwmo{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:600;display:none;align-items:center;justify-content:center;padding:24px}
+.pwmo.on{display:flex}
+.pwbox{background:#fff;border-radius:16px;padding:28px 24px;width:100%;max-width:360px}
+.pwbox h3{font-family:'Oswald',sans-serif;color:var(--navy);font-size:20px;text-align:center;margin-bottom:16px}
+.pwbox .fi{margin-bottom:12px}
+.pwok{width:100%;padding:12px;background:var(--navy);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;font-family:'Noto Sans JP',sans-serif;cursor:pointer}
+.pwok:disabled{opacity:.5}
+.pwmsg{font-size:13px;text-align:center;margin-top:8px;min-height:18px}
+.ps{padding:10px 16px;background:#fff;border-bottom:1px solid var(--g200)}
+.ph{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.pl{font-size:12px;color:var(--g500);font-weight:600}
+.pv{font-size:12px;font-weight:700}
+.pb{height:6px;background:var(--g200);border-radius:3px;overflow:hidden}
+.pf{height:100%;border-radius:3px;transition:width .35s ease}
+.ct{padding:14px 16px 8px}
+.ctt{font-family:'Oswald',sans-serif;font-size:16px;font-weight:700;color:var(--navy);letter-spacing:1px}
+.cts{font-size:12px;color:var(--g500);margin-top:2px}
+.ic{background:#fff}
+.row{display:grid;grid-template-columns:38px 1fr;gap:8px;padding:11px 14px;border-bottom:1px solid var(--g100)}
+.rn{font-family:'Oswald',sans-serif;font-size:14px;font-weight:600;color:var(--navy);text-align:center;padding-top:2px}
+.rl{font-size:14px;font-weight:600;color:var(--g800);margin-bottom:6px}
+.og{margin-bottom:5px;display:flex;align-items:flex-start;flex-wrap:wrap;gap:4px}
+.gl{font-size:11px;color:var(--g500);font-weight:700;min-width:22px;padding-top:5px;flex-shrink:0}
+.pls{display:flex;flex-wrap:wrap;gap:4px}
+.p{padding:5px 12px;border-radius:18px;border:1.5px solid var(--g300);background:#fff;color:var(--g700);font-size:13px;font-weight:500;font-family:'Noto Sans JP',sans-serif;cursor:pointer;transition:all .15s;white-space:nowrap;user-select:none;-webkit-user-select:none}
+.p:hover{border-color:var(--orange)}
+.p.on{background:var(--orange);color:#fff;border-color:var(--orange);font-weight:700;box-shadow:0 2px 6px rgba(232,107,44,.3)}
+.bb{position:fixed;bottom:0;left:0;right:0;max-width:640px;margin:0 auto;background:#fff;border-top:1px solid var(--g200);padding:12px 16px;display:flex;gap:8px;z-index:200;box-shadow:0 -2px 10px rgba(0,0,0,.06)}
+.ab{flex:1;padding:12px 0;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Noto Sans JP',sans-serif;transition:all .2s}
+.bc{border:1.5px solid var(--g300);background:#fff;color:var(--g500)}
+.be{border:1.5px solid var(--navy);background:#fff;color:var(--navy)}
+.bs{flex:1.5;border:none;background:linear-gradient(135deg,var(--orange),#D97706);color:#fff;font-weight:700}
+.bs.ok{background:var(--ok)}
+.toast{position:fixed;top:80px;left:50%;transform:translateX(-50%);background:var(--ok);color:#fff;padding:10px 24px;border-radius:10px;font-size:14px;font-weight:600;box-shadow:0 4px 16px rgba(5,150,105,.35);opacity:0;transition:opacity .3s;z-index:999;pointer-events:none}
+.toast.show{opacity:1}
+.ft{padding:24px 16px;text-align:center;font-size:11px;color:var(--g400)}
+.hp{display:none;background:#fff;padding:14px 16px;border-bottom:2px solid var(--orange)}
+.hp.open{display:block}
+.ht{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:8px}
+.hi{padding:8px 0;border-bottom:1px solid var(--g200);font-size:13px}
+.hn{font-weight:600}.hm{color:var(--g500);margin-left:8px}
+.he{font-size:13px;color:var(--g400)}
+/* Traits specific */
+.sec-hd{padding:12px 16px;background:var(--navy);color:#fff;font-family:'Oswald',sans-serif;font-weight:600;font-size:14px;letter-spacing:1px;margin-top:4px}
+.traits-row{padding:12px 16px;border-bottom:1px solid var(--g100);background:#fff}
+.tr-label{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:8px}
+.tr-sub{font-size:12px;color:var(--g500);font-weight:600;margin-bottom:4px}
+.tr-input{width:100%;padding:8px 10px;border:1.5px solid var(--g300);border-radius:8px;font-size:14px;font-family:'Noto Sans JP',sans-serif;outline:none;background:#fff}
+.tr-input:focus{border-color:var(--orange)}
+.tr-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.tr-grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px}
+.rating-group{display:flex;gap:4px;margin-top:4px}
+.rating-btn{width:36px;height:36px;border-radius:50%;border:1.5px solid var(--g300);background:#fff;font-size:14px;font-weight:600;cursor:pointer;transition:all .15s;color:var(--g700)}
+.rating-btn.on{background:var(--orange);color:#fff;border-color:var(--orange)}
+@media(max-width:400px){.p{padding:4px 9px;font-size:12px}.rl{font-size:13px}.tb{font-size:11px;padding:7px 10px}}
+</style>
+</head>
+<body>
+<!-- LOGIN -->
+<div id="authWall">
+  <div class="llogo">SPONOBA</div>
+  <div class="lb">
+    <h2>ログイン</h2>
+    <p>メールアドレスとパスワードを入力</p>
+    <input class="fi" id="aE" type="email" placeholder="メールアドレス">
+    <input class="fi" id="aP" type="password" placeholder="パスワード">
+    <button class="lbt" id="aBtn" onclick="doLogin()">ログイン</button>
+    <div class="lerr" id="aErr"></div>
+  </div>
+</div>
+<!-- DETAIL MODAL -->
+<div class="dmo" id="detMo">
+  <div class="dmd">
+    <div class="dmh">
+      <div class="dmt" id="detTitle">データ詳細</div>
+      <button class="dmx" onclick="document.getElementById('detMo').classList.remove('on')">閉じる</button>
+    </div>
+    <div id="detBody"></div>
+  </div>
+</div>
+
+<!-- PW CHANGE -->
+<div class="pwmo" id="pwMo">
+  <div class="pwbox">
+    <h3>パスワード変更</h3>
+    <input class="fi" id="pwNew" type="password" placeholder="新しいパスワード（8文字以上）">
+    <input class="fi" id="pwConf" type="password" placeholder="新しいパスワード（確認）">
+    <button class="pwok" id="pwBtn" onclick="doPwChange()">変更する</button>
+    <div class="pwmsg" id="pwMsg"></div>
+    <button style="width:100%;margin-top:8px;padding:10px;background:var(--g200);border:none;border-radius:10px;font-size:13px;cursor:pointer" onclick="document.getElementById('pwMo').classList.remove('on')">キャンセル</button>
+  </div>
+</div>
+
+<div class="toast" id="toast">✓ 保存しました</div>
+
+<div class="hd">
+  <div class="hd-top">
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZAAAABaCAYAAACWuwCqAAAFiklEQVR4nO3d3W6kOBAGUHq17//K7EUUzYRNN2Dsctk+RxrlYtSAwfij+H3t+74BwF3/9F4AAMYkQAAoIkAAKCJAACgiQAAoIkAAKCJAACgiQAAoIkAAKCJAACgiQAAoIkAAKCJAACgiQAAoIkAAKPJv7wVY1J2PsLyaLQXAAyqQeL7gBUxBgOQncICUBAgARQRIrE/VhGsdwFAEyBicxgLSESA5vA5/AdITIHGeVhGqECAVAdKfqgMYkgCJ4cFBYDoCZCxOYwFpCJC+VBtf9k04wnC8C6u9koHxVfi7EXxq1/H/RgrYq9trpDYdrdBGbhAg49m3nzvoKNdXSgLx+zfvlrtmyJasmxZtKp3ucXq1+kWmNr5T2q+fLsPyQekUVj9nna9F5+xV1YxwC/Pd02g12pS9yhyljSOsyykJkLZader98DezWssY1dYrg1HNZcm6DUdsY9Z1OS0B0sdop5KyzCvDsrdYhhrTzD7gZzoAoBIB0k6NTlx6DjnDudnW1VcPKwxMK7Rx29ZpZ1MCZF5RFzBnlqHimcls63OFbfaRAInXujqYufqImj5wgQBpI8Mtime/NQhfs9INCyO08Y7Z2pOOAJnLb4EhRMaxwvZYoY3LECD1tbi4feV3GU5dPTH68h/N1p7frNBGPhAga4isQp48RR1xfShi0Ov5gbCoI/zoNpZuu9/WhyqoEgESp+WO5kgwL9umLuszEQFSV+YjG9dC/jAI1bXy+lxt3/lBgIwh8tUaAJcIkBhPjtCibgmuNZ+ot9rynvVJCAFST++dNtv7lFpa+ZQJ9+grDfkeSHtZqo9vWT9W9f2dEzs8n2Tsu8tSgdQxWqdufSqr1wd+mFett+zqYxUJkLyefAluZDO0gRxUs40JkLYyd+CsVUit+fecPmtZtj+5BvLZWcdodT3hyutQZu+0x2+/wx1P+07Wa4WpqEDeu9J5Mn657c7vM1chtZbhOD2DwvwceAQRIL/LMHieTTNiJ8mwHgz4kJQA+b+sn0y9MxDXqkJqESJEqvU9e5XMCQHyU8+nsXvK+oT633qFyGjbki8OOgIIkD+uXDDvNf938x5tcBs1RBjTbN9gT0eAfLkaHiMN2DXL9Syf6N222B11pO0N4QTI/crjyqByd5Br8RXDzGZsE23V/KAUlaweIC1PW13tuE87eM3KIfKbIZkfNNw2IZeV7ZLIygEScc2jZTj0kClEWvFCx/xsnyRWDJArD5PV7KCf5lXr1FXN5Y3eObO8eFFwzK3ktLLTXydWe5XJlQ5xNoiUvuSw1+BUMu9Pr3G4Mr2r6+jvmxOcloLBrFSB1AiPmvNf7cL50QptjGA95rFcxbJKgNQKj6eDfssOVnsgibygfjY/IKEVAiSy8rgaItHVhweq5mV9083sARIVHtEvOXxnpCrEwFdP7+otelvqO0nMHCC1wyPiBYWR12CyTXPWQWHWdsG0AdL7gnnJ9HsfRb7Tsh37dn5Kb0T74e+Motv4pK/MvB26mjVAztwdFEuvWfR4tqD1d0iO7Jy/i14vPQ5AbPvFrRggPXa0s3lGLZMdPresVWhNs7dxqX1s1gCJev15r6fFe8j2SvkZKrtsZmxjSZteh3+84Un0HNOb7TbbqCfL+cl6J9SsFci2OXKIsEr1EWHGNh2NUDWusB2qmTlA6KvVjjjTczYZzdLG73aoyBoSIJS6MtD0vObUSvRdbj2M3sZs63NasweIjtRGj5sHMm3LzK/Pz7i+VwuPZaqe2QOEHJ7ezZJhUDh6ukyf1kmWu/tatrGm1ndMZex/Kbz2fZmwJI8MbwqobcY2Ha3QRm4QIAAUcQoLgCICBIAiAgSAIgIEgCICBIAiAgSAIgIEgCICBIAiAgSAIgIEgCICBIAiAgSAIv8B1In+rrX+itMAAAAASUVORK5CYII=" alt="SPONOBA" style="height:28px;filter:brightness(0) invert(1)">
+    <div><div class="logo-s">ASSESSMENT SYSTEM</div></div>
+    <div class="hd-r">
+      <button class="hb" onclick="toggleSearch()">🔍 検索</button>
+      <button class="hb" onclick="toggleHistory()">履歴 <span id="hc">0</span></button>
+      <button class="hb" onclick="document.getElementById('pwMo').classList.add('on')" style="opacity:.7">🔑</button>
+      <button class="hb" onclick="doLogout()" style="opacity:.7">⏏</button>
+    </div>
+  </div>
+  <div class="tabs" id="tabBar">
+    <button class="tb on" data-tab="connect" onclick="sw('connect')">CONNECT</button>
+    <button class="tb" data-tab="kinnetic" onclick="sw('kinnetic')">KINNETIC</button>
+    <button class="tb" data-tab="operation" onclick="sw('operation')">OPERATION</button>
+    <button class="tb" data-tab="signal" onclick="sw('signal')">SIGNAL</button>
+    <button class="tb" data-tab="traits" onclick="sw('traits')">TRAITS</button>
+  </div>
+</div>
+
+<div class="hp" id="hp">
+  <div class="ht">保存履歴</div>
+  <div id="hl"><div class="he">まだ保存データはありません</div></div>
+</div>
+
+<!-- SEARCH -->
+<div class="sp" id="searchP">
+  <div class="srow">
+    <input class="fi" id="sQ" placeholder="選手名で検索">
+    <button class="sbtn" onclick="doSearch()">検索</button>
+    <button class="scls" onclick="toggleSearch()">閉じる</button>
+  </div>
+  <div class="srow">
+    <div style="flex:1"><label class="fl">開始日</label><input class="fi" id="sFrom" type="date"></div>
+    <div style="flex:1"><label class="fl">終了日</label><input class="fi" id="sTo" type="date"></div>
+    <div><label class="fl">タブ</label>
+      <select class="fi" id="sTab" style="padding:7px 8px">
+        <option value="">すべて</option>
+        <option value="connect">CONNECT</option>
+        <option value="kinnetic">KINNETIC</option>
+        <option value="operation">OPERATION</option>
+        <option value="signal">SIGNAL</option>
+        <option value="traits">TRAITS</option>
+      </select>
+    </div>
+  </div>
+  <div class="srl" id="sRes"><div class="sr0">検索条件を入力して「検索」を押してください</div></div>
+</div>
+
+<!-- Player Info -->
+<div class="pi">
+  <div class="ir c2">
+    <div><label class="fl">選手名</label><input class="fi" id="pN" placeholder="選手名を入力"></div>
+    <div><label class="fl">年齢</label><input class="fi" id="pA" placeholder="16" type="number"></div>
+  </div>
+  <div class="ir eq">
+    <div><label class="fl">チーム</label><input class="fi" id="pT" placeholder="チーム名"></div>
+    <div><label class="fl">測定日</label><input class="fi" id="pD" type="date"></div>
+  </div>
+  <div class="ir eq" style="margin-top:8px">
+    <div><label class="fl">身長 (cm)</label><input class="fi" id="pH" placeholder="183" type="number"></div>
+    <div><label class="fl">体重 (kg)</label><input class="fi" id="pW" placeholder="81" type="number"></div>
+  </div>
+  <div class="ir cr" style="margin-top:8px">
+    <label class="fl" style="margin:0">C度</label>
+    <input class="fi" id="pC" placeholder="C度を入力">
+  </div>
+</div>
+
+<!-- Progress -->
+<div class="ps">
+  <div class="ph">
+    <span class="pl">入力進捗</span>
+    <span class="pv" id="pvt" style="color:var(--orange)">0/0 (0%)</span>
+  </div>
+  <div class="pb"><div class="pf" id="pfl" style="width:0%;background:linear-gradient(90deg,var(--orange),#F59E0B)"></div></div>
+</div>
+
+<!-- Chart Title -->
+<div class="ct">
+  <div class="ctt" id="cttl">⚡ POWER CONNECT CHARTS 34</div>
+  <div class="cts" id="ctst">身体の接続・配置パターンの評価</div>
+</div>
+
+<!-- Items Container -->
+<div id="mainContent"></div>
+
+<div class="ft">© spozania / SPONOBA Digital Assessment System<br>v3.0 — Supabase Connected</div>
+
+<div class="bb">
+  <button class="ab bc" onclick="clearAll()">クリア</button>
+  <button class="ab be" onclick="exportJSON()">出力</button>
+  <button class="ab bs" id="svb" onclick="saveData()">保存する</button>
+</div>
+
+<script>
+// ═══ CONNECT 34 ═══
+const D_CON=[
+{id:1,l:"肘",g:[{g:"右",o:["近","中","遠"]},{g:"左",o:["近","中","遠"]}]},
+{id:2,l:"肩ー上腕",g:[{g:"右",o:["1","2","3","4"]},{g:"左",o:["1","2","3","4"]}]},
+{id:3,l:"肩ー鎖骨",g:[{g:"",o:["高","中","低"]}]},
+{id:4,l:"前腕",g:[{g:"",o:["クロス","パラレル"]}]},
+{id:5,l:"手首",g:[{g:"",o:["Inside","Outside"]}]},
+{id:6,l:"（手首屈伸）",g:[{g:"",o:["Bend","Stretch"]}]},
+{id:7,l:"腕",g:[{g:"",o:["右","左"]}]},
+{id:8,l:"腕組み",g:[{g:"上",o:["右","左"]},{g:"下",o:["右","左"]}]},
+{id:9,l:"手（親指）",g:[{g:"",o:["外","内"]}]},
+{id:10,l:"骨盤",g:[{g:"",o:["F","B"]}]},
+{id:11,l:"（骨盤左右）",g:[{g:"",o:["右","左"]}]},
+{id:12,l:"股関節",g:[{g:"",o:["右","左"]}]},
+{id:13,l:"大腿骨",g:[{g:"",o:["内","外"]}]},
+{id:14,l:"下腿",g:[{g:"",o:["内","外"]}]},
+{id:15,l:"脚（膝）",g:[{g:"",o:["右","左"]}]},
+{id:16,l:"足向き（仙骨）",g:[{g:"",o:["右向き","左向き"]}]},
+{id:17,l:"足指",g:[{g:"",o:["掴み","反らし"]}]},
+{id:18,l:"股関節ー脚（上）",g:[{g:"右",o:["外","中","内"]},{g:"左",o:["内","中","外"]}]},
+{id:19,l:"股関節ー脚（下）",g:[{g:"右",o:["外旋","内旋"]},{g:"左",o:["外旋","内旋"]}]},
+{id:20,l:"肋骨",g:[{g:"",o:["F","B"]}]},
+{id:21,l:"（肋骨左右）",g:[{g:"",o:["右","左"]}]},
+{id:22,l:"肩甲骨ー肋骨",g:[{g:"",o:["前回り","後回り"]}]},
+{id:23,l:"鎖骨",g:[{g:"",o:["前→","後ろ→"]}]},
+{id:24,l:"腕 遠心性ー求心",g:[{g:"",o:["遠→","求→"]}]},
+{id:25,l:"肩甲骨スライド",g:[{g:"右",o:["1","2","3","4"]},{g:"左",o:["1","2","3","4"]}]},
+{id:26,l:"肩甲骨ー骨盤",g:[{g:"右",o:["上","中","下"]},{g:"左",o:["上","中","下"]}]},
+{id:27,l:"腕の方向",g:[{g:"右",o:["横","前"]},{g:"左",o:["横","前"]}]},
+{id:28,l:"腕の高さ",g:[{g:"右",o:["1","2","3","4"]},{g:"左",o:["1","2","3","4"]}]},
+{id:29,l:"腕のハマり",g:[{g:"右",o:["表","裏"]},{g:"左",o:["表","裏"]}]},
+{id:30,l:"頭（顎の向き）",g:[{g:"",o:["上","下"]}]},
+{id:31,l:"目の向き",g:[{g:"",o:["右","左"]}]},
+{id:32,l:"眉毛",g:[{g:"",o:["上","下"]}]},
+{id:33,l:"口",g:[{g:"",o:["開","閉"]}]},
+{id:34,l:"数",g:[{g:"",o:["偶数","奇数"]}]},
+];
+
+// ═══ KINNETIC 34 ═══
+const D_KIN=[
+{id:1,l:"手",g:[{g:"",o:["第2関節ライン","基節骨ライン","MP関節ライン"]}]},
+{id:2,l:"指",g:[{g:"右",o:["1","2","3","4","5"]},{g:"左",o:["1","2","3","4","5"]}]},
+{id:3,l:"手首",g:[{g:"右",o:["上げ","下げ"]},{g:"左",o:["上げ","下げ"]}]},
+{id:4,l:"（手首回転）",g:[{g:"右",o:["前転","後転"]},{g:"左",o:["前転","後転"]}]},
+{id:5,l:"腕",g:[{g:"右",o:["in（小胸筋）","out（三角筋）"]},{g:"左",o:["in（小胸筋）","out（三角筋）"]}]},
+{id:6,l:"（腕前後）",g:[{g:"右",o:["前","後"]},{g:"左",o:["前","後"]}]},
+{id:7,l:"上腕",g:[{g:"右",o:["内回し","外回し"]},{g:"左",o:["内回し","外回し"]}]},
+{id:8,l:"手首→腕→肩",g:[{g:"右",o:["1","2","3","4","5","6","7","8内"]},{g:"左",o:["1","2","3","4","5","6","7","8内"]}]},
+{id:9,l:"脇（体温計）",g:[{g:"",o:["右","左"]}]},
+{id:10,l:"腕",g:[{g:"",o:["ライン","サイクル"]}]},
+{id:11,l:"（腕回し）",g:[{g:"",o:["右回し","左回し"]}]},
+{id:12,l:"腕ー肩甲骨ー体幹",g:[{g:"",o:["上キネ","下キネ"]}]},
+{id:13,l:"（弾き）",g:[{g:"",o:["上弾き","下弾き"]}]},
+{id:14,l:"（膝裏）",g:[{g:"",o:["膝裏","アキレス"]}]},
+{id:15,l:"脚",g:[{g:"右",o:["1","2","3","4"]},{g:"左",o:["1","2","3","4"]}]},
+{id:16,l:"（脚）",g:[{g:"",o:["ライン","サイクル"]}]},
+{id:17,l:"体幹",g:[{g:"",o:["クロス","パラレル"]}]},
+{id:18,l:"（体幹ライン）",g:[{g:"",o:["前芯","後芯"]}]},
+{id:19,l:"肩甲骨（左右連動）",g:[{g:"",o:["上下系","前後系"]}]},
+{id:20,l:"骨盤",g:[{g:"",o:["縦の入れ替え","前後の入れ替え"]}]},
+{id:21,l:"（骨盤）",g:[{g:"",o:["腸骨","坐骨"]}]},
+{id:22,l:"股関節ー骨盤",g:[{g:"",o:["時計回り","反時計回り"]}]},
+{id:23,l:"（股関節）",g:[{g:"右",o:["in","out"]},{g:"左",o:["in","out"]}]},
+{id:24,l:"膝の角度",g:[{g:"",o:["伸展1","伸展2","伸展3","伸展4","屈"]}]},
+{id:25,l:"下腿",g:[{g:"",o:["回内系","回外系"]}]},
+{id:26,l:"（下腿in/out）",g:[{g:"右",o:["in","out"]},{g:"左",o:["in","out"]}]},
+{id:27,l:"足（ハマり）",g:[{g:"右",o:["上げ","下げ"]},{g:"左",o:["上げ","下げ"]}]},
+{id:28,l:"（足エッジ）",g:[{g:"右",o:["インエッジ","アウトエッジ"]},{g:"左",o:["インエッジ","アウトエッジ"]}]},
+{id:29,l:"（足方向）",g:[{g:"右",o:["フロント","リア"]},{g:"左",o:["フロント","リア"]}]},
+{id:30,l:"腸サイクル",g:[{g:"",o:["腸サイクル","逆サイクル"]}]},
+{id:31,l:"脱ー脚連動",g:[{g:"",o:["上","下"]}]},
+{id:32,l:"（保持）",g:[{g:"",o:["移動","保持"]}]},
+{id:33,l:"肩",g:[{g:"",o:["回旋右","回旋左","横き右","横き左"]}]},
+{id:34,l:"ベース（体幹の要）",g:[{g:"",o:["顎","一関節（ウマ）","地尾","一膝ライオン"]}]},
+];
+
+// ═══ OPERATION 22 ═══
+const D_OPE=[
+{id:1,l:"四肢連動",g:[{g:"固定",o:["腕","脚"]},{g:"",o:["腕芯","触る"]}]},
+{id:2,l:"センター芯ワーク",g:[{g:"",o:["S字系","C字系"]}]},
+{id:3,l:"背骨ワーク",g:[{g:"",o:["前(FORWARD)","後(BACKWARD)"]}]},
+{id:4,l:"セット（入り・反応開始）",g:[{g:"",o:["※自由記述"]}]},
+{id:5,l:"リズム（動作への調子・反応切替）",g:[{g:"",o:["縦系(VERTICAL)","横系(HORIZONTAL)"]},{g:"",o:["脚系(LEG)","腕系(ARM)"]}]},
+{id:6,l:"脱ー脚連動",g:[{g:"",o:["肘→肋骨","骨盤","膝","足首"]}]},
+{id:7,l:"腕ー体幹連動",g:[{g:"",o:["※自由記述"]}]},
+{id:8,l:"重心感覚（バット扱い）",g:[{g:"",o:["先端","重心","エンドスタート","先回し"]},{g:"構え",o:["右前→左後","並行","右後→左前"]},{g:"ステップ",o:["右前→左後","並行","右後→左前"]},{g:"フィニッシュ",o:["右前→左後","傾斜","右後→左前"]}]},
+{id:9,l:"スタンス（立ち方）",g:[{g:"",o:["真ん中から","軸足から"]},{g:"右",o:["前","後","→1","→2","→3","→4"]},{g:"左",o:["前","後","→1","→2","→3","→4"]}]},
+{id:10,l:"ステップ（足の運び）",g:[{g:"右足軸",o:["IN","1","2","3","4","OUT"]},{g:"左足軸",o:["IN","1","2","3","4","OUT"]}]},
+{id:11,l:"チェーン（ネジの方向）",g:[{g:"股関節 右→左",o:["上ネジ","下ネジ"]},{g:"股関節 左→右",o:["上ネジ","下ネジ"]}]},
+{id:12,l:"ネジスト 腕/脚",g:[{g:"右腕",o:["ネジ","スト"]},{g:"左腕",o:["ネジ","スト"]},{g:"右脚",o:["ネジ","スト"]},{g:"左脚",o:["ネジ","スト"]},{g:"部位",o:["手首","肘","肩","股関節","膝","足首"]},{g:"側",o:["右","左","内側","外側"]}]},
+{id:13,l:"身体ねじりワーク",g:[{g:"腕",o:["※自由記述"]},{g:"体幹",o:["※自由記述"]},{g:"脚",o:["※自由記述"]}]},
+{id:14,l:"フィンガーワーク",g:[{g:"",o:["パー","チョッパー"]}]},
+{id:15,l:"4BOXオペレーション",g:[{g:"胸",o:["動","固","右","中","左"]},{g:"肋",o:["動","固","右","中","左"]},{g:"下腹",o:["動","固","右","中","左"]}]},
+{id:16,l:"ジャンプ",g:[{g:"",o:["上","下","同時"]},{g:"",o:["伸長反射","コンセントリック","膝反射"]}]},
+{id:17,l:"SET ONE POINT",g:[{g:"",o:["腕骨","補尾","下腹","膝","足首","上","下"]}]},
+{id:18,l:"BOOSTER",g:[{g:"",o:["上ケツ","下ケツ"]}]},
+{id:19,l:"コンディショニング",g:[{g:"",o:["熱系（左内関）","冷系（右内関）"]}]},
+{id:20,l:"マエケン体操",g:[{g:"",o:["前回し","後回し","八の字","逆八の字"]}]},
+{id:21,l:"視覚：視覚の使い方",g:[{g:"",o:["分散型","集約型"]},{g:"",o:["瞳","静"]}]},
+{id:22,l:"患者",g:[{g:"",o:["過去","現在","未来"]},{g:"",o:["内向き","外向き"]}]},
+];
+
+// ═══ SIGNAL 22 ═══
+const D_SIG=[
+{id:1,l:"頭点",g:[{g:"",o:["前","中","後"]}]},
+{id:2,l:"顔点",g:[{g:"",o:["コメカミ","頬骨"]},{g:"",o:["前","横"]},{g:"",o:["右","左"]}]},
+{id:3,l:"前腕",g:[{g:"",o:["近位","遠位"]}]},
+{id:4,l:"上腕",g:[{g:"",o:["近位","遠位"]}]},
+{id:5,l:"大腿",g:[{g:"もも前",o:["近位","遠位"]},{g:"もも裏",o:["近位","遠位"]},{g:"",o:["外","内"]}]},
+{id:6,l:"下腿",g:[{g:"",o:["近位","遠位"]},{g:"",o:["外","内"]}]},
+{id:7,l:"肩ー肘連動",g:[{g:"",o:["固定","運動"]},{g:"",o:["右方向","左方向"]}]},
+{id:8,l:"軸足ポジショニング",g:[{g:"",o:["大腿","下腿"]},{g:"",o:["3","2","1"]}]},
+{id:9,l:"タップフットワーク",g:[{g:"",o:["膝","足"]},{g:"",o:["右","左"]},{g:"",o:["上","下"]}]},
+{id:10,l:"腕のリズム",g:[{g:"右腕",o:["1","2","3","4","5"]},{g:"左腕",o:["1","2","3","4","5"]}]},
+{id:11,l:"骨盤",g:[{g:"右",o:["前","後"]},{g:"左",o:["前","後"]}]},
+{id:12,l:"体幹 要",g:[{g:"",o:["胸","腹","肩甲骨","腰裏"]},{g:"",o:["→右","→左"]}]},
+{id:13,l:"脊柱",g:[{g:"",o:["上7","中5","腰5"]},{g:"",o:["Y字","T字"]},{g:"",o:["内旋","外旋"]}]},
+{id:14,l:"主体",g:[{g:"",o:["腕","脚","体幹"]}]},
+{id:15,l:"コア4",g:[{g:"右",o:["上","下","IN","OUT"]},{g:"左",o:["上","下","IN","OUT"]}]},
+{id:16,l:"お腹",g:[{g:"",o:["上","中","下"]}]},
+{id:17,l:"刺激の質",g:[{g:"",o:["ハード系（胸声）","ソフト系（頭声）"]}]},
+{id:18,l:"呼吸",g:[{g:"",o:["胸","腹"]},{g:"",o:["吸い","吐き"]}]},
+{id:19,l:"（配分）",g:[{g:"",o:["骨系","筋系","神経系"]}]},
+{id:20,l:"筋骨神運動感覚",g:[{g:"",o:["ユル系","キツ系","ストレッチ系"]}]},
+{id:21,l:"（加減速）",g:[{g:"",o:["アクセル系","ブレーキ系"]}]},
+{id:22,l:"（方向）",g:[{g:"",o:["縦","横"]}]},
+];
+
+// ═══ TABS CONFIG ═══
+const TABS={
+  connect:{data:D_CON,title:"⚡ POWER CONNECT CHARTS 34",sub:"身体の接続・配置パターンの評価",type:"chart"},
+  kinnetic:{data:D_KIN,title:"⚡ POWER KINNETIC CHARTS 34",sub:"運動連鎖・キネティックチェーンの評価",type:"chart"},
+  operation:{data:D_OPE,title:"⚡ POWER OPERATION CHARTS",sub:"動作オペレーション・運動パターンの評価",type:"chart"},
+  signal:{data:D_SIG,title:"⚡ POWER SIGNAL CHARTS",sub:"シグナルポイント・刺激応答の評価",type:"chart"},
+  traits:{data:null,title:"⚡ SPONOBA TRAITS METHOD",sub:"Science Approach + Sensory Approach",type:"traits"},
+};
+
+// ═══ STATE ═══
+let cur='connect';
+let vals={connect:{},kinnetic:{},operation:{},signal:{},traits:{}};
+let hist=[];
+
+// ═══ INIT ═══
+document.addEventListener('DOMContentLoaded',async()=>{
+  document.getElementById('pD').value=new Date().toISOString().split('T')[0];
+  // Check existing session
+  const{data:{session}}=await _sb.auth.getSession();
+  if(session){
+    document.getElementById('authWall').classList.add('gone');
+    render();
+  }
+  // Listen for auth changes
+  _sb.auth.onAuthStateChange((ev,session)=>{
+    if(session) document.getElementById('authWall').classList.add('gone');
+    else document.getElementById('authWall').classList.remove('gone');
+  });
+});
+
+// ═══ TAB SWITCH ═══
+function sw(tab){
+  cur=tab;
+  document.querySelectorAll('.tb').forEach(b=>b.classList.toggle('on',b.dataset.tab===tab));
+  const t=TABS[tab];
+  document.getElementById('cttl').textContent=t.title;
+  document.getElementById('ctst').textContent=t.sub;
+  render();
+}
+
+// ═══ RENDER ═══
+function render(){
+  const mc=document.getElementById('mainContent');
+  if(TABS[cur].type==='traits'){
+    mc.innerHTML=renderTraits();
+  } else {
+    mc.innerHTML='<div class="ic">'+TABS[cur].data.map(item=>renderRow(item)).join('')+'</div>';
+  }
+  updateProgress();
+}
+
+function renderRow(item){
+  let h=`<div class="row"><div class="rn">${item.id}</div><div><div class="rl">${item.l}</div>`;
+  item.g.forEach((gr,gi)=>{
+    const key=`${item.id}_${gi}`;
+    h+=`<div class="og">`;
+    if(gr.g) h+=`<span class="gl">${gr.g}</span>`;
+    h+=`<div class="pls">`;
+    gr.o.forEach(opt=>{
+      if(opt==='※自由記述'){
+        h+=`<input class="fi" style="width:160px;padding:5px 8px;font-size:13px" placeholder="自由記述" value="${vals[cur][key]||''}" oninput="setFree('${key}',this.value)">`;
+      } else {
+        const sel=vals[cur][key]===opt?'on':'';
+        h+=`<button class="p ${sel}" onclick="sel('${key}','${opt.replace(/'/g,"\\'")}',this)">${opt}</button>`;
+      }
+    });
+    h+=`</div></div>`;
+  });
+  h+=`</div></div>`;
+  return h;
+}
+
+// ═══ TRAITS RENDER ═══
+function renderTraits(){
+  const v=vals.traits;
+  const fpTests=['Countermovement Jump','Squat Jump','10 Hop Test','Plyometric PushUp','Isometric Test'];
+  const sensory=[
+    {id:1,l:'バランス',g:[{g:'',o:['ライオン','ウマ']},{g:'体幹',o:['クロス','パラレル']},{g:'前腕',o:['クロス','パラレル','インサイド','アウトサイド']}]},
+    {id:2,l:'リズム',g:[{g:'',o:['指先','基節骨','MP関節']},{g:'',o:['鎖骨','みぞおち','下腹','膝','足首']},{g:'',o:['上','下']}]},
+    {id:3,l:'姿勢',g:[{g:'',o:['上7','中5','下5']},{g:'',o:['S字','C字']},{g:'',o:['額','頭頂','後頭']}]},
+    {id:4,l:'体勢',g:[{g:'骨盤',o:['フロント','バック']},{g:'大腿骨',o:['外','内']},{g:'',o:['ベント','ストレッチ']},{g:'',o:['肩甲骨','胸','お腹','腰']}]},
+    {id:5,l:'連動',g:[{g:'肩甲骨',o:['ハンドル','ターン']},{g:'',o:['固定連動','四肢連動']},{g:'',o:['腕','脚','体幹']},{g:'',o:['上キネ','下キネ']}]},
+    {id:6,l:'出力づくり',g:[{g:'',o:['ユル','キツ','ストレッチ']},{g:'',o:['膝裏','アキレス腱']}]},
+    {id:7,l:'呼吸',g:[{g:'配分',o:['筋','骨','神経']},{g:'',o:['胸','腹']},{g:'',o:['吸い','吐き']}]},
+  ];
+
+  let h='';
+
+  // Science Approach
+  h+=`<div class="sec-hd">SCIENCE APPROACH — Force Plate Data</div>`;
+  fpTests.forEach((test,i)=>{
+    const kv=`fp_val_${i}`,kr=`fp_react_${i}`,ks=`fp_subj_${i}`;
+    h+=`<div class="traits-row">
+      <div class="tr-label">${test}</div>
+      <div class="tr-grid3">
+        <div><span class="tr-sub">数値</span><input class="tr-input" placeholder="数値" value="${v[kv]||''}" oninput="setT('${kv}',this.value)"></div>
+        <div><span class="tr-sub">Connecting Reaction</span><input class="tr-input" placeholder="反応" value="${v[kr]||''}" oninput="setT('${kr}',this.value)"></div>
+        <div><span class="tr-sub">主観 (1-5)</span>
+          <div class="rating-group">${[1,2,3,4,5].map(n=>`<button class="rating-btn ${v[ks]==n?'on':''}" onclick="setT('${ks}',${n});render()">${n}</button>`).join('')}</div>
+        </div>
+      </div>
+    </div>`;
+  });
+
+  // Sensory Approach
+  h+=`<div class="sec-hd">SENSORY APPROACH — Connecting Data</div>`;
+  sensory.forEach(item=>{
+    h+=`<div class="traits-row"><div class="tr-label">${item.id}. ${item.l}</div>`;
+    item.g.forEach((gr,gi)=>{
+      const key=`sen_${item.id}_${gi}`;
+      h+=`<div class="og" style="margin-bottom:6px">`;
+      if(gr.g) h+=`<span class="gl">${gr.g}</span>`;
+      h+=`<div class="pls">`;
+      gr.o.forEach(opt=>{
+        const sel=vals.traits[key]===opt?'on':'';
+        h+=`<button class="p ${sel}" onclick="selT('${key}','${opt.replace(/'/g,"\\'")}',this)">${opt}</button>`;
+      });
+      h+=`</div></div>`;
+    });
+    h+=`</div>`;
+  });
+
+  return h;
+}
+
+// ═══ INTERACTIONS ═══
+function sel(key,opt,el){
+  const v=vals[cur];
+  if(v[key]===opt){delete v[key];el.classList.remove('on');}
+  else{v[key]=opt;el.parentElement.querySelectorAll('.p').forEach(p=>p.classList.remove('on'));el.classList.add('on');}
+  updateProgress();
+}
+function selT(key,opt,el){
+  if(vals.traits[key]===opt) delete vals.traits[key];
+  else vals.traits[key]=opt;
+  render();
+}
+function setT(key,val){vals.traits[key]=val;}
+function setFree(key,val){vals[cur][key]=val;}
+
+// ═══ PROGRESS ═══
+function updateProgress(){
+  if(TABS[cur].type==='traits'){
+    const v=vals.traits;
+    const filled=Object.values(v).filter(x=>x!==null&&x!==undefined&&x!=='').length;
+    const total=5*3+7*3; // rough estimate
+    const pct=Math.min(100,Math.round((filled/total)*100));
+    document.getElementById('pvt').textContent=`${filled}項目入力済`;
+    document.getElementById('pvt').style.color=pct>=80?'var(--ok)':'var(--orange)';
+    document.getElementById('pfl').style.width=pct+'%';
+    return;
+  }
+  const items=TABS[cur].data;
+  let total=0;items.forEach(i=>{total+=i.g.length;});
+  const filled=Object.keys(vals[cur]).filter(k=>vals[cur][k]!==null&&vals[cur][k]!==undefined&&vals[cur][k]!=='').length;
+  const pct=Math.round((filled/total)*100);
+  const done=pct===100;
+  document.getElementById('pvt').textContent=`${filled}/${total} (${pct}%)`;
+  document.getElementById('pvt').style.color=done?'var(--ok)':'var(--orange)';
+  document.getElementById('pfl').style.width=pct+'%';
+  document.getElementById('pfl').style.background=done?'linear-gradient(90deg,#059669,#10B981)':'linear-gradient(90deg,var(--orange),#F59E0B)';
+}
+
+// ═══ ACTIONS ═══
+function clearAll(){
+  if(!confirm('入力内容をすべてクリアしますか？'))return;
+  vals[cur]={};render();
+}
+async function saveData(){
+  const name=document.getElementById('pN').value.trim();
+  const date=document.getElementById('pD').value;
+  if(!name){alert('選手名を入力してください');return;}
+  if(!date){alert('測定日を入力してください');return;}
+
+  const b=document.getElementById('svb');
+  b.textContent='保存中...';b.disabled=true;
+
+  const row={
+    player_name:name,
+    player_age:parseInt(document.getElementById('pA').value)||null,
+    player_team:document.getElementById('pT').value||null,
+    height_cm:parseFloat(document.getElementById('pH').value)||null,
+    weight_kg:parseFloat(document.getElementById('pW').value)||null,
+    assessment_date:date,
+    c_degree:document.getElementById('pC').value||null,
+    chart_type:cur,
+    template_version:TPL_VER,
+    values:vals[cur],
+    created_by:(await _sb.auth.getUser()).data.user?.id||null,
+  };
+
+  const{error}=await _sb.from('assessments').insert(row);
+
+  if(error){
+    alert('保存エラー: '+error.message);
+    b.textContent='保存する';b.disabled=false;
+    return;
+  }
+
+  // ローカル履歴にも追加
+  const rec={date,name,chart:cur.toUpperCase(),time:new Date().toLocaleString('ja-JP'),values:{...vals[cur]}};
+  hist.unshift(rec);
+  document.getElementById('hc').textContent=hist.length;
+  renderHist();
+
+  const t=document.getElementById('toast');t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000);
+  b.textContent='✓ 保存済み';b.classList.add('ok');b.disabled=false;
+  setTimeout(()=>{b.textContent='保存する';b.classList.remove('ok');},2500);
+}
+
+// ═══ AUTH ═══
+async function doLogin(){
+  const btn=document.getElementById('aBtn');
+  const err=document.getElementById('aErr');
+  btn.disabled=true;btn.textContent='ログイン中...';err.textContent='';
+  const email=document.getElementById('aE').value.trim();
+  const pw=document.getElementById('aP').value;
+  if(!email||!pw){err.textContent='メールとパスワードを入力してください';btn.disabled=false;btn.textContent='ログイン';return;}
+  const{error}=await _sb.auth.signInWithPassword({email,password:pw});
+  if(error){
+    err.textContent=error.message==='Invalid login credentials'?'メールまたはパスワードが違います':error.message;
+    btn.disabled=false;btn.textContent='ログイン';return;
+  }
+  document.getElementById('authWall').classList.add('gone');
+  btn.disabled=false;btn.textContent='ログイン';
+  render();
+}
+async function doLogout(){
+  if(!confirm('ログアウトしますか？'))return;
+  await _sb.auth.signOut();
+  document.getElementById('authWall').classList.remove('gone');
+}
+
+// ═══ PASSWORD CHANGE ═══
+async function doPwChange(){
+  const btn=document.getElementById('pwBtn');
+  const msg=document.getElementById('pwMsg');
+  const pw1=document.getElementById('pwNew').value;
+  const pw2=document.getElementById('pwConf').value;
+  msg.textContent='';msg.style.color='#B91C1C';
+
+  if(!pw1||pw1.length<8){msg.textContent='8文字以上で入力してください';return;}
+  if(pw1!==pw2){msg.textContent='パスワードが一致しません';return;}
+
+  btn.disabled=true;btn.textContent='変更中...';
+  const{error}=await _sb.auth.updateUser({password:pw1});
+
+  if(error){
+    msg.textContent='エラー: '+error.message;
+    btn.disabled=false;btn.textContent='変更する';return;
+  }
+
+  msg.style.color='var(--ok)';msg.textContent='✓ パスワードを変更しました';
+  btn.disabled=false;btn.textContent='変更する';
+  document.getElementById('pwNew').value='';
+  document.getElementById('pwConf').value='';
+  setTimeout(()=>{document.getElementById('pwMo').classList.remove('on');msg.textContent='';},1500);
+}
+
+// ═══ SEARCH ═══
+function toggleSearch(){
+  document.getElementById('searchP').classList.toggle('open');
+  document.getElementById('hp').classList.remove('open');
+}
+async function doSearch(){
+  const el=document.getElementById('sRes');
+  el.innerHTML='<div class="sr0">検索中...</div>';
+  let q=_sb.from('assessments').select('*').order('assessment_date',{ascending:false}).limit(50);
+  const name=document.getElementById('sQ').value.trim();
+  if(name) q=q.ilike('player_name','%'+name+'%');
+  const from=document.getElementById('sFrom').value;
+  const to=document.getElementById('sTo').value;
+  if(from) q=q.gte('assessment_date',from);
+  if(to) q=q.lte('assessment_date',to);
+  const tab=document.getElementById('sTab').value;
+  if(tab) q=q.eq('chart_type',tab);
+
+  const{data,error}=await q;
+  if(error){el.innerHTML='<div class="sr0">エラー: '+error.message+'</div>';return;}
+  if(!data||!data.length){el.innerHTML='<div class="sr0">該当データなし</div>';return;}
+
+  el.innerHTML=data.map(r=>`<div class="sri" onclick='showDetail(${JSON.stringify(r).replace(/'/g,"&#39;")})'>
+    <b>${r.player_name}</b>
+    <small>${(r.chart_type||'').toUpperCase()} | ${r.assessment_date} | ${r.player_team||''}</small>
+  </div>`).join('');
+}
+
+// ═══ DETAIL VIEW ═══
+function showDetail(r){
+  document.getElementById('detTitle').textContent=r.player_name+' — '+(r.chart_type||'').toUpperCase()+' ('+r.assessment_date+')';
+  let h='<table class="dtbl"><tr><th>選手名</th><td>'+r.player_name+'</td></tr>';
+  h+='<tr><th>年齢</th><td>'+(r.player_age||'—')+'</td></tr>';
+  h+='<tr><th>チーム</th><td>'+(r.player_team||'—')+'</td></tr>';
+  h+='<tr><th>身長</th><td>'+(r.height_cm?r.height_cm+'cm':'—')+'</td></tr>';
+  h+='<tr><th>体重</th><td>'+(r.weight_kg?r.weight_kg+'kg':'—')+'</td></tr>';
+  h+='<tr><th>C度</th><td>'+(r.c_degree||'—')+'</td></tr>';
+  h+='<tr><th>チャート</th><td>'+(r.chart_type||'').toUpperCase()+'</td></tr>';
+  h+='<tr><th>測定日</th><td>'+r.assessment_date+'</td></tr></table>';
+
+  // Show values
+  const v=r.values||{};
+  const keys=Object.keys(v);
+  if(keys.length){
+    h+='<div style="margin-top:12px;font-weight:700;color:var(--navy);font-size:14px">入力データ ('+keys.length+'項目)</div>';
+    h+='<table class="dtbl" style="margin-top:4px"><tr><th>項目</th><th>値</th></tr>';
+    keys.forEach(k=>{h+='<tr><td>'+k+'</td><td>'+v[k]+'</td></tr>';});
+    h+='</table>';
+  }
+  document.getElementById('detBody').innerHTML=h;
+  document.getElementById('detMo').classList.add('on');
+}
+function exportJSON(){
+  const data={
+    playerName:document.getElementById('pN').value,
+    playerAge:document.getElementById('pA').value,
+    playerTeam:document.getElementById('pT').value,
+    height:document.getElementById('pH').value,
+    weight:document.getElementById('pW').value,
+    assessmentDate:document.getElementById('pD').value,
+    cDegree:document.getElementById('pC').value,
+    allCharts:vals,
+    exportedAt:new Date().toISOString(),
+  };
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;
+  a.download=`${data.playerName||'assessment'}_${document.getElementById('pD').value}.json`;
+  a.click();URL.revokeObjectURL(url);
+}
+function toggleHistory(){document.getElementById('hp').classList.toggle('open');}
+function renderHist(){
+  const el=document.getElementById('hl');
+  if(!hist.length){el.innerHTML='<div class="he">まだ保存データはありません</div>';return;}
+  el.innerHTML=hist.map(h=>`<div class="hi"><span class="hn">${h.name}</span><span class="hm">${h.chart} | ${h.date} | ${h.time}</span></div>`).join('');
+}
+</script>
+</body>
+</html>
