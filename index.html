@@ -4,18 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>SPONOBA Assessment System</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-// ═══════════════════════════════════════════════════
-// ★ ここにSupabaseの情報を貼る（2箇所だけ）★
-// ═══════════════════════════════════════════════════
-const SUPABASE_URL = 'https://cfwevkbfkkeehvlzdwbd.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd2V2a2Jma2tlZWh2bHpkd2JkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1NjQxMzUsImV4cCI6MjA4ODE0MDEzNX0.szx_qnr7hP1BtQb-VZX7g4Q0JpN-ziUv-H_ECQvHuh4';
-const TPL_VER = '2.0';
-// ═══════════════════════════════════════════════════
-const _sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-let _editId = null; // 編集中のレコードID（nullなら新規）
-</script>
+<script>let _sb,_editId=null;const TPL_VER='2.0';</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700;800&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -425,6 +415,11 @@ let hist=[];
 
 // ═══ INIT ═══
 document.addEventListener('DOMContentLoaded',async()=>{
+  // Initialize Supabase client
+  _sb = window.supabase.createClient(
+    'https://cfwevkbfkkeehvlzdwbd.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd2V2a2Jma2tlZWh2bHpkd2JkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1NjQxMzUsImV4cCI6MjA4ODE0MDEzNX0.szx_qnr7hP1BtQb-VZX7g4Q0JpN-ziUv-H_ECQvHuh4'
+  );
   document.getElementById('pD').value=new Date().toISOString().split('T')[0];
   // Check existing session
   const{data:{session}}=await _sb.auth.getSession();
@@ -825,21 +820,30 @@ async function exportCSV(){
   a.click();URL.revokeObjectURL(url);
 }
 function exportJSON(){
-  const data={
-    playerName:document.getElementById('pN').value,
-    playerAge:document.getElementById('pA').value,
-    playerTeam:document.getElementById('pT').value,
-    height:document.getElementById('pH').value,
-    weight:document.getElementById('pW').value,
-    assessmentDate:document.getElementById('pD').value,
-    cDegree:document.getElementById('pC').value,
-    allCharts:vals,
-    exportedAt:new Date().toISOString(),
-  };
-  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const name=document.getElementById('pN').value||'assessment';
+  const date=document.getElementById('pD').value||'nodate';
+  const v=vals[cur]||{};
+  const vKeys=Object.keys(v).sort();
+
+  const headers=['選手名','年齢','チーム','身長cm','体重kg','測定日','C度','チャート',...vKeys];
+  const row=[
+    '"'+(document.getElementById('pN').value||'').replace(/"/g,'""')+'"',
+    document.getElementById('pA').value||'',
+    '"'+(document.getElementById('pT').value||'').replace(/"/g,'""')+'"',
+    document.getElementById('pH').value||'',
+    document.getElementById('pW').value||'',
+    date,
+    '"'+(document.getElementById('pC').value||'')+'"',
+    cur.toUpperCase(),
+    ...vKeys.map(k=>'"'+String(v[k]).replace(/"/g,'""')+'"')
+  ];
+
+  const bom='\uFEFF';
+  const csv=bom+headers.join(',')+'\n'+row.join(',');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a');a.href=url;
-  a.download=`${data.playerName||'assessment'}_${document.getElementById('pD').value}.json`;
+  a.download=name+'_'+cur.toUpperCase()+'_'+date+'.csv';
   a.click();URL.revokeObjectURL(url);
 }
 function toggleHistory(){document.getElementById('hp').classList.toggle('open');}
