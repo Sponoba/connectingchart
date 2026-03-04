@@ -174,6 +174,7 @@ body{font-family:'Noto Sans JP',-apple-system,BlinkMacSystemFont,sans-serif;back
     <div><div class="logo-s">ASSESSMENT SYSTEM</div></div>
     <div class="hd-r">
       <button class="hb" onclick="toggleSearch()">🔍 検索</button>
+      <button class="hb" onclick="exportAll()" style="background:var(--orange)">📥 全員出力</button>
       <button class="hb" onclick="toggleHistory()">履歴 <span id="hc">0</span></button>
       <button class="hb" onclick="document.getElementById('pwMo').classList.add('on')" style="opacity:.7">🔑</button>
       <button class="hb" onclick="doLogout()" style="opacity:.7">⏏</button>
@@ -897,6 +898,99 @@ function exportJSON(){
   a.download=name+'_ALL_'+date+'.csv';
   a.click();URL.revokeObjectURL(url);
 }
+// ═══ EXPORT ALL MEMBERS ═══
+async function exportAll(){
+  if(!confirm('全会員の全データをCSV出力します。よろしいですか？'))return;
+
+  // Fetch all records
+  const{data,error}=await _sb.from('assessments').select('*').order('player_name').order('assessment_date',{ascending:false}).limit(5000);
+  if(error){alert('エラー: '+error.message);return;}
+  if(!data||!data.length){alert('データがありません');return;}
+
+  // Build column definitions (same as single export)
+  const allCols=[];
+  const chartDefs=[
+    {name:'CONNECT',data:D_CON},
+    {name:'KINNETIC',data:D_KIN},
+    {name:'OPERATION',data:D_OPE},
+    {name:'SIGNAL',data:D_SIG}
+  ];
+  chartDefs.forEach(cd=>{
+    cd.data.forEach(item=>{
+      item.g.forEach((gr,gi)=>{
+        const key=`${item.id}_${gi}`;
+        const grLabel=gr.g?` ${gr.g}`:'';
+        const header=`${cd.name}: ${item.id}.${item.l}${grLabel}`;
+        allCols.push({key,header,getVal:r=>{
+          if((r.chart_type||'')!==cd.name.toLowerCase()) return '';
+          const v=(r.values||{})[key];
+          return v!==undefined&&v!==null&&v!==''?String(v):'';
+        }});
+      });
+    });
+  });
+
+  const fpTests=['Countermovement Jump','Squat Jump','10 Hop Test','Plyometric PushUp','Isometric Test'];
+  fpTests.forEach((test,i)=>{
+    [{k:`fp_val_${i}`,s:'数値'},{k:`fp_react_${i}`,s:'Reaction'},{k:`fp_subj_${i}`,s:'主観'}].forEach(f=>{
+      allCols.push({key:f.k,header:`TRAITS: ${test} ${f.s}`,getVal:r=>{
+        if((r.chart_type||'')!=='traits') return '';
+        const v=(r.values||{})[f.k];
+        return v!==undefined&&v!==null&&v!==''?String(v):'';
+      }});
+    });
+  });
+
+  const senDef=[
+    {id:1,l:'バランス',g:['型','体幹','前腕']},
+    {id:2,l:'リズム',g:['指先系','部位','上下']},
+    {id:3,l:'姿勢',g:['脊柱','字型','頭部']},
+    {id:4,l:'体勢',g:['骨盤','大腿骨','屈伸','部位']},
+    {id:5,l:'連動',g:['肩甲骨','連動型','主体','キネ']},
+    {id:6,l:'出力づくり',g:['強度','部位']},
+    {id:7,l:'呼吸',g:['配分','部位','方向']}
+  ];
+  senDef.forEach(item=>{
+    item.g.forEach((gn,gi)=>{
+      const key=`sen_${item.id}_${gi}`;
+      allCols.push({key,header:`TRAITS: ${item.id}.${item.l} ${gn}`,getVal:r=>{
+        if((r.chart_type||'')!=='traits') return '';
+        const v=(r.values||{})[key];
+        return v!==undefined&&v!==null&&v!==''?String(v):'';
+      }});
+    });
+  });
+
+  // Build CSV
+  const headers=['選手名','年齢','チーム','身長cm','体重kg','測定日','C度','チャート',...allCols.map(c=>c.header)];
+  const esc=s=>'"'+(s||'').toString().replace(/"/g,'""')+'"';
+  const rows=[headers.map(h=>esc(h)).join(',')];
+
+  data.forEach(r=>{
+    const base=[
+      esc(r.player_name),
+      r.player_age||'',
+      esc(r.player_team),
+      r.height_cm||'',
+      r.weight_kg||'',
+      r.assessment_date||'',
+      esc(r.c_degree),
+      (r.chart_type||'').toUpperCase()
+    ];
+    const valCols=allCols.map(c=>esc(c.getVal(r)));
+    rows.push([...base,...valCols].join(','));
+  });
+
+  const bom='\uFEFF';
+  const blob=new Blob([bom+rows.join('\n')],{type:'text/csv;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;
+  const d=new Date().toISOString().slice(0,10);
+  a.download='SPONOBA_全会員_'+d+'.csv';
+  a.click();URL.revokeObjectURL(url);
+  alert('✓ '+data.length+'件のデータを出力しました');
+}
+
 function toggleHistory(){document.getElementById('hp').classList.toggle('open');}
 function renderHist(){
   const el=document.getElementById('hl');
