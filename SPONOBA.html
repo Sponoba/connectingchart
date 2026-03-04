@@ -450,7 +450,8 @@ document.addEventListener('DOMContentLoaded',async()=>{
   document.getElementById('pD').value=new Date().toISOString().split('T')[0];
   // ログインスキップ（社内専用）
   document.getElementById('authWall').classList.add('gone');
-  render();
+  // Ensure initial tab fully renders (including left diagram)
+  sw(cur);
 });
 
 // ═══ TAB SWITCH ═══
