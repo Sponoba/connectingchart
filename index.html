@@ -471,97 +471,427 @@ function sw(tab){
 
 
 // ═══ SVG BODY DIAGRAM ═══
-const BODY_SVG = `
-<svg viewBox="0 0 300 560" xmlns="http://www.w3.org/2000/svg">
-  <!-- Body outline -->
-  <g fill="none" stroke="#CBD5E1" stroke-width="1.5" stroke-linejoin="round">
-    <!-- Head -->
-    <ellipse cx="150" cy="36" rx="24" ry="30" fill="#F1F5F9"/>
-    <!-- Neck -->
-    <rect x="141" y="66" width="18" height="16" rx="4" fill="#F1F5F9"/>
-    <!-- Torso -->
-    <path d="M108,82 L192,82 L200,100 L204,140 L202,180 L198,220 L190,248 L170,258 L150,262 L130,258 L110,248 L102,220 L98,180 L96,140 L100,100 Z" fill="#F1F5F9"/>
-    <!-- Left arm -->
-    <path d="M108,82 C95,90 82,110 74,135 L62,175 L52,215 L46,248 L42,272" stroke-width="1.5"/>
-    <ellipse cx="108" cy="86" rx="4" ry="6" fill="#F1F5F9"/>
-    <!-- Right arm -->
-    <path d="M192,82 C205,90 218,110 226,135 L238,175 L248,215 L254,248 L258,272" stroke-width="1.5"/>
-    <ellipse cx="192" cy="86" rx="4" ry="6" fill="#F1F5F9"/>
-    <!-- Left hand -->
-    <ellipse cx="40" cy="280" rx="10" ry="14" fill="#F1F5F9"/>
-    <!-- Right hand -->
-    <ellipse cx="260" cy="280" rx="10" ry="14" fill="#F1F5F9"/>
-    <!-- Pelvis area -->
-    <path d="M118,248 L182,248 L178,272 L168,288 L150,292 L132,288 L122,272 Z" fill="#F1F5F9"/>
-    <!-- Left leg -->
-    <path d="M130,288 C126,310 122,340 120,370 L118,410 L116,450 L115,490 L114,520" stroke-width="1.5"/>
-    <path d="M138,288 C134,310 130,340 128,370 L126,410 L124,450 L123,490 L122,520" stroke-width="1.5"/>
-    <!-- Right leg -->
-    <path d="M162,288 C166,310 170,340 172,370 L174,410 L176,450 L177,490 L178,520" stroke-width="1.5"/>
-    <path d="M170,288 C174,310 178,340 180,370 L182,410 L184,450 L185,490 L186,520" stroke-width="1.5"/>
-    <!-- Left foot -->
-    <ellipse cx="118" cy="532" rx="12" ry="10" fill="#F1F5F9"/>
-    <!-- Right foot -->
-    <ellipse cx="182" cy="532" rx="12" ry="10" fill="#F1F5F9"/>
-    <!-- Center line (light) -->
-    <line x1="150" y1="66" x2="150" y2="262" stroke="#E2E8F0" stroke-width="0.5" stroke-dasharray="3,3"/>
-    <!-- Clavicle line -->
-    <line x1="108" y1="90" x2="192" y2="90" stroke="#E2E8F0" stroke-width="0.5"/>
-    <!-- Hip line -->
-    <line x1="118" y1="252" x2="182" y2="252" stroke="#E2E8F0" stroke-width="0.5"/>
-  </g>
-</svg>`;
+const SVG_BODIES = {
+  connect: `<svg viewBox="0 0 320 520" xmlns="http://www.w3.org/2000/svg" style="font-family:'Noto Sans JP',sans-serif">
+  <style>
+    .jt{fill:none;stroke:#152C53;stroke-width:2}
+    .jf{fill:#152C53}
+    .bn{stroke:#152C53;stroke-width:2;fill:none}
+    .tx{font-size:8px;fill:#152C53;font-weight:600}
+    .txs{font-size:6.5px;fill:#6B7280}
+    .det{stroke:#152C53;stroke-width:1;fill:none}
+    .detf{fill:#F1F5F9;stroke:#152C53;stroke-width:1}
+  </style>
 
-// Point positions for each chart: {id, x, y, label}
-const SVG_POINTS = {
-  connect: [
-    {id:1,x:74,y:175,l:'肘'},{id:2,x:200,y:110,l:'肩上腕'},{id:3,x:150,y:90,l:'肩鎖骨'},
-    {id:4,x:62,y:200,l:'前腕'},{id:5,x:52,y:235,l:'手首'},{id:6,x:248,y:235,l:'手首屈伸'},
-    {id:7,x:226,y:150,l:'腕'},{id:8,x:150,y:130,l:'腕組み'},{id:9,x:40,y:280,l:'手親指'},
-    {id:10,x:150,y:252,l:'骨盤'},{id:11,x:170,y:262,l:'骨盤左右'},{id:12,x:130,y:268,l:'股関節'},
-    {id:13,x:172,y:310,l:'大腿骨'},{id:14,x:124,y:440,l:'下腿'},{id:15,x:176,y:380,l:'脚膝'},
-    {id:16,x:150,y:290,l:'足向き'},{id:17,x:118,y:535,l:'足指'},{id:18,x:128,y:300,l:'股関節脚上'},
-    {id:19,x:170,y:340,l:'股関節脚下'},{id:20,x:130,y:170,l:'肋骨'},{id:21,x:170,y:170,l:'肋骨左右'},
-    {id:22,x:120,y:130,l:'肩甲骨肋骨'},{id:23,x:180,y:90,l:'鎖骨'},{id:24,x:80,y:150,l:'遠心求心'},
-    {id:25,x:110,y:115,l:'肩甲骨SL'},{id:26,x:190,y:190,l:'肩甲骨骨盤'},{id:27,x:230,y:160,l:'腕方向'},
-    {id:28,x:75,y:120,l:'腕高さ'},{id:29,x:238,y:190,l:'腕ハマり'},{id:30,x:150,y:22,l:'頭'},
-    {id:31,x:138,y:30,l:'目'},{id:32,x:162,y:28,l:'眉毛'},{id:33,x:150,y:48,l:'口'},
-    {id:34,x:260,y:280,l:'数'}
-  ],
-  kinnetic: [
-    {id:1,x:40,y:275,l:'手'},{id:2,x:260,y:275,l:'指'},{id:3,x:52,y:240,l:'手首'},
-    {id:4,x:248,y:240,l:'手首回転'},{id:5,x:80,y:148,l:'腕'},{id:6,x:220,y:148,l:'腕前後'},
-    {id:7,x:95,y:120,l:'上腕'},{id:8,x:205,y:120,l:'手首腕肩'},{id:9,x:110,y:105,l:'脇'},
-    {id:10,x:150,y:155,l:'腕LS'},{id:11,x:190,y:105,l:'腕回し'},{id:12,x:150,y:130,l:'腕肩甲体幹'},
-    {id:13,x:230,y:170,l:'弾き'},{id:14,x:176,y:400,l:'膝裏'},{id:15,x:125,y:360,l:'脚'},
-    {id:16,x:175,y:360,l:'脚LS'},{id:17,x:150,y:180,l:'体幹'},{id:18,x:150,y:200,l:'体幹ライン'},
-    {id:19,x:120,y:140,l:'肩甲骨連動'},{id:20,x:150,y:252,l:'骨盤'},{id:21,x:170,y:260,l:'骨盤腸坐'},
-    {id:22,x:130,y:270,l:'股関節骨盤'},{id:23,x:168,y:300,l:'股関節'},{id:24,x:125,y:390,l:'膝角度'},
-    {id:25,x:178,y:440,l:'下腿'},{id:26,x:122,y:440,l:'下腿IO'},{id:27,x:180,y:500,l:'足ハマり'},
-    {id:28,x:120,y:500,l:'足エッジ'},{id:29,x:182,y:530,l:'足方向'},{id:30,x:150,y:220,l:'腸サイクル'},
-    {id:31,x:132,y:290,l:'脱脚連動'},{id:32,x:170,y:290,l:'保持'},{id:33,x:150,y:95,l:'肩'},
-    {id:34,x:150,y:240,l:'ベース'}
-  ],
-  operation: [
-    {id:1,x:150,y:160,l:'四肢連動'},{id:2,x:150,y:190,l:'センター芯'},{id:3,x:150,y:210,l:'背骨'},
-    {id:4,x:220,y:130,l:'セット'},{id:5,x:80,y:130,l:'リズム'},{id:6,x:130,y:280,l:'脱脚連動'},
-    {id:7,x:170,y:140,l:'腕体幹連動'},{id:8,x:42,y:270,l:'重心感覚'},{id:9,x:150,y:260,l:'スタンス'},
-    {id:10,x:150,y:310,l:'ステップ'},{id:11,x:150,y:290,l:'チェーン'},{id:12,x:75,y:170,l:'ネジスト'},
-    {id:13,x:225,y:170,l:'身体ねじり'},{id:14,x:260,y:270,l:'フィンガー'},{id:15,x:150,y:170,l:'4BOX'},
-    {id:16,x:150,y:340,l:'ジャンプ'},{id:17,x:150,y:240,l:'SET ONE'},{id:18,x:170,y:250,l:'BOOSTER'},
-    {id:19,x:100,y:220,l:'コンディ'},{id:20,x:200,y:100,l:'マエケン'},{id:21,x:150,y:36,l:'視覚'},
-    {id:22,x:150,y:55,l:'患者'}
-  ],
-  signal: [
-    {id:1,x:150,y:20,l:'頭点'},{id:2,x:165,y:36,l:'顔点'},{id:3,x:62,y:200,l:'前腕'},
-    {id:4,x:90,y:140,l:'上腕'},{id:5,x:170,y:330,l:'大腿'},{id:6,x:178,y:440,l:'下腿'},
-    {id:7,x:210,y:130,l:'肩肘連動'},{id:8,x:125,y:370,l:'軸足POS'},{id:9,x:118,y:530,l:'タップFW'},
-    {id:10,x:75,y:160,l:'腕リズム'},{id:11,x:150,y:258,l:'骨盤'},{id:12,x:150,y:180,l:'体幹要'},
-    {id:13,x:150,y:200,l:'脊柱'},{id:14,x:150,y:150,l:'主体'},{id:15,x:130,y:240,l:'コア4'},
-    {id:16,x:150,y:225,l:'お腹'},{id:17,x:225,y:160,l:'刺激の質'},{id:18,x:150,y:130,l:'呼吸'},
-    {id:19,x:200,y:200,l:'配分'},{id:20,x:238,y:200,l:'筋骨神'},{id:21,x:100,y:200,l:'加減速'},
-    {id:22,x:150,y:290,l:'方向'}
-  ]
+  <!-- Head -->
+  <circle cx="160" cy="52" r="22" class="jt"/>
+  <!-- Eyes -->
+  <circle cx="152" cy="48" r="2" class="jf"/>
+  <circle cx="168" cy="48" r="2" class="jf"/>
+
+  <!-- Neck -->
+  <line x1="160" y1="74" x2="160" y2="90" class="bn"/>
+
+  <!-- Shoulders -->
+  <line x1="108" y1="100" x2="212" y2="100" class="bn"/>
+  <circle cx="108" cy="100" r="5" class="jf"/>
+  <circle cx="212" cy="100" r="5" class="jf"/>
+
+  <!-- Torso center line -->
+  <line x1="160" y1="90" x2="160" y2="250" class="bn"/>
+  <!-- Clavicle -->
+  <circle cx="160" cy="90" r="3" class="jf"/>
+
+  <!-- Ribs hint -->
+  <ellipse cx="160" cy="160" rx="40" ry="55" class="jt" stroke-dasharray="3,3" opacity="0.3"/>
+
+  <!-- Left arm -->
+  <line x1="108" y1="100" x2="78" y2="175" class="bn"/>
+  <circle cx="78" cy="175" r="5" class="jf"/>
+  <line x1="78" y1="175" x2="55" y2="255" class="bn"/>
+  <circle cx="55" cy="255" r="5" class="jf"/>
+  <!-- Left hand -->
+  <circle cx="48" cy="280" r="8" class="jt"/>
+
+  <!-- Right arm -->
+  <line x1="212" y1="100" x2="242" y2="175" class="bn"/>
+  <circle cx="242" cy="175" r="5" class="jf"/>
+  <line x1="242" y1="175" x2="265" y2="255" class="bn"/>
+  <circle cx="265" cy="255" r="5" class="jf"/>
+  <!-- Right hand -->
+  <circle cx="272" cy="280" r="8" class="jt"/>
+
+  <!-- Pelvis -->
+  <line x1="130" y1="250" x2="190" y2="250" class="bn"/>
+  <circle cx="160" cy="250" r="3" class="jf"/>
+  <circle cx="130" cy="250" r="5" class="jf"/>
+  <circle cx="190" cy="250" r="5" class="jf"/>
+
+  <!-- Left leg -->
+  <line x1="130" y1="250" x2="120" y2="350" class="bn"/>
+  <circle cx="120" cy="350" r="5" class="jf"/>
+  <line x1="120" y1="350" x2="115" y2="450" class="bn"/>
+  <circle cx="115" cy="450" r="5" class="jf"/>
+  <!-- Left foot -->
+  <path d="M105,455 L100,480 Q112,490 125,480 L120,455" class="jt"/>
+
+  <!-- Right leg -->
+  <line x1="190" y1="250" x2="200" y2="350" class="bn"/>
+  <circle cx="200" cy="350" r="5" class="jf"/>
+  <line x1="200" y1="350" x2="205" y2="450" class="bn"/>
+  <circle cx="205" cy="450" r="5" class="jf"/>
+  <!-- Right foot -->
+  <path d="M195,455 L190,480 Q202,490 215,480 L210,455" class="jt"/>
+
+  <!-- ═══ DETAIL: 肘 (Elbow) ═══ -->
+  <g transform="translate(8,130)">
+    <text x="0" y="0" class="tx">肘</text>
+    <line x1="5" y1="8" x2="5" y2="55" class="det"/>
+    <text x="12" y="16" class="txs">近</text>
+    <circle cx="5" cy="18" r="2" class="jf"/>
+    <text x="12" y="33" class="txs">中</text>
+    <circle cx="5" cy="35" r="2" class="jf"/>
+    <text x="12" y="50" class="txs">遠</text>
+    <circle cx="5" cy="52" r="2" class="jf"/>
+  </g>
+
+  <!-- ═══ DETAIL: 腕の高さ (Arm height) ═══ -->
+  <g transform="translate(5,210)">
+    <text x="0" y="0" class="tx">腕の高さ</text>
+    <text x="8" y="15" class="txs">4</text>
+    <text x="18" y="25" class="txs">3</text>
+    <text x="22" y="38" class="txs">2</text>
+    <text x="18" y="50" class="txs">1</text>
+    <path d="M5,10 Q25,30 5,55" class="det"/>
+  </g>
+
+  <!-- ═══ DETAIL: 肩甲骨スライド ═══ -->
+  <g transform="translate(230,115)">
+    <text x="0" y="0" class="tx">肩甲骨SL</text>
+    <g transform="translate(5,8)">
+      <rect x="0" y="0" width="30" height="30" rx="2" class="detf"/>
+      <text x="4" y="10" class="txs">1</text>
+      <text x="20" y="10" class="txs">2</text>
+      <text x="4" y="25" class="txs">3</text>
+      <text x="20" y="25" class="txs">4</text>
+      <line x1="15" y1="0" x2="15" y2="30" class="det"/>
+      <line x1="0" y1="15" x2="30" y2="15" class="det"/>
+    </g>
+  </g>
+
+  <!-- ═══ DETAIL: 股関節ライン ═══ -->
+  <g transform="translate(210,225)">
+    <text x="0" y="0" class="tx">股関節</text>
+    <g transform="translate(0,8)">
+      <line x1="5" y1="0" x2="5" y2="35" class="det"/>
+      <line x1="0" y1="5" x2="10" y2="5" class="det"/>
+      <text x="14" y="9" class="txs">外</text>
+      <line x1="0" y1="17" x2="10" y2="17" class="det"/>
+      <text x="14" y="21" class="txs">中</text>
+      <line x1="0" y1="29" x2="10" y2="29" class="det"/>
+      <text x="14" y="33" class="txs">内</text>
+    </g>
+  </g>
+
+  <!-- ═══ DETAIL: 顔 ═══ -->
+  <g transform="translate(60,25)">
+    <text x="0" y="0" class="txs">目の向き</text>
+    <text x="0" y="10" class="txs">顔の向き</text>
+  </g>
+
+  <!-- Number labels on body -->
+  <text x="75" y="170" class="txs">1</text>
+  <text x="195" y="98" class="txs">2</text>
+  <text x="160" y="87" class="txs">3</text>
+  <text x="60" y="220" class="txs">4,5,6</text>
+  <text x="215" y="100" class="txs">7</text>
+  <text x="152" y="115" class="txs">8</text>
+  <text x="40" y="277" class="txs">9</text>
+  <text x="160" y="245" class="txs">10,11</text>
+  <text x="125" y="260" class="txs">12</text>
+  <text x="195" y="310" class="txs">13</text>
+  <text x="108" y="395" class="txs">14</text>
+  <text x="205" y="350" class="txs">15</text>
+  <text x="160" y="270" class="txs">16</text>
+  <text x="100" y="475" class="txs">17</text>
+  <text x="135" y="295" class="txs">18,19</text>
+  <text x="140" y="155" class="txs">20,21</text>
+  <text x="130" y="130" class="txs">22</text>
+  <text x="185" y="87" class="txs">23</text>
+  <text x="260" y="173" class="txs">24</text>
+  <text x="148" y="45" class="txs">30-34</text>
+</svg>`,
+  kinnetic: `<svg viewBox="0 0 320 520" xmlns="http://www.w3.org/2000/svg" style="font-family:'Noto Sans JP',sans-serif">
+  <style>
+    .jt{fill:none;stroke:#152C53;stroke-width:2}
+    .jf{fill:#152C53}
+    .bn{stroke:#152C53;stroke-width:2;fill:none}
+    .tx{font-size:8px;fill:#152C53;font-weight:600}
+    .txs{font-size:6.5px;fill:#6B7280}
+    .det{stroke:#152C53;stroke-width:1;fill:none}
+    .detf{fill:#F1F5F9;stroke:#152C53;stroke-width:1}
+  </style>
+
+  <!-- Head -->
+  <circle cx="160" cy="52" r="22" class="jt"/>
+  <circle cx="152" cy="48" r="2" class="jf"/>
+  <circle cx="168" cy="48" r="2" class="jf"/>
+
+  <!-- Neck -->
+  <line x1="160" y1="74" x2="160" y2="90" class="bn"/>
+
+  <!-- Shoulders -->
+  <line x1="105" y1="100" x2="215" y2="100" class="bn"/>
+  <circle cx="105" cy="100" r="5" class="jf"/>
+  <circle cx="215" cy="100" r="5" class="jf"/>
+
+  <!-- Torso -->
+  <line x1="160" y1="90" x2="160" y2="252" class="bn"/>
+  <circle cx="160" cy="90" r="3" class="jf"/>
+
+  <!-- Left arm (slightly forward) -->
+  <line x1="105" y1="100" x2="80" y2="170" class="bn"/>
+  <circle cx="80" cy="170" r="5" class="jf"/>
+  <line x1="80" y1="170" x2="60" y2="245" class="bn"/>
+  <circle cx="60" cy="245" r="5" class="jf"/>
+  <circle cx="52" cy="272" r="8" class="jt"/>
+
+  <!-- Right arm -->
+  <line x1="215" y1="100" x2="240" y2="170" class="bn"/>
+  <circle cx="240" cy="170" r="5" class="jf"/>
+  <line x1="240" y1="170" x2="260" y2="245" class="bn"/>
+  <circle cx="260" cy="245" r="5" class="jf"/>
+  <circle cx="268" cy="272" r="8" class="jt"/>
+
+  <!-- Pelvis -->
+  <line x1="130" y1="252" x2="190" y2="252" class="bn"/>
+  <circle cx="160" cy="252" r="3" class="jf"/>
+  <circle cx="130" cy="252" r="5" class="jf"/>
+  <circle cx="190" cy="252" r="5" class="jf"/>
+
+  <!-- Left leg -->
+  <line x1="130" y1="252" x2="122" y2="352" class="bn"/>
+  <circle cx="122" cy="352" r="5" class="jf"/>
+  <line x1="122" y1="352" x2="118" y2="440" class="bn"/>
+  <circle cx="118" cy="440" r="5" class="jf"/>
+  <path d="M108,445 L103,470 Q115,480 128,470 L123,445" class="jt"/>
+
+  <!-- Right leg -->
+  <line x1="190" y1="252" x2="198" y2="352" class="bn"/>
+  <circle cx="198" cy="352" r="5" class="jf"/>
+  <line x1="198" y1="352" x2="202" y2="440" class="bn"/>
+  <circle cx="202" cy="440" r="5" class="jf"/>
+  <path d="M192,445 L187,470 Q199,480 212,470 L207,445" class="jt"/>
+
+  <!-- ═══ DETAIL: 足裏ライン ═══ -->
+  <g transform="translate(65,465)">
+    <text x="0" y="0" class="tx">足裏ライン</text>
+    <g transform="translate(0,8)">
+      <path d="M5,0 Q0,15 5,30 Q15,38 25,30 Q30,15 25,0 Z" class="detf"/>
+      <line x1="15" y1="0" x2="15" y2="30" class="det" stroke-dasharray="2,2"/>
+      <circle cx="10" cy="10" r="2" fill="#152C53" opacity="0.3"/>
+      <circle cx="20" cy="10" r="2" fill="#152C53" opacity="0.3"/>
+      <circle cx="15" cy="22" r="3" fill="#152C53" opacity="0.3"/>
+    </g>
+  </g>
+
+  <!-- Number labels -->
+  <text x="44" y="268" class="txs">1,2</text>
+  <text x="56" y="240" class="txs">3,4</text>
+  <text x="75" y="165" class="txs">5,6</text>
+  <text x="90" y="130" class="txs">7</text>
+  <text x="220" y="130" class="txs">8</text>
+  <text x="108" y="108" class="txs">9</text>
+  <text x="155" y="148" class="txs">10,11</text>
+  <text x="150" y="125" class="txs">12,13</text>
+  <text x="203" y="355" class="txs">14</text>
+  <text x="115" y="315" class="txs">15,16</text>
+  <text x="155" y="175" class="txs">17,18</text>
+  <text x="120" y="140" class="txs">19</text>
+  <text x="155" y="248" class="txs">20,21</text>
+  <text x="125" y="268" class="txs">22,23</text>
+  <text x="115" y="395" class="txs">24</text>
+  <text x="205" y="440" class="txs">25,26</text>
+  <text x="195" y="470" class="txs">27-29</text>
+  <text x="155" y="220" class="txs">30</text>
+  <text x="138" y="285" class="txs">31,32</text>
+  <text x="155" y="95" class="txs">33</text>
+  <text x="155" y="238" class="txs">34</text>
+</svg>`,
+  operation: `<svg viewBox="0 0 320 520" xmlns="http://www.w3.org/2000/svg" style="font-family:'Noto Sans JP',sans-serif">
+  <style>
+    .jt{fill:none;stroke:#152C53;stroke-width:2}
+    .jf{fill:#152C53}
+    .bn{stroke:#152C53;stroke-width:2;fill:none}
+    .tx{font-size:8px;fill:#152C53;font-weight:600}
+    .txs{font-size:6.5px;fill:#6B7280}
+  </style>
+
+  <!-- Head -->
+  <circle cx="160" cy="52" r="22" class="jt"/>
+  <circle cx="152" cy="48" r="2" class="jf"/>
+  <circle cx="168" cy="48" r="2" class="jf"/>
+
+  <!-- Neck -->
+  <line x1="160" y1="74" x2="160" y2="90" class="bn"/>
+
+  <!-- Shoulders (wider) -->
+  <line x1="100" y1="100" x2="220" y2="100" class="bn"/>
+  <circle cx="100" cy="100" r="5" class="jf"/>
+  <circle cx="220" cy="100" r="5" class="jf"/>
+  <circle cx="160" cy="90" r="3" class="jf"/>
+
+  <!-- Torso -->
+  <line x1="160" y1="90" x2="160" y2="252" class="bn"/>
+
+  <!-- Left arm (wide out) -->
+  <line x1="100" y1="100" x2="55" y2="155" class="bn"/>
+  <circle cx="55" cy="155" r="5" class="jf"/>
+  <line x1="55" y1="155" x2="30" y2="230" class="bn"/>
+  <circle cx="30" cy="230" r="5" class="jf"/>
+  <circle cx="22" cy="255" r="8" class="jt"/>
+
+  <!-- Right arm (wide out) -->
+  <line x1="220" y1="100" x2="265" y2="155" class="bn"/>
+  <circle cx="265" cy="155" r="5" class="jf"/>
+  <line x1="265" y1="155" x2="290" y2="230" class="bn"/>
+  <circle cx="290" cy="230" r="5" class="jf"/>
+  <circle cx="298" cy="255" r="8" class="jt"/>
+
+  <!-- Pelvis -->
+  <line x1="130" y1="252" x2="190" y2="252" class="bn"/>
+  <circle cx="160" cy="252" r="3" class="jf"/>
+  <circle cx="130" cy="252" r="5" class="jf"/>
+  <circle cx="190" cy="252" r="5" class="jf"/>
+
+  <!-- Left leg -->
+  <line x1="130" y1="252" x2="120" y2="355" class="bn"/>
+  <circle cx="120" cy="355" r="5" class="jf"/>
+  <line x1="120" y1="355" x2="115" y2="445" class="bn"/>
+  <circle cx="115" cy="445" r="5" class="jf"/>
+  <path d="M105,450 L100,475 Q112,485 125,475 L120,450" class="jt"/>
+
+  <!-- Right leg -->
+  <line x1="190" y1="252" x2="200" y2="355" class="bn"/>
+  <circle cx="200" cy="355" r="5" class="jf"/>
+  <line x1="200" y1="355" x2="205" y2="445" class="bn"/>
+  <circle cx="205" cy="445" r="5" class="jf"/>
+  <path d="M195,450 L190,475 Q202,485 215,475 L210,450" class="jt"/>
+
+  <!-- 4BOX grid on torso -->
+  <g transform="translate(138,140)" opacity="0.3">
+    <rect x="0" y="0" width="44" height="60" rx="2" stroke="#152C53" stroke-width="1" fill="none" stroke-dasharray="3,2"/>
+    <line x1="0" y1="20" x2="44" y2="20" stroke="#152C53" stroke-width="0.5" stroke-dasharray="2,2"/>
+    <line x1="0" y1="40" x2="44" y2="40" stroke="#152C53" stroke-width="0.5" stroke-dasharray="2,2"/>
+  </g>
+
+  <!-- Number labels -->
+  <text x="155" y="148" class="txs">1,2,3</text>
+  <text x="230" y="130" class="txs">4</text>
+  <text x="72" y="130" class="txs">5</text>
+  <text x="125" y="275" class="txs">6</text>
+  <text x="175" y="138" class="txs">7</text>
+  <text x="15" y="252" class="txs">8</text>
+  <text x="155" y="260" class="txs">9</text>
+  <text x="155" y="310" class="txs">10,11</text>
+  <text x="70" y="168" class="txs">12</text>
+  <text x="235" y="168" class="txs">13</text>
+  <text x="275" y="252" class="txs">14</text>
+  <text x="148" y="170" class="txs">15</text>
+  <text x="155" y="335" class="txs">16</text>
+  <text x="155" y="240" class="txs">17</text>
+  <text x="175" y="250" class="txs">18</text>
+  <text x="100" y="220" class="txs">19</text>
+  <text x="210" y="100" class="txs">20</text>
+  <text x="148" y="42" class="txs">21,22</text>
+</svg>`,
+  signal: `<svg viewBox="0 0 320 520" xmlns="http://www.w3.org/2000/svg" style="font-family:'Noto Sans JP',sans-serif">
+  <style>
+    .jt{fill:none;stroke:#152C53;stroke-width:2}
+    .jf{fill:#152C53}
+    .bn{stroke:#152C53;stroke-width:2;fill:none}
+    .tx{font-size:8px;fill:#152C53;font-weight:600}
+    .txs{font-size:6.5px;fill:#6B7280}
+  </style>
+
+  <!-- Head -->
+  <circle cx="160" cy="52" r="22" class="jt"/>
+  <circle cx="152" cy="48" r="2" class="jf"/>
+  <circle cx="168" cy="48" r="2" class="jf"/>
+
+  <!-- Neck -->
+  <line x1="160" y1="74" x2="160" y2="90" class="bn"/>
+
+  <!-- Shoulders -->
+  <line x1="108" y1="100" x2="212" y2="100" class="bn"/>
+  <circle cx="108" cy="100" r="5" class="jf"/>
+  <circle cx="212" cy="100" r="5" class="jf"/>
+  <circle cx="160" cy="90" r="3" class="jf"/>
+
+  <!-- Torso -->
+  <line x1="160" y1="90" x2="160" y2="252" class="bn"/>
+
+  <!-- Left arm -->
+  <line x1="108" y1="100" x2="82" y2="175" class="bn"/>
+  <circle cx="82" cy="175" r="5" class="jf"/>
+  <line x1="82" y1="175" x2="62" y2="252" class="bn"/>
+  <circle cx="62" cy="252" r="5" class="jf"/>
+  <circle cx="55" cy="278" r="8" class="jt"/>
+
+  <!-- Right arm -->
+  <line x1="212" y1="100" x2="238" y2="175" class="bn"/>
+  <circle cx="238" cy="175" r="5" class="jf"/>
+  <line x1="238" y1="175" x2="258" y2="252" class="bn"/>
+  <circle cx="258" cy="252" r="5" class="jf"/>
+  <circle cx="265" cy="278" r="8" class="jt"/>
+
+  <!-- Pelvis -->
+  <line x1="130" y1="252" x2="190" y2="252" class="bn"/>
+  <circle cx="160" cy="252" r="3" class="jf"/>
+  <circle cx="130" cy="252" r="5" class="jf"/>
+  <circle cx="190" cy="252" r="5" class="jf"/>
+
+  <!-- Left leg -->
+  <line x1="130" y1="252" x2="122" y2="352" class="bn"/>
+  <circle cx="122" cy="352" r="5" class="jf"/>
+  <line x1="122" y1="352" x2="118" y2="445" class="bn"/>
+  <circle cx="118" cy="445" r="5" class="jf"/>
+  <path d="M108,450 L103,475 Q115,485 128,475 L123,450" class="jt"/>
+
+  <!-- Right leg -->
+  <line x1="190" y1="252" x2="198" y2="352" class="bn"/>
+  <circle cx="198" cy="352" r="5" class="jf"/>
+  <line x1="198" y1="352" x2="202" y2="445" class="bn"/>
+  <circle cx="202" cy="445" r="5" class="jf"/>
+  <path d="M192,450 L187,475 Q199,485 212,475 L207,450" class="jt"/>
+
+  <!-- Signal wave hints -->
+  <path d="M95,100 Q85,95 75,100 Q65,105 55,100" stroke="#152C53" stroke-width="1" fill="none" opacity="0.3"/>
+  <path d="M225,100 Q235,95 245,100 Q255,105 265,100" stroke="#152C53" stroke-width="1" fill="none" opacity="0.3"/>
+
+  <!-- Number labels -->
+  <text x="148" y="35" class="txs">1</text>
+  <text x="175" y="45" class="txs">2</text>
+  <text x="58" y="220" class="txs">3</text>
+  <text x="78" y="145" class="txs">4</text>
+  <text x="175" y="325" class="txs">5</text>
+  <text x="205" y="440" class="txs">6</text>
+  <text x="220" y="130" class="txs">7</text>
+  <text x="115" y="370" class="txs">8</text>
+  <text x="108" y="470" class="txs">9</text>
+  <text x="65" y="168" class="txs">10</text>
+  <text x="155" y="258" class="txs">11</text>
+  <text x="155" y="175" class="txs">12</text>
+  <text x="155" y="200" class="txs">13</text>
+  <text x="155" y="148" class="txs">14</text>
+  <text x="123" y="240" class="txs">15</text>
+  <text x="155" y="225" class="txs">16</text>
+  <text x="240" y="165" class="txs">17</text>
+  <text x="155" y="130" class="txs">18</text>
+  <text x="195" y="200" class="txs">19,20</text>
+  <text x="100" y="200" class="txs">21</text>
+  <text x="155" y="285" class="txs">22</text>
+</svg>`
 };
 
 function renderSVG(chartKey){
@@ -569,37 +899,30 @@ function renderSVG(chartKey){
   const titleEl = document.getElementById('svgTitle');
   if(!container) return;
   
-  // TRAITS has no body diagram
   if(chartKey === 'traits'){
     titleEl.textContent = 'SPONOBA TRAITS METHOD';
-    container.innerHTML = '<div style="padding:20px;text-align:center;color:var(--g400);font-size:13px">TRAITSチャートには身体図解はありません</div>';
+    container.innerHTML = '<div style="padding:30px 10px;text-align:center;color:var(--g400);font-size:13px">Science Approach + Sensory Approach<br><br>TRAITSはForce PlateデータとSensoryデータの入力です</div>';
     return;
   }
   
   const names = {connect:'POWER CONNECT CHARTS 34',kinnetic:'POWER KINNETIC CHARTS 34',operation:'POWER OPERATION CHARTS 22',signal:'POWER SIGNAL CHARTS 22'};
   titleEl.textContent = names[chartKey] || '';
+  container.innerHTML = SVG_BODIES[chartKey] || '';
   
-  const points = SVG_POINTS[chartKey] || [];
+  // Make number labels clickable
   const colors = {connect:'#E83E0B',kinnetic:'#2563EB',operation:'#059669',signal:'#7C3AED'};
-  const color = colors[chartKey] || '#E83E0B';
-  
-  // Build SVG with points overlay
-  let svg = BODY_SVG.replace('</svg>','');
-  
-  // Add connection lines from points to body (subtle)
-  points.forEach(p => {
-    // nothing extra needed - circles are positioned on body
+  const clr = colors[chartKey] || '#152C53';
+  container.querySelectorAll('.txs').forEach(el=>{
+    const txt = el.textContent.trim();
+    const nums = txt.split(/[,\-]/).map(n=>parseInt(n.trim())).filter(n=>!isNaN(n));
+    if(nums.length > 0){
+      el.style.cursor = 'pointer';
+      el.style.fill = clr;
+      el.style.fontWeight = '700';
+      el.style.fontSize = '8px';
+      el.addEventListener('click', ()=>scrollToItem(nums[0]));
+    }
   });
-  
-  // Add numbered circles
-  points.forEach(p => {
-    const r = p.id > 9 ? 10 : 8;
-    svg += `<circle class="bp-circle" cx="${p.x}" cy="${p.y}" r="${r}" fill="${color}" opacity="0.9" onclick="scrollToItem(${p.id})"/>`;
-    svg += `<text class="bp-num" x="${p.x}" y="${p.y}" dy="0.5">${p.id}</text>`;
-  });
-  
-  svg += '</svg>';
-  container.innerHTML = svg;
 }
 
 function scrollToItem(id){
