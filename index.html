@@ -822,18 +822,56 @@ async function exportCSV(){
 function exportJSON(){
   const name=document.getElementById('pN').value||'assessment';
   const date=document.getElementById('pD').value||'nodate';
-  const charts=['connect','kinnetic','operation','signal','traits'];
 
-  // Collect all keys with chart prefix
+  // Build ALL column definitions from chart data
   const allCols=[];
-  charts.forEach(ch=>{
-    const v=vals[ch]||{};
-    Object.keys(v).forEach(k=>{
-      allCols.push({chart:ch,key:k,col:ch.toUpperCase()+': '+k});
+
+  // CONNECT, KINNETIC, OPERATION, SIGNAL
+  const chartDefs=[
+    {name:'CONNECT',data:D_CON},
+    {name:'KINNETIC',data:D_KIN},
+    {name:'OPERATION',data:D_OPE},
+    {name:'SIGNAL',data:D_SIG}
+  ];
+  chartDefs.forEach(cd=>{
+    cd.data.forEach(item=>{
+      item.g.forEach((gr,gi)=>{
+        const key=`${item.id}_${gi}`;
+        const grLabel=gr.g?` ${gr.g}`:'';
+        const header=`${cd.name}: ${item.id}.${item.l}${grLabel}`;
+        allCols.push({chart:cd.name.toLowerCase(),key:key,header:header});
+      });
     });
   });
 
-  const headers=['選手名','年齢','チーム','身長cm','体重kg','測定日','C度',...allCols.map(c=>c.col)];
+  // TRAITS - Force Plate
+  const fpTests=['Countermovement Jump','Squat Jump','10 Hop Test','Plyometric PushUp','Isometric Test'];
+  fpTests.forEach((test,i)=>{
+    allCols.push({chart:'traits',key:`fp_val_${i}`,header:`TRAITS: ${test} 数値`});
+    allCols.push({chart:'traits',key:`fp_react_${i}`,header:`TRAITS: ${test} Reaction`});
+    allCols.push({chart:'traits',key:`fp_subj_${i}`,header:`TRAITS: ${test} 主観`});
+  });
+
+  // TRAITS - Sensory (descriptive headers)
+  const sensory=[
+    {id:1,l:'バランス',g:[{g:'型'},{g:'体幹'},{g:'前腕'}]},
+    {id:2,l:'リズム',g:[{g:'指先系'},{g:'部位'},{g:'上下'}]},
+    {id:3,l:'姿勢',g:[{g:'脊柱'},{g:'字型'},{g:'頭部'}]},
+    {id:4,l:'体勢',g:[{g:'骨盤'},{g:'大腿骨'},{g:'屈伸'},{g:'部位'}]},
+    {id:5,l:'連動',g:[{g:'肩甲骨'},{g:'連動型'},{g:'主体'},{g:'キネ'}]},
+    {id:6,l:'出力づくり',g:[{g:'強度'},{g:'部位'}]},
+    {id:7,l:'呼吸',g:[{g:'配分'},{g:'部位'},{g:'方向'}]}
+  ];
+  sensory.forEach(item=>{
+    item.g.forEach((gr,gi)=>{
+      const key=`sen_${item.id}_${gi}`;
+      const header=`TRAITS: ${item.id}.${item.l} ${gr.g}`;
+      allCols.push({chart:'traits',key:key,header:header});
+    });
+  });
+
+  // Build CSV
+  const headers=['選手名','年齢','チーム','身長cm','体重kg','測定日','C度',...allCols.map(c=>c.header)];
   const baseRow=[
     '"'+(document.getElementById('pN').value||'').replace(/"/g,'""')+'"',
     document.getElementById('pA').value||'',
@@ -845,12 +883,15 @@ function exportJSON(){
   ];
   const valRow=allCols.map(c=>{
     const v=(vals[c.chart]||{})[c.key];
-    return v!==undefined?'"'+String(v).replace(/"/g,'""')+'"':'';
+    return v!==undefined&&v!==null&&v!==''?'"'+String(v).replace(/"/g,'""')+'"':'';
   });
 
   const bom='\uFEFF';
-  const csv=bom+headers.join(',')+'\n'+[...baseRow,...valRow].join(',');
-  const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+  const csvLines=[
+    headers.map(h=>'"'+h.replace(/"/g,'""')+'"').join(','),
+    [...baseRow,...valRow].join(',')
+  ];
+  const blob=new Blob([bom+csvLines.join('\n')],{type:'text/csv;charset=utf-8'});
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a');a.href=url;
   a.download=name+'_ALL_'+date+'.csv';
