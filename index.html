@@ -11,7 +11,7 @@
 <style>
 :root{--navy:#152C53;--orange:#E83E0B;--orange-light:#FFF3ED;--g50:#F9FAFB;--g100:#F3F4F6;--g200:#E5E7EB;--g300:#D1D5DB;--g400:#9CA3AF;--g500:#6B7280;--g700:#374151;--g800:#1F2937;--ok:#059669;--ok-bg:#ECFDF5;--warn:#D97706}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{font-family:'Noto Sans JP',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--g50);color:var(--g700);min-height:100vh;max-width:640px;margin:0 auto;padding-bottom:80px}
+body{font-family:'Noto Sans JP',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--g50);color:var(--g700);min-height:100vh;max-width:1200px;margin:0 auto;padding-bottom:80px}
 .hd{background:var(--navy);color:#fff;padding:14px 16px 12px;position:sticky;top:0;z-index:200;box-shadow:0 2px 12px rgba(21,44,83,.3)}
 .hd-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
 .logo{font-family:'Oswald',sans-serif;font-weight:700;font-size:18px;letter-spacing:2px}
@@ -32,7 +32,19 @@ body{font-family:'Noto Sans JP',-apple-system,BlinkMacSystemFont,sans-serif;back
 .fi{width:100%;padding:8px 10px;border:1.5px solid var(--g300);border-radius:8px;font-size:14px;font-family:'Noto Sans JP',sans-serif;outline:none;transition:border-color .2s;background:#fff}
 .fi:focus{border-color:var(--orange)}
 /* Login */
+
+.main-layout{display:flex;gap:0;min-height:calc(100vh - 120px)}
+.svg-panel{width:38%;min-width:300px;position:sticky;top:100px;height:calc(100vh - 120px);overflow-y:auto;background:#fff;border-right:2px solid var(--g200);padding:8px}
+.svg-panel svg{width:100%;height:auto}
+.input-panel{flex:1;min-width:0}
+.bp-circle{cursor:pointer;transition:all .15s}
+.bp-circle:hover{transform:scale(1.3);filter:brightness(1.2)}
+.bp-num{font-family:'Oswald',sans-serif;font-weight:700;font-size:9px;fill:#fff;pointer-events:none;text-anchor:middle;dominant-baseline:central}
+.bp-label{font-family:'Noto Sans JP',sans-serif;font-size:7px;fill:var(--g500);text-anchor:middle}
+.svg-title{font-family:'Oswald',sans-serif;font-weight:700;font-size:14px;color:var(--navy);text-align:center;padding:6px 0 2px;letter-spacing:1px}
+@media(max-width:768px){.main-layout{flex-direction:column}.svg-panel{width:100%;position:relative;top:0;height:auto;max-height:40vh;border-right:none;border-bottom:2px solid var(--g200)}}
 #authWall{position:fixed;inset:0;background:var(--navy);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:24px}
+
 #authWall.gone{display:none}
 .lb{background:#fff;border-radius:16px;padding:32px 24px;width:100%;max-width:360px;box-shadow:0 8px 32px rgba(0,0,0,.3)}
 .eb{display:none;background:#FEF3C7;border-bottom:2px solid var(--warn);padding:10px 16px;text-align:center;font-size:13px;font-weight:600;color:#92400E}
@@ -99,7 +111,7 @@ body{font-family:'Noto Sans JP',-apple-system,BlinkMacSystemFont,sans-serif;back
 .p{padding:5px 12px;border-radius:18px;border:1.5px solid var(--g300);background:#fff;color:var(--g700);font-size:13px;font-weight:500;font-family:'Noto Sans JP',sans-serif;cursor:pointer;transition:all .15s;white-space:nowrap;user-select:none;-webkit-user-select:none}
 .p:hover{border-color:var(--orange)}
 .p.on{background:var(--orange);color:#fff;border-color:var(--orange);font-weight:700;box-shadow:0 2px 6px rgba(232,107,44,.3)}
-.bb{position:fixed;bottom:0;left:0;right:0;max-width:640px;margin:0 auto;background:#fff;border-top:1px solid var(--g200);padding:12px 16px;display:flex;gap:8px;z-index:200;box-shadow:0 -2px 10px rgba(0,0,0,.06)}
+.bb{position:fixed;bottom:0;left:0;right:0;max-width:1200px;margin:0 auto;background:#fff;border-top:1px solid var(--g200);padding:12px 16px;display:flex;gap:8px;z-index:200;box-shadow:0 -2px 10px rgba(0,0,0,.06)}
 .ab{flex:1;padding:12px 0;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Noto Sans JP',sans-serif;transition:all .2s}
 .bc{border:1.5px solid var(--g300);background:#fff;color:var(--g500)}
 .be{border:1.5px solid var(--navy);background:#fff;color:var(--navy)}
@@ -226,6 +238,14 @@ body{font-family:'Noto Sans JP',-apple-system,BlinkMacSystemFont,sans-serif;back
 </div>
 
 <!-- Player Info -->
+<div class="main-layout">
+<!-- SVG DIAGRAM -->
+<div class="svg-panel">
+<div class="svg-title" id="svgTitle">POWER CONNECT CHARTS</div>
+<div id="svgBody"></div>
+</div>
+<!-- INPUT PANEL -->
+<div class="input-panel">
 <div class="pi">
   <div class="ir c2">
     <div><label class="fl">選手名</label><input class="fi" id="pN" placeholder="選手名を入力"></div>
@@ -263,7 +283,10 @@ body{font-family:'Noto Sans JP',-apple-system,BlinkMacSystemFont,sans-serif;back
 <!-- Items Container -->
 <div id="mainContent"></div>
 
-<div class="ft">© spozania / SPONOBA Digital Assessment System<br>v3.1 — Supabase Connected + Edit/CSV</div>
+<div class="ft">© spozania / SPONOBA Digital Assessment System<br>v4.0 — iPad Landscape + Body Diagrams</div>
+
+</div><!-- /input-panel -->
+</div><!-- /main-layout -->
 
 <div class="bb">
   <button class="ab bc" onclick="clearAll()">クリア</button>
@@ -443,6 +466,154 @@ function sw(tab){
   document.getElementById('cttl').textContent=t.title;
   document.getElementById('ctst').textContent=t.sub;
   render();
+  renderSVG(tab);
+}
+
+
+// ═══ SVG BODY DIAGRAM ═══
+const BODY_SVG = `
+<svg viewBox="0 0 300 560" xmlns="http://www.w3.org/2000/svg">
+  <!-- Body outline -->
+  <g fill="none" stroke="#CBD5E1" stroke-width="1.5" stroke-linejoin="round">
+    <!-- Head -->
+    <ellipse cx="150" cy="36" rx="24" ry="30" fill="#F1F5F9"/>
+    <!-- Neck -->
+    <rect x="141" y="66" width="18" height="16" rx="4" fill="#F1F5F9"/>
+    <!-- Torso -->
+    <path d="M108,82 L192,82 L200,100 L204,140 L202,180 L198,220 L190,248 L170,258 L150,262 L130,258 L110,248 L102,220 L98,180 L96,140 L100,100 Z" fill="#F1F5F9"/>
+    <!-- Left arm -->
+    <path d="M108,82 C95,90 82,110 74,135 L62,175 L52,215 L46,248 L42,272" stroke-width="1.5"/>
+    <ellipse cx="108" cy="86" rx="4" ry="6" fill="#F1F5F9"/>
+    <!-- Right arm -->
+    <path d="M192,82 C205,90 218,110 226,135 L238,175 L248,215 L254,248 L258,272" stroke-width="1.5"/>
+    <ellipse cx="192" cy="86" rx="4" ry="6" fill="#F1F5F9"/>
+    <!-- Left hand -->
+    <ellipse cx="40" cy="280" rx="10" ry="14" fill="#F1F5F9"/>
+    <!-- Right hand -->
+    <ellipse cx="260" cy="280" rx="10" ry="14" fill="#F1F5F9"/>
+    <!-- Pelvis area -->
+    <path d="M118,248 L182,248 L178,272 L168,288 L150,292 L132,288 L122,272 Z" fill="#F1F5F9"/>
+    <!-- Left leg -->
+    <path d="M130,288 C126,310 122,340 120,370 L118,410 L116,450 L115,490 L114,520" stroke-width="1.5"/>
+    <path d="M138,288 C134,310 130,340 128,370 L126,410 L124,450 L123,490 L122,520" stroke-width="1.5"/>
+    <!-- Right leg -->
+    <path d="M162,288 C166,310 170,340 172,370 L174,410 L176,450 L177,490 L178,520" stroke-width="1.5"/>
+    <path d="M170,288 C174,310 178,340 180,370 L182,410 L184,450 L185,490 L186,520" stroke-width="1.5"/>
+    <!-- Left foot -->
+    <ellipse cx="118" cy="532" rx="12" ry="10" fill="#F1F5F9"/>
+    <!-- Right foot -->
+    <ellipse cx="182" cy="532" rx="12" ry="10" fill="#F1F5F9"/>
+    <!-- Center line (light) -->
+    <line x1="150" y1="66" x2="150" y2="262" stroke="#E2E8F0" stroke-width="0.5" stroke-dasharray="3,3"/>
+    <!-- Clavicle line -->
+    <line x1="108" y1="90" x2="192" y2="90" stroke="#E2E8F0" stroke-width="0.5"/>
+    <!-- Hip line -->
+    <line x1="118" y1="252" x2="182" y2="252" stroke="#E2E8F0" stroke-width="0.5"/>
+  </g>
+</svg>`;
+
+// Point positions for each chart: {id, x, y, label}
+const SVG_POINTS = {
+  connect: [
+    {id:1,x:74,y:175,l:'肘'},{id:2,x:200,y:110,l:'肩上腕'},{id:3,x:150,y:90,l:'肩鎖骨'},
+    {id:4,x:62,y:200,l:'前腕'},{id:5,x:52,y:235,l:'手首'},{id:6,x:248,y:235,l:'手首屈伸'},
+    {id:7,x:226,y:150,l:'腕'},{id:8,x:150,y:130,l:'腕組み'},{id:9,x:40,y:280,l:'手親指'},
+    {id:10,x:150,y:252,l:'骨盤'},{id:11,x:170,y:262,l:'骨盤左右'},{id:12,x:130,y:268,l:'股関節'},
+    {id:13,x:172,y:310,l:'大腿骨'},{id:14,x:124,y:440,l:'下腿'},{id:15,x:176,y:380,l:'脚膝'},
+    {id:16,x:150,y:290,l:'足向き'},{id:17,x:118,y:535,l:'足指'},{id:18,x:128,y:300,l:'股関節脚上'},
+    {id:19,x:170,y:340,l:'股関節脚下'},{id:20,x:130,y:170,l:'肋骨'},{id:21,x:170,y:170,l:'肋骨左右'},
+    {id:22,x:120,y:130,l:'肩甲骨肋骨'},{id:23,x:180,y:90,l:'鎖骨'},{id:24,x:80,y:150,l:'遠心求心'},
+    {id:25,x:110,y:115,l:'肩甲骨SL'},{id:26,x:190,y:190,l:'肩甲骨骨盤'},{id:27,x:230,y:160,l:'腕方向'},
+    {id:28,x:75,y:120,l:'腕高さ'},{id:29,x:238,y:190,l:'腕ハマり'},{id:30,x:150,y:22,l:'頭'},
+    {id:31,x:138,y:30,l:'目'},{id:32,x:162,y:28,l:'眉毛'},{id:33,x:150,y:48,l:'口'},
+    {id:34,x:260,y:280,l:'数'}
+  ],
+  kinnetic: [
+    {id:1,x:40,y:275,l:'手'},{id:2,x:260,y:275,l:'指'},{id:3,x:52,y:240,l:'手首'},
+    {id:4,x:248,y:240,l:'手首回転'},{id:5,x:80,y:148,l:'腕'},{id:6,x:220,y:148,l:'腕前後'},
+    {id:7,x:95,y:120,l:'上腕'},{id:8,x:205,y:120,l:'手首腕肩'},{id:9,x:110,y:105,l:'脇'},
+    {id:10,x:150,y:155,l:'腕LS'},{id:11,x:190,y:105,l:'腕回し'},{id:12,x:150,y:130,l:'腕肩甲体幹'},
+    {id:13,x:230,y:170,l:'弾き'},{id:14,x:176,y:400,l:'膝裏'},{id:15,x:125,y:360,l:'脚'},
+    {id:16,x:175,y:360,l:'脚LS'},{id:17,x:150,y:180,l:'体幹'},{id:18,x:150,y:200,l:'体幹ライン'},
+    {id:19,x:120,y:140,l:'肩甲骨連動'},{id:20,x:150,y:252,l:'骨盤'},{id:21,x:170,y:260,l:'骨盤腸坐'},
+    {id:22,x:130,y:270,l:'股関節骨盤'},{id:23,x:168,y:300,l:'股関節'},{id:24,x:125,y:390,l:'膝角度'},
+    {id:25,x:178,y:440,l:'下腿'},{id:26,x:122,y:440,l:'下腿IO'},{id:27,x:180,y:500,l:'足ハマり'},
+    {id:28,x:120,y:500,l:'足エッジ'},{id:29,x:182,y:530,l:'足方向'},{id:30,x:150,y:220,l:'腸サイクル'},
+    {id:31,x:132,y:290,l:'脱脚連動'},{id:32,x:170,y:290,l:'保持'},{id:33,x:150,y:95,l:'肩'},
+    {id:34,x:150,y:240,l:'ベース'}
+  ],
+  operation: [
+    {id:1,x:150,y:160,l:'四肢連動'},{id:2,x:150,y:190,l:'センター芯'},{id:3,x:150,y:210,l:'背骨'},
+    {id:4,x:220,y:130,l:'セット'},{id:5,x:80,y:130,l:'リズム'},{id:6,x:130,y:280,l:'脱脚連動'},
+    {id:7,x:170,y:140,l:'腕体幹連動'},{id:8,x:42,y:270,l:'重心感覚'},{id:9,x:150,y:260,l:'スタンス'},
+    {id:10,x:150,y:310,l:'ステップ'},{id:11,x:150,y:290,l:'チェーン'},{id:12,x:75,y:170,l:'ネジスト'},
+    {id:13,x:225,y:170,l:'身体ねじり'},{id:14,x:260,y:270,l:'フィンガー'},{id:15,x:150,y:170,l:'4BOX'},
+    {id:16,x:150,y:340,l:'ジャンプ'},{id:17,x:150,y:240,l:'SET ONE'},{id:18,x:170,y:250,l:'BOOSTER'},
+    {id:19,x:100,y:220,l:'コンディ'},{id:20,x:200,y:100,l:'マエケン'},{id:21,x:150,y:36,l:'視覚'},
+    {id:22,x:150,y:55,l:'患者'}
+  ],
+  signal: [
+    {id:1,x:150,y:20,l:'頭点'},{id:2,x:165,y:36,l:'顔点'},{id:3,x:62,y:200,l:'前腕'},
+    {id:4,x:90,y:140,l:'上腕'},{id:5,x:170,y:330,l:'大腿'},{id:6,x:178,y:440,l:'下腿'},
+    {id:7,x:210,y:130,l:'肩肘連動'},{id:8,x:125,y:370,l:'軸足POS'},{id:9,x:118,y:530,l:'タップFW'},
+    {id:10,x:75,y:160,l:'腕リズム'},{id:11,x:150,y:258,l:'骨盤'},{id:12,x:150,y:180,l:'体幹要'},
+    {id:13,x:150,y:200,l:'脊柱'},{id:14,x:150,y:150,l:'主体'},{id:15,x:130,y:240,l:'コア4'},
+    {id:16,x:150,y:225,l:'お腹'},{id:17,x:225,y:160,l:'刺激の質'},{id:18,x:150,y:130,l:'呼吸'},
+    {id:19,x:200,y:200,l:'配分'},{id:20,x:238,y:200,l:'筋骨神'},{id:21,x:100,y:200,l:'加減速'},
+    {id:22,x:150,y:290,l:'方向'}
+  ]
+};
+
+function renderSVG(chartKey){
+  const container = document.getElementById('svgBody');
+  const titleEl = document.getElementById('svgTitle');
+  if(!container) return;
+  
+  // TRAITS has no body diagram
+  if(chartKey === 'traits'){
+    titleEl.textContent = 'SPONOBA TRAITS METHOD';
+    container.innerHTML = '<div style="padding:20px;text-align:center;color:var(--g400);font-size:13px">TRAITSチャートには身体図解はありません</div>';
+    return;
+  }
+  
+  const names = {connect:'POWER CONNECT CHARTS 34',kinnetic:'POWER KINNETIC CHARTS 34',operation:'POWER OPERATION CHARTS 22',signal:'POWER SIGNAL CHARTS 22'};
+  titleEl.textContent = names[chartKey] || '';
+  
+  const points = SVG_POINTS[chartKey] || [];
+  const colors = {connect:'#E83E0B',kinnetic:'#2563EB',operation:'#059669',signal:'#7C3AED'};
+  const color = colors[chartKey] || '#E83E0B';
+  
+  // Build SVG with points overlay
+  let svg = BODY_SVG.replace('</svg>','');
+  
+  // Add connection lines from points to body (subtle)
+  points.forEach(p => {
+    // nothing extra needed - circles are positioned on body
+  });
+  
+  // Add numbered circles
+  points.forEach(p => {
+    const r = p.id > 9 ? 10 : 8;
+    svg += `<circle class="bp-circle" cx="${p.x}" cy="${p.y}" r="${r}" fill="${color}" opacity="0.9" onclick="scrollToItem(${p.id})"/>`;
+    svg += `<text class="bp-num" x="${p.x}" y="${p.y}" dy="0.5">${p.id}</text>`;
+  });
+  
+  svg += '</svg>';
+  container.innerHTML = svg;
+}
+
+function scrollToItem(id){
+  // Find the row with this item number and scroll to it
+  const rows = document.querySelectorAll('.row');
+  for(const row of rows){
+    const numEl = row.querySelector('.rn');
+    if(numEl && parseInt(numEl.textContent) === id){
+      row.scrollIntoView({behavior:'smooth',block:'center'});
+      row.style.background='var(--orange-light)';
+      setTimeout(()=>{row.style.background='';},1500);
+      break;
+    }
+  }
 }
 
 // ═══ RENDER ═══
@@ -640,6 +811,7 @@ async function doLogin(){
   document.getElementById('authWall').classList.add('gone');
   btn.disabled=false;btn.textContent='ログイン';
   render();
+  renderSVG(cur);
 }
 async function doLogout(){
   if(!confirm('ログアウトしますか？'))return;
