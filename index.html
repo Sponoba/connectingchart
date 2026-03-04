@@ -822,28 +822,38 @@ async function exportCSV(){
 function exportJSON(){
   const name=document.getElementById('pN').value||'assessment';
   const date=document.getElementById('pD').value||'nodate';
-  const v=vals[cur]||{};
-  const vKeys=Object.keys(v).sort();
+  const charts=['connect','kinnetic','operation','signal','traits'];
 
-  const headers=['選手名','年齢','チーム','身長cm','体重kg','測定日','C度','チャート',...vKeys];
-  const row=[
+  // Collect all keys with chart prefix
+  const allCols=[];
+  charts.forEach(ch=>{
+    const v=vals[ch]||{};
+    Object.keys(v).forEach(k=>{
+      allCols.push({chart:ch,key:k,col:ch.toUpperCase()+': '+k});
+    });
+  });
+
+  const headers=['選手名','年齢','チーム','身長cm','体重kg','測定日','C度',...allCols.map(c=>c.col)];
+  const baseRow=[
     '"'+(document.getElementById('pN').value||'').replace(/"/g,'""')+'"',
     document.getElementById('pA').value||'',
     '"'+(document.getElementById('pT').value||'').replace(/"/g,'""')+'"',
     document.getElementById('pH').value||'',
     document.getElementById('pW').value||'',
     date,
-    '"'+(document.getElementById('pC').value||'')+'"',
-    cur.toUpperCase(),
-    ...vKeys.map(k=>'"'+String(v[k]).replace(/"/g,'""')+'"')
+    '"'+(document.getElementById('pC').value||'')+'"'
   ];
+  const valRow=allCols.map(c=>{
+    const v=(vals[c.chart]||{})[c.key];
+    return v!==undefined?'"'+String(v).replace(/"/g,'""')+'"':'';
+  });
 
   const bom='\uFEFF';
-  const csv=bom+headers.join(',')+'\n'+row.join(',');
+  const csv=bom+headers.join(',')+'\n'+[...baseRow,...valRow].join(',');
   const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a');a.href=url;
-  a.download=name+'_'+cur.toUpperCase()+'_'+date+'.csv';
+  a.download=name+'_ALL_'+date+'.csv';
   a.click();URL.revokeObjectURL(url);
 }
 function toggleHistory(){document.getElementById('hp').classList.toggle('open');}
