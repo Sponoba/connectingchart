@@ -473,487 +473,445 @@ function sw(tab){
 
 // ═══ SVG BODY DIAGRAM ═══
 const SVG_BODIES = {
-  connect: `<svg viewBox="0 0 300 540" xmlns="http://www.w3.org/2000/svg">
+  connect: `<svg viewBox="0 0 300 500" xmlns="http://www.w3.org/2000/svg">
 <style>
-  .b{stroke:#152C53;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+  .b{stroke:#152C53;stroke-width:2.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
   .j{fill:#152C53}
-  .bo{fill:none;stroke:#152C53;stroke-width:1.8;stroke-linecap:round}
-  .t{font-family:'Noto Sans JP',sans-serif;font-size:7.5px;fill:#152C53;font-weight:700}
-  .ts{font-family:'Noto Sans JP',sans-serif;font-size:6px;fill:#6B7280}
-  .d{stroke:#152C53;stroke-width:0.8;fill:none}
-  .df{fill:#EFF6FF;stroke:#152C53;stroke-width:0.8}
-  .num{font-family:'Oswald',sans-serif;font-size:8px;fill:#E83E0B;font-weight:700;cursor:pointer}
+  .jo{fill:none;stroke:#152C53;stroke-width:2;stroke-linecap:round}
+  .t{font-family:'Noto Sans JP',sans-serif;font-size:7px;fill:#152C53;font-weight:700}
+  .ts{font-family:'Noto Sans JP',sans-serif;font-size:5.5px;fill:#6B7280}
+  .d{stroke:#152C53;stroke-width:0.7;fill:none}
+  .df{fill:#EFF6FF;stroke:#152C53;stroke-width:0.7}
+  .n{font-family:'Oswald',sans-serif;font-size:8px;fill:#E83E0B;font-weight:700;cursor:pointer}
+  .n:hover{opacity:0.5}
 </style>
 
-<!-- ===== BODY ===== -->
-<!-- Head -->
-<circle cx="150" cy="55" r="24" class="bo" stroke-width="2.2"/>
-<!-- Face details -->
-<circle cx="142" cy="51" r="1.5" class="j"/>
-<circle cx="158" cy="51" r="1.5" class="j"/>
-<path d="M145,62 Q150,66 155,62" class="d"/>
-
-<!-- Neck -->
-<line x1="150" y1="79" x2="150" y2="95" class="b"/>
-
-<!-- Clavicle/Shoulders -->
-<path d="M150,95 L108,102" class="b"/>
-<path d="M150,95 L192,102" class="b"/>
-<circle cx="150" cy="95" r="4" class="j"/>
-<circle cx="108" cy="102" r="5" class="j"/>
-<circle cx="192" cy="102" r="5" class="j"/>
-
-<!-- Torso spine -->
-<line x1="150" y1="95" x2="150" y2="256" class="b"/>
-
-<!-- Rib cage outline (subtle) -->
-<path d="M120,115 Q115,150 118,185 Q130,200 150,205 Q170,200 182,185 Q185,150 180,115" class="bo" stroke-width="0.6" stroke-dasharray="4,3" opacity="0.25"/>
-
-<!-- Left upper arm -->
-<line x1="108" y1="102" x2="82" y2="178" class="b"/>
-<circle cx="82" cy="178" r="5" class="j"/>
-<!-- Left forearm -->
-<line x1="82" y1="178" x2="60" y2="258" class="b"/>
-<circle cx="60" cy="258" r="4" class="j"/>
-<!-- Left hand -->
-<ellipse cx="54" cy="282" rx="9" ry="12" class="bo" stroke-width="1.5"/>
-<line x1="50" y1="270" x2="48" y2="265" class="bo" stroke-width="1"/>
-
-<!-- Right upper arm -->
-<line x1="192" y1="102" x2="218" y2="178" class="b"/>
-<circle cx="218" cy="178" r="5" class="j"/>
-<!-- Right forearm -->
-<line x1="218" y1="178" x2="240" y2="258" class="b"/>
-<circle cx="240" cy="258" r="4" class="j"/>
-<!-- Right hand -->
-<ellipse cx="246" cy="282" rx="9" ry="12" class="bo" stroke-width="1.5"/>
-<line x1="250" y1="270" x2="252" y2="265" class="bo" stroke-width="1"/>
-
-<!-- Pelvis -->
-<path d="M130,256 L150,256 L190,256" class="b"/>
-<circle cx="150" cy="256" r="4" class="j"/>
-<circle cx="130" cy="256" r="5" class="j"/>
-<circle cx="190" cy="256" r="5" class="j"/>
-<!-- Pelvis shape -->
-<path d="M128,252 Q150,275 192,252" class="bo" stroke-width="0.8" opacity="0.3"/>
-
-<!-- Left thigh -->
-<line x1="130" y1="256" x2="122" y2="358" class="b"/>
-<circle cx="122" cy="358" r="5" class="j"/>
-<!-- Left shin -->
-<line x1="122" y1="358" x2="117" y2="452" class="b"/>
-<circle cx="117" cy="452" r="4" class="j"/>
-<!-- Left foot -->
-<path d="M107,455 L102,478 Q114,488 127,478 L122,455" class="bo" stroke-width="1.5"/>
-
-<!-- Right thigh -->
-<line x1="190" y1="256" x2="198" y2="358" class="b"/>
-<circle cx="198" cy="358" r="5" class="j"/>
-<!-- Right shin -->
-<line x1="198" y1="358" x2="203" y2="452" class="b"/>
-<circle cx="203" cy="452" r="4" class="j"/>
-<!-- Right foot -->
-<path d="M193,455 L188,478 Q200,488 213,478 L208,455" class="bo" stroke-width="1.5"/>
-
-<!-- ===== DETAIL DIAGRAMS ===== -->
-
-<!-- 肘 (Elbow) detail - top left -->
-<g transform="translate(6,105)">
-  <text x="0" y="0" class="t">肘</text>
-  <line x1="8" y1="10" x2="8" y2="62" stroke="#152C53" stroke-width="1.5"/>
-  <g>
-    <line x1="3" y1="15" x2="13" y2="15" stroke="#152C53" stroke-width="1"/>
-    <text x="17" y="18" class="ts">近</text>
-    <line x1="3" y1="35" x2="13" y2="35" stroke="#152C53" stroke-width="1"/>
-    <text x="17" y="38" class="ts">中</text>
-    <line x1="3" y1="55" x2="13" y2="55" stroke="#152C53" stroke-width="1"/>
-    <text x="17" y="58" class="ts">遠</text>
+  <!-- Head -->
+  <circle cx="150" cy="48" r="22" class="jo" stroke-width="2.5"/>
+  <circle cx="143" cy="44" r="1.8" class="j"/>
+  <circle cx="157" cy="44" r="1.8" class="j"/>
+  <!-- Neck -->
+  <line x1="150" y1="70" x2="150" y2="86" class="b"/>
+  <!-- Shoulders -->
+  <line x1="150" y1="86" x2="104" y2="96" class="b"/>
+  <line x1="150" y1="86" x2="196" y2="96" class="b"/>
+  <circle cx="150" cy="86" r="3.5" class="j"/>
+  <circle cx="104" cy="96" r="4.5" class="j"/>
+  <circle cx="196" cy="96" r="4.5" class="j"/>
+  <!-- Spine -->
+  <line x1="150" y1="86" x2="150" y2="244" class="b"/>
+  <!-- Left arm -->
+  <line x1="104" y1="96" x2="90" y2="165" class="b"/>
+  <circle cx="90" cy="165" r="4.5" class="j"/>
+  <line x1="90" y1="165" x2="78" y2="238" class="b"/>
+  <circle cx="78" cy="238" r="3.5" class="j"/>
+  <ellipse cx="74" cy="258" rx="8" ry="10" class="jo"/>
+  <!-- Right arm -->
+  <line x1="196" y1="96" x2="210" y2="165" class="b"/>
+  <circle cx="210" cy="165" r="4.5" class="j"/>
+  <line x1="210" y1="165" x2="222" y2="238" class="b"/>
+  <circle cx="222" cy="238" r="3.5" class="j"/>
+  <ellipse cx="226" cy="258" rx="8" ry="10" class="jo"/>
+  <!-- Pelvis -->
+  <line x1="130" y1="244" x2="170" y2="244" class="b"/>
+  <circle cx="150" cy="244" r="3.5" class="j"/>
+  <circle cx="130" cy="244" r="4.5" class="j"/>
+  <circle cx="170" cy="244" r="4.5" class="j"/>
+  <!-- Left leg -->
+  <line x1="130" y1="244" x2="126" y2="340" class="b"/>
+  <circle cx="126" cy="340" r="4.5" class="j"/>
+  <line x1="126" y1="340" x2="124" y2="426" class="b"/>
+  <circle cx="124" cy="426" r="3.5" class="j"/>
+  <path d="M116,429 L112,452 Q124,460 136,452 L132,429" class="jo"/>
+  <!-- Right leg -->
+  <line x1="170" y1="244" x2="174" y2="340" class="b"/>
+  <circle cx="174" cy="340" r="4.5" class="j"/>
+  <line x1="174" y1="340" x2="176" y2="426" class="b"/>
+  <circle cx="176" cy="426" r="3.5" class="j"/>
+  <path d="M168,429 L164,452 Q176,460 188,452 L184,429" class="jo"/>
+  <!-- ▼ 肘 detail (top-left) -->
+  <g transform="translate(8,98)">
+    <rect x="-2" y="-10" width="42" height="70" rx="3" fill="#fff" stroke="#E2E8F0" stroke-width="0.5"/>
+    <text x="2" y="0" class="t">肘</text>
+    <line x1="10" y1="8" x2="10" y2="52" stroke="#152C53" stroke-width="1.2"/>
+    <line x1="5" y1="14" x2="15" y2="14" stroke="#152C53" stroke-width="0.8"/>
+    <text x="19" y="17" class="ts">近</text>
+    <line x1="5" y1="30" x2="15" y2="30" stroke="#152C53" stroke-width="0.8"/>
+    <text x="19" y="33" class="ts">中</text>
+    <line x1="5" y1="46" x2="15" y2="46" stroke="#152C53" stroke-width="0.8"/>
+    <text x="19" y="49" class="ts">遠</text>
   </g>
-</g>
 
-<!-- 肩甲骨-鎖骨 detail - top center-right -->
-<g transform="translate(215,70)">
-  <text x="0" y="0" class="t">肩甲骨-鎖骨</text>
-  <g transform="translate(0,6)">
-    <line x1="5" y1="5" x2="5" y2="38" stroke="#152C53" stroke-width="1"/>
-    <text x="12" y="10" class="ts">上</text>
-    <text x="12" y="22" class="ts">中</text>
-    <text x="12" y="34" class="ts">下</text>
-    <!-- shoulder outline -->
-    <path d="M30,2 Q45,18 30,38" class="d"/>
-    <circle cx="30" cy="10" r="2" fill="#152C53" opacity="0.4"/>
-    <circle cx="36" cy="20" r="2" fill="#152C53" opacity="0.4"/>
-    <circle cx="30" cy="32" r="2" fill="#152C53" opacity="0.4"/>
-  </g>
-</g>
-
-<!-- 腕の高さ (Arm height) detail - left side -->
-<g transform="translate(4,212)">
-  <text x="0" y="0" class="t">腕の高さ</text>
-  <g transform="translate(5,8)">
-    <path d="M0,0 Q22,20 0,52" class="d"/>
-    <circle cx="2" cy="5" r="2" class="j" opacity="0.5"/>
-    <text x="8" y="9" class="ts">4</text>
-    <circle cx="10" cy="18" r="2" class="j" opacity="0.5"/>
-    <text x="16" y="22" class="ts">3</text>
-    <circle cx="14" cy="32" r="2" class="j" opacity="0.5"/>
-    <text x="20" y="36" class="ts">2</text>
-    <circle cx="8" cy="46" r="2" class="j" opacity="0.5"/>
-    <text x="14" y="50" class="ts">1</text>
-  </g>
-</g>
-
-<!-- 肩甲骨スライド detail - right side -->
-<g transform="translate(242,120)">
-  <text x="0" y="0" class="t">肩甲骨SL</text>
-  <g transform="translate(2,8)">
-    <rect x="0" y="0" width="36" height="36" rx="2" class="df"/>
-    <line x1="18" y1="0" x2="18" y2="36" class="d"/>
-    <line x1="0" y1="18" x2="36" y2="18" class="d"/>
-    <text x="5" y="13" class="ts">1</text>
-    <text x="23" y="13" class="ts">1</text>
-    <text x="5" y="31" class="ts">2</text>
-    <text x="23" y="31" class="ts">2</text>
-  </g>
-</g>
-
-<!-- 股関節ライン detail - bottom right -->
-<g transform="translate(228,238)">
-  <text x="0" y="0" class="t">股関節</text>
-  <g transform="translate(2,8)">
-    <line x1="8" y1="0" x2="8" y2="42" stroke="#152C53" stroke-width="1.2"/>
-    <circle cx="8" cy="7" r="3" fill="none" stroke="#152C53" stroke-width="0.8"/>
-    <text x="16" y="10" class="ts">外</text>
-    <circle cx="8" cy="21" r="3" fill="none" stroke="#152C53" stroke-width="0.8"/>
-    <text x="16" y="24" class="ts">中</text>
-    <circle cx="8" cy="35" r="3" fill="none" stroke="#152C53" stroke-width="0.8"/>
-    <text x="16" y="38" class="ts">内</text>
-  </g>
-</g>
-
-<!-- 顔 detail labels -->
-<g transform="translate(62,28)">
-  <text x="0" y="0" class="ts">腕の向き 顔の向き</text>
-</g>
-
-<!-- ===== NUMBER LABELS ===== -->
-<text x="72" y="174" class="num" onclick="scrollToItem(1)">1</text>
-<text x="198" y="100" class="num" onclick="scrollToItem(2)">2</text>
-<text x="152" y="90" class="num" onclick="scrollToItem(3)">3</text>
-<text x="54" y="222" class="num" onclick="scrollToItem(4)">4-6</text>
-<text x="224" y="174" class="num" onclick="scrollToItem(7)">7</text>
-<text x="152" y="120" class="num" onclick="scrollToItem(8)">8</text>
-<text x="36" y="280" class="num" onclick="scrollToItem(9)">9</text>
-<text x="152" y="250" class="num" onclick="scrollToItem(10)">10</text>
-<text x="170" y="265" class="num" onclick="scrollToItem(12)">12</text>
-<text x="202" y="320" class="num" onclick="scrollToItem(13)">13</text>
-<text x="108" y="410" class="num" onclick="scrollToItem(14)">14</text>
-<text x="202" y="360" class="num" onclick="scrollToItem(15)">15</text>
-<text x="152" y="275" class="num" onclick="scrollToItem(16)">16</text>
-<text x="105" y="480" class="num" onclick="scrollToItem(17)">17</text>
-<text x="130" y="300" class="num" onclick="scrollToItem(18)">18-19</text>
-<text x="132" y="155" class="num" onclick="scrollToItem(20)">20-21</text>
-<text x="115" y="132" class="num" onclick="scrollToItem(22)">22</text>
-<text x="180" y="90" class="num" onclick="scrollToItem(23)">23</text>
-<text x="246" y="258" class="num" onclick="scrollToItem(24)">24</text>
-<text x="242" y="140" class="num" onclick="scrollToItem(25)">25</text>
-<text x="148" y="44" class="num" onclick="scrollToItem(30)">30-34</text>
-</svg>`,
-  kinnetic: `<svg viewBox="0 0 300 540" xmlns="http://www.w3.org/2000/svg">
-<style>
-  .b{stroke:#152C53;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
-  .j{fill:#152C53}
-  .bo{fill:none;stroke:#152C53;stroke-width:1.8;stroke-linecap:round}
-  .t{font-family:'Noto Sans JP',sans-serif;font-size:7.5px;fill:#152C53;font-weight:700}
-  .ts{font-family:'Noto Sans JP',sans-serif;font-size:6px;fill:#6B7280}
-  .d{stroke:#152C53;stroke-width:0.8;fill:none}
-  .df{fill:#EFF6FF;stroke:#152C53;stroke-width:0.8}
-  .num{font-family:'Oswald',sans-serif;font-size:8px;fill:#2563EB;font-weight:700;cursor:pointer}
-</style>
-
-<!-- Head -->
-<circle cx="150" cy="55" r="24" class="bo" stroke-width="2.2"/>
-<circle cx="142" cy="51" r="1.5" class="j"/>
-<circle cx="158" cy="51" r="1.5" class="j"/>
-<path d="M145,62 Q150,66 155,62" class="d"/>
-
-<!-- Neck -->
-<line x1="150" y1="79" x2="150" y2="95" class="b"/>
-
-<!-- Shoulders -->
-<path d="M150,95 L106,102" class="b"/>
-<path d="M150,95 L194,102" class="b"/>
-<circle cx="150" cy="95" r="4" class="j"/>
-<circle cx="106" cy="102" r="5" class="j"/>
-<circle cx="194" cy="102" r="5" class="j"/>
-
-<!-- Torso -->
-<line x1="150" y1="95" x2="150" y2="256" class="b"/>
-
-<!-- Left arm -->
-<line x1="106" y1="102" x2="80" y2="174" class="b"/>
-<circle cx="80" cy="174" r="5" class="j"/>
-<line x1="80" y1="174" x2="58" y2="252" class="b"/>
-<circle cx="58" cy="252" r="4" class="j"/>
-<ellipse cx="52" cy="276" rx="9" ry="12" class="bo" stroke-width="1.5"/>
-<line x1="48" y1="264" x2="46" y2="259" class="bo" stroke-width="1"/>
-
-<!-- Right arm -->
-<line x1="194" y1="102" x2="220" y2="174" class="b"/>
-<circle cx="220" cy="174" r="5" class="j"/>
-<line x1="220" y1="174" x2="242" y2="252" class="b"/>
-<circle cx="242" cy="252" r="4" class="j"/>
-<ellipse cx="248" cy="276" rx="9" ry="12" class="bo" stroke-width="1.5"/>
-<line x1="252" y1="264" x2="254" y2="259" class="bo" stroke-width="1"/>
-
-<!-- Pelvis -->
-<path d="M130,256 L150,256 L190,256" class="b"/>
-<circle cx="150" cy="256" r="4" class="j"/>
-<circle cx="130" cy="256" r="5" class="j"/>
-<circle cx="190" cy="256" r="5" class="j"/>
-
-<!-- Left leg -->
-<line x1="130" y1="256" x2="122" y2="356" class="b"/>
-<circle cx="122" cy="356" r="5" class="j"/>
-<line x1="122" y1="356" x2="117" y2="446" class="b"/>
-<circle cx="117" cy="446" r="4" class="j"/>
-<path d="M107,449 L102,472 Q114,482 127,472 L122,449" class="bo" stroke-width="1.5"/>
-
-<!-- Right leg -->
-<line x1="190" y1="256" x2="198" y2="356" class="b"/>
-<circle cx="198" cy="356" r="5" class="j"/>
-<line x1="198" y1="356" x2="203" y2="446" class="b"/>
-<circle cx="203" cy="446" r="4" class="j"/>
-<path d="M193,449 L188,472 Q200,482 213,472 L208,449" class="bo" stroke-width="1.5"/>
-
-<!-- ===== DETAIL: 足裏ライン ===== -->
-<g transform="translate(55,475)">
-  <text x="0" y="0" class="t">足裏ライン</text>
-  <g transform="translate(5,8)">
-    <!-- Left foot sole -->
-    <path d="M0,5 Q-3,18 0,35 Q8,42 18,35 Q22,18 18,5 Q12,0 6,0 Q2,0 0,5 Z" class="df"/>
-    <circle cx="5" cy="10" r="2.5" fill="#152C53" opacity="0.2"/>
-    <circle cx="14" cy="10" r="2.5" fill="#152C53" opacity="0.2"/>
-    <circle cx="9" cy="20" r="2" fill="#152C53" opacity="0.15"/>
-    <ellipse cx="9" cy="30" rx="5" ry="4" fill="#152C53" opacity="0.15"/>
-    <line x1="9" y1="3" x2="9" y2="38" class="d" stroke-dasharray="2,2"/>
-    <!-- Right foot sole -->
-    <g transform="translate(30,0)">
-      <path d="M0,5 Q-3,18 0,35 Q8,42 18,35 Q22,18 18,5 Q12,0 6,0 Q2,0 0,5 Z" class="df"/>
-      <circle cx="5" cy="10" r="2.5" fill="#152C53" opacity="0.2"/>
-      <circle cx="14" cy="10" r="2.5" fill="#152C53" opacity="0.2"/>
-      <circle cx="9" cy="20" r="2" fill="#152C53" opacity="0.15"/>
-      <ellipse cx="9" cy="30" rx="5" ry="4" fill="#152C53" opacity="0.15"/>
-      <line x1="9" y1="3" x2="9" y2="38" class="d" stroke-dasharray="2,2"/>
+  <!-- ▼ 腕の高さ detail (left-mid) -->
+  <g transform="translate(8,205)">
+    <rect x="-2" y="-10" width="44" height="66" rx="3" fill="#fff" stroke="#E2E8F0" stroke-width="0.5"/>
+    <text x="2" y="0" class="t">腕の高さ</text>
+    <g transform="translate(6,8)">
+      <path d="M0,0 Q20,22 0,48" class="d"/>
+      <circle cx="2" cy="4" r="2" fill="#152C53" opacity="0.4"/>
+      <text x="8" y="8" class="ts">4</text>
+      <circle cx="9" cy="16" r="2" fill="#152C53" opacity="0.4"/>
+      <text x="15" y="20" class="ts">3</text>
+      <circle cx="12" cy="30" r="2" fill="#152C53" opacity="0.4"/>
+      <text x="18" y="34" class="ts">2</text>
+      <circle cx="6" cy="42" r="2" fill="#152C53" opacity="0.4"/>
+      <text x="12" y="46" class="ts">1</text>
     </g>
   </g>
-</g>
 
-<!-- Number labels -->
-<text x="38" y="272" class="num" onclick="scrollToItem(1)">1-2</text>
-<text x="50" y="248" class="num" onclick="scrollToItem(3)">3-4</text>
-<text x="68" y="168" class="num" onclick="scrollToItem(5)">5-6</text>
-<text x="88" y="132" class="num" onclick="scrollToItem(7)">7</text>
-<text x="222" y="132" class="num" onclick="scrollToItem(8)">8</text>
-<text x="100" y="108" class="num" onclick="scrollToItem(9)">9</text>
-<text x="152" y="150" class="num" onclick="scrollToItem(10)">10-11</text>
-<text x="152" y="128" class="num" onclick="scrollToItem(12)">12-13</text>
-<text x="202" y="358" class="num" onclick="scrollToItem(14)">14</text>
-<text x="112" y="318" class="num" onclick="scrollToItem(15)">15-16</text>
-<text x="152" y="180" class="num" onclick="scrollToItem(17)">17-18</text>
-<text x="112" y="142" class="num" onclick="scrollToItem(19)">19</text>
-<text x="152" y="250" class="num" onclick="scrollToItem(20)">20-21</text>
-<text x="126" y="272" class="num" onclick="scrollToItem(22)">22-23</text>
-<text x="112" y="400" class="num" onclick="scrollToItem(24)">24</text>
-<text x="206" y="446" class="num" onclick="scrollToItem(25)">25-26</text>
-<text x="192" y="475" class="num" onclick="scrollToItem(27)">27-29</text>
-<text x="152" y="222" class="num" onclick="scrollToItem(30)">30</text>
-<text x="134" y="290" class="num" onclick="scrollToItem(31)">31-32</text>
-<text x="152" y="92" class="num" onclick="scrollToItem(33)">33</text>
-<text x="152" y="244" class="num" onclick="scrollToItem(34)">34</text>
+  <!-- ▼ 肩甲骨-鎖骨 detail (top-right) -->
+  <g transform="translate(228,72)">
+    <rect x="-2" y="-10" width="62" height="52" rx="3" fill="#fff" stroke="#E2E8F0" stroke-width="0.5"/>
+    <text x="2" y="0" class="t">肩甲骨-鎖骨</text>
+    <g transform="translate(2,6)">
+      <line x1="6" y1="2" x2="6" y2="34" stroke="#152C53" stroke-width="1"/>
+      <text x="12" y="8" class="ts">上</text>
+      <text x="12" y="20" class="ts">中</text>
+      <text x="12" y="32" class="ts">下</text>
+      <path d="M30,0 Q42,16 30,34" class="d"/>
+      <circle cx="30" cy="6" r="2" fill="#152C53" opacity="0.3"/>
+      <circle cx="35" cy="17" r="2" fill="#152C53" opacity="0.3"/>
+      <circle cx="30" cy="28" r="2" fill="#152C53" opacity="0.3"/>
+    </g>
+  </g>
+
+  <!-- ▼ 肩甲骨スライド detail (right) -->
+  <g transform="translate(234,132)">
+    <rect x="-2" y="-10" width="52" height="54" rx="3" fill="#fff" stroke="#E2E8F0" stroke-width="0.5"/>
+    <text x="2" y="0" class="t">肩甲骨SL</text>
+    <g transform="translate(6,8)">
+      <rect x="0" y="0" width="32" height="32" rx="1" class="df"/>
+      <line x1="16" y1="0" x2="16" y2="32" class="d"/>
+      <line x1="0" y1="16" x2="32" y2="16" class="d"/>
+      <text x="5" y="12" class="ts">1</text>
+      <text x="21" y="12" class="ts">1</text>
+      <text x="5" y="28" class="ts">3</text>
+      <text x="21" y="28" class="ts">3</text>
+    </g>
+  </g>
+
+  <!-- ▼ 股関節ライン detail (bottom-right) -->
+  <g transform="translate(230,224)">
+    <rect x="-2" y="-10" width="48" height="54" rx="3" fill="#fff" stroke="#E2E8F0" stroke-width="0.5"/>
+    <text x="2" y="0" class="t">股関節</text>
+    <g transform="translate(4,8)">
+      <line x1="8" y1="0" x2="8" y2="36" stroke="#152C53" stroke-width="1"/>
+      <circle cx="8" cy="6" r="3" fill="none" stroke="#152C53" stroke-width="0.6"/>
+      <text x="16" y="9" class="ts">外</text>
+      <circle cx="8" cy="18" r="3" fill="none" stroke="#152C53" stroke-width="0.6"/>
+      <text x="16" y="21" class="ts">中</text>
+      <circle cx="8" cy="30" r="3" fill="none" stroke="#152C53" stroke-width="0.6"/>
+      <text x="16" y="33" class="ts">内</text>
+    </g>
+  </g>
+
+  <!-- Numbers -->
+  <text x="82" y="162" class="n" onclick="scrollToItem(1)">1</text>
+  <text x="198" y="92" class="n" onclick="scrollToItem(2)">2</text>
+  <text x="153" y="83" class="n" onclick="scrollToItem(3)">3</text>
+  <text x="70" y="210" class="n" onclick="scrollToItem(4)">4</text>
+  <text x="70" y="236" class="n" onclick="scrollToItem(5)">5</text>
+  <text x="224" y="236" class="n" onclick="scrollToItem(6)">6</text>
+  <text x="212" y="162" class="n" onclick="scrollToItem(7)">7</text>
+  <text x="153" y="112" class="n" onclick="scrollToItem(8)">8</text>
+  <text x="62" y="260" class="n" onclick="scrollToItem(9)">9</text>
+  <text x="153" y="240" class="n" onclick="scrollToItem(10)">10</text>
+  <text x="172" y="252" class="n" onclick="scrollToItem(11)">11</text>
+  <text x="125" y="256" class="n" onclick="scrollToItem(12)">12</text>
+  <text x="178" y="300" class="n" onclick="scrollToItem(13)">13</text>
+  <text x="115" y="390" class="n" onclick="scrollToItem(14)">14</text>
+  <text x="178" y="342" class="n" onclick="scrollToItem(15)">15</text>
+  <text x="153" y="266" class="n" onclick="scrollToItem(16)">16</text>
+  <text x="112" y="455" class="n" onclick="scrollToItem(17)">17</text>
+  <text x="133" y="285" class="n" onclick="scrollToItem(18)">18</text>
+  <text x="153" y="155" class="n" onclick="scrollToItem(20)">20</text>
+  <text x="118" y="132" class="n" onclick="scrollToItem(22)">22</text>
+  <text x="183" y="83" class="n" onclick="scrollToItem(23)">23</text>
+  <text x="148" y="40" class="n" onclick="scrollToItem(30)">30</text>
+
 </svg>`,
-  operation: `<svg viewBox="0 0 300 540" xmlns="http://www.w3.org/2000/svg">
+  kinnetic: `<svg viewBox="0 0 300 500" xmlns="http://www.w3.org/2000/svg">
 <style>
-  .b{stroke:#152C53;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+  .b{stroke:#152C53;stroke-width:2.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
   .j{fill:#152C53}
-  .bo{fill:none;stroke:#152C53;stroke-width:1.8;stroke-linecap:round}
-  .t{font-family:'Noto Sans JP',sans-serif;font-size:7.5px;fill:#152C53;font-weight:700}
-  .ts{font-family:'Noto Sans JP',sans-serif;font-size:6px;fill:#6B7280}
-  .d{stroke:#152C53;stroke-width:0.8;fill:none}
-  .num{font-family:'Oswald',sans-serif;font-size:8px;fill:#059669;font-weight:700;cursor:pointer}
+  .jo{fill:none;stroke:#152C53;stroke-width:2;stroke-linecap:round}
+  .t{font-family:'Noto Sans JP',sans-serif;font-size:7px;fill:#152C53;font-weight:700}
+  .ts{font-family:'Noto Sans JP',sans-serif;font-size:5.5px;fill:#6B7280}
+  .d{stroke:#152C53;stroke-width:0.7;fill:none}
+  .df{fill:#EFF6FF;stroke:#152C53;stroke-width:0.7}
+  .n{font-family:'Oswald',sans-serif;font-size:8px;fill:#2563EB;font-weight:700;cursor:pointer}
+  .n:hover{opacity:0.5}
 </style>
 
-<!-- Head -->
-<circle cx="150" cy="55" r="24" class="bo" stroke-width="2.2"/>
-<circle cx="142" cy="51" r="1.5" class="j"/>
-<circle cx="158" cy="51" r="1.5" class="j"/>
-<path d="M145,62 Q150,66 155,62" class="d"/>
+  <!-- Head -->
+  <circle cx="150" cy="48" r="22" class="jo" stroke-width="2.5"/>
+  <circle cx="143" cy="44" r="1.8" class="j"/>
+  <circle cx="157" cy="44" r="1.8" class="j"/>
+  <!-- Neck -->
+  <line x1="150" y1="70" x2="150" y2="86" class="b"/>
+  <!-- Shoulders -->
+  <line x1="150" y1="86" x2="104" y2="96" class="b"/>
+  <line x1="150" y1="86" x2="196" y2="96" class="b"/>
+  <circle cx="150" cy="86" r="3.5" class="j"/>
+  <circle cx="104" cy="96" r="4.5" class="j"/>
+  <circle cx="196" cy="96" r="4.5" class="j"/>
+  <!-- Spine -->
+  <line x1="150" y1="86" x2="150" y2="244" class="b"/>
+  <!-- Left arm -->
+  <line x1="104" y1="96" x2="90" y2="165" class="b"/>
+  <circle cx="90" cy="165" r="4.5" class="j"/>
+  <line x1="90" y1="165" x2="78" y2="238" class="b"/>
+  <circle cx="78" cy="238" r="3.5" class="j"/>
+  <ellipse cx="74" cy="258" rx="8" ry="10" class="jo"/>
+  <!-- Right arm -->
+  <line x1="196" y1="96" x2="210" y2="165" class="b"/>
+  <circle cx="210" cy="165" r="4.5" class="j"/>
+  <line x1="210" y1="165" x2="222" y2="238" class="b"/>
+  <circle cx="222" cy="238" r="3.5" class="j"/>
+  <ellipse cx="226" cy="258" rx="8" ry="10" class="jo"/>
+  <!-- Pelvis -->
+  <line x1="130" y1="244" x2="170" y2="244" class="b"/>
+  <circle cx="150" cy="244" r="3.5" class="j"/>
+  <circle cx="130" cy="244" r="4.5" class="j"/>
+  <circle cx="170" cy="244" r="4.5" class="j"/>
+  <!-- Left leg -->
+  <line x1="130" y1="244" x2="126" y2="340" class="b"/>
+  <circle cx="126" cy="340" r="4.5" class="j"/>
+  <line x1="126" y1="340" x2="124" y2="426" class="b"/>
+  <circle cx="124" cy="426" r="3.5" class="j"/>
+  <path d="M116,429 L112,452 Q124,460 136,452 L132,429" class="jo"/>
+  <!-- Right leg -->
+  <line x1="170" y1="244" x2="174" y2="340" class="b"/>
+  <circle cx="174" cy="340" r="4.5" class="j"/>
+  <line x1="174" y1="340" x2="176" y2="426" class="b"/>
+  <circle cx="176" cy="426" r="3.5" class="j"/>
+  <path d="M168,429 L164,452 Q176,460 188,452 L184,429" class="jo"/>
+  <!-- ▼ 足裏ライン detail -->
+  <g transform="translate(86,460)">
+    <text x="0" y="0" class="t">足裏ライン</text>
+    <g transform="translate(2,6)">
+      <path d="M0,4 Q-2,16 0,30 Q7,36 14,30 Q16,16 14,4 Q10,0 4,0 Q1,0 0,4Z" class="df"/>
+      <circle cx="4" cy="9" r="2" fill="#152C53" opacity="0.15"/>
+      <circle cx="10" cy="9" r="2" fill="#152C53" opacity="0.15"/>
+      <ellipse cx="7" cy="25" rx="4" ry="3" fill="#152C53" opacity="0.12"/>
+      <line x1="7" y1="2" x2="7" y2="33" class="d" stroke-dasharray="1.5,1.5"/>
+    </g>
+    <g transform="translate(22,6)">
+      <path d="M0,4 Q-2,16 0,30 Q7,36 14,30 Q16,16 14,4 Q10,0 4,0 Q1,0 0,4Z" class="df"/>
+      <circle cx="4" cy="9" r="2" fill="#152C53" opacity="0.15"/>
+      <circle cx="10" cy="9" r="2" fill="#152C53" opacity="0.15"/>
+      <ellipse cx="7" cy="25" rx="4" ry="3" fill="#152C53" opacity="0.12"/>
+      <line x1="7" y1="2" x2="7" y2="33" class="d" stroke-dasharray="1.5,1.5"/>
+    </g>
+  </g>
 
-<!-- Neck -->
-<line x1="150" y1="79" x2="150" y2="95" class="b"/>
+  <!-- Numbers -->
+  <text x="62" y="254" class="n" onclick="scrollToItem(1)">1</text>
+  <text x="228" y="254" class="n" onclick="scrollToItem(2)">2</text>
+  <text x="68" y="234" class="n" onclick="scrollToItem(3)">3</text>
+  <text x="224" y="234" class="n" onclick="scrollToItem(4)">4</text>
+  <text x="82" y="162" class="n" onclick="scrollToItem(5)">5</text>
+  <text x="212" y="162" class="n" onclick="scrollToItem(6)">6</text>
+  <text x="97" y="128" class="n" onclick="scrollToItem(7)">7</text>
+  <text x="198" y="128" class="n" onclick="scrollToItem(8)">8</text>
+  <text x="106" y="104" class="n" onclick="scrollToItem(9)">9</text>
+  <text x="153" y="142" class="n" onclick="scrollToItem(10)">10</text>
+  <text x="192" y="104" class="n" onclick="scrollToItem(11)">11</text>
+  <text x="116" y="138" class="n" onclick="scrollToItem(12)">12</text>
+  <text x="216" y="170" class="n" onclick="scrollToItem(13)">13</text>
+  <text x="178" y="342" class="n" onclick="scrollToItem(14)">14</text>
+  <text x="118" y="310" class="n" onclick="scrollToItem(15)">15</text>
+  <text x="178" y="310" class="n" onclick="scrollToItem(16)">16</text>
+  <text x="153" y="172" class="n" onclick="scrollToItem(17)">17</text>
+  <text x="153" y="192" class="n" onclick="scrollToItem(18)">18</text>
+  <text x="118" y="142" class="n" onclick="scrollToItem(19)">19</text>
+  <text x="153" y="240" class="n" onclick="scrollToItem(20)">20</text>
+  <text x="172" y="252" class="n" onclick="scrollToItem(21)">21</text>
+  <text x="125" y="260" class="n" onclick="scrollToItem(22)">22</text>
+  <text x="172" y="280" class="n" onclick="scrollToItem(23)">23</text>
+  <text x="118" y="385" class="n" onclick="scrollToItem(24)">24</text>
+  <text x="178" y="430" class="n" onclick="scrollToItem(25)">25</text>
+  <text x="118" y="430" class="n" onclick="scrollToItem(26)">26</text>
+  <text x="178" y="455" class="n" onclick="scrollToItem(27)">27</text>
+  <text x="118" y="455" class="n" onclick="scrollToItem(28)">28</text>
+  <text x="172" y="340" class="n" onclick="scrollToItem(29)">29</text>
+  <text x="153" y="215" class="n" onclick="scrollToItem(30)">30</text>
+  <text x="133" y="270" class="n" onclick="scrollToItem(31)">31</text>
+  <text x="153" y="92" class="n" onclick="scrollToItem(33)">33</text>
+  <text x="153" y="235" class="n" onclick="scrollToItem(34)">34</text>
 
-<!-- Shoulders (wider) -->
-<path d="M150,95 L98,104" class="b"/>
-<path d="M150,95 L202,104" class="b"/>
-<circle cx="150" cy="95" r="4" class="j"/>
-<circle cx="98" cy="104" r="5" class="j"/>
-<circle cx="202" cy="104" r="5" class="j"/>
-
-<!-- Torso -->
-<line x1="150" y1="95" x2="150" y2="256" class="b"/>
-
-<!-- Left arm (spread wide) -->
-<line x1="98" y1="104" x2="52" y2="158" class="b"/>
-<circle cx="52" cy="158" r="5" class="j"/>
-<line x1="52" y1="158" x2="22" y2="235" class="b"/>
-<circle cx="22" cy="235" r="4" class="j"/>
-<ellipse cx="14" cy="258" rx="9" ry="12" class="bo" stroke-width="1.5"/>
-
-<!-- Right arm (spread wide) -->
-<line x1="202" y1="104" x2="248" y2="158" class="b"/>
-<circle cx="248" cy="158" r="5" class="j"/>
-<line x1="248" y1="158" x2="278" y2="235" class="b"/>
-<circle cx="278" cy="235" r="4" class="j"/>
-<ellipse cx="286" cy="258" rx="9" ry="12" class="bo" stroke-width="1.5"/>
-
-<!-- Pelvis -->
-<path d="M130,256 L150,256 L190,256" class="b"/>
-<circle cx="150" cy="256" r="4" class="j"/>
-<circle cx="130" cy="256" r="5" class="j"/>
-<circle cx="190" cy="256" r="5" class="j"/>
-
-<!-- 4BOX grid on torso (subtle) -->
-<rect x="132" y="140" width="36" height="54" rx="2" stroke="#152C53" stroke-width="0.6" fill="none" opacity="0.2" stroke-dasharray="3,2"/>
-<line x1="132" y1="158" x2="168" y2="158" stroke="#152C53" stroke-width="0.4" stroke-dasharray="2,2" opacity="0.2"/>
-<line x1="132" y1="176" x2="168" y2="176" stroke="#152C53" stroke-width="0.4" stroke-dasharray="2,2" opacity="0.2"/>
-<text x="170" y="152" class="ts">胸</text>
-<text x="170" y="170" class="ts">肋</text>
-<text x="170" y="188" class="ts">下腹</text>
-
-<!-- Left leg -->
-<line x1="130" y1="256" x2="120" y2="358" class="b"/>
-<circle cx="120" cy="358" r="5" class="j"/>
-<line x1="120" y1="358" x2="115" y2="448" class="b"/>
-<circle cx="115" cy="448" r="4" class="j"/>
-<path d="M105,451 L100,474 Q112,484 125,474 L120,451" class="bo" stroke-width="1.5"/>
-
-<!-- Right leg -->
-<line x1="190" y1="256" x2="200" y2="358" class="b"/>
-<circle cx="200" cy="358" r="5" class="j"/>
-<line x1="200" y1="358" x2="205" y2="448" class="b"/>
-<circle cx="205" cy="448" r="4" class="j"/>
-<path d="M195,451 L190,474 Q202,484 215,474 L210,451" class="bo" stroke-width="1.5"/>
-
-<!-- Number labels -->
-<text x="152" y="150" class="num" onclick="scrollToItem(1)">1-3</text>
-<text x="230" y="130" class="num" onclick="scrollToItem(4)">4</text>
-<text x="62" y="130" class="num" onclick="scrollToItem(5)">5</text>
-<text x="126" y="278" class="num" onclick="scrollToItem(6)">6</text>
-<text x="178" y="140" class="num" onclick="scrollToItem(7)">7</text>
-<text x="4" y="256" class="num" onclick="scrollToItem(8)">8</text>
-<text x="152" y="264" class="num" onclick="scrollToItem(9)">9</text>
-<text x="152" y="318" class="num" onclick="scrollToItem(10)">10-11</text>
-<text x="60" y="168" class="num" onclick="scrollToItem(12)">12</text>
-<text x="232" y="168" class="num" onclick="scrollToItem(13)">13</text>
-<text x="272" y="256" class="num" onclick="scrollToItem(14)">14</text>
-<text x="140" y="172" class="num" onclick="scrollToItem(15)">15</text>
-<text x="152" y="340" class="num" onclick="scrollToItem(16)">16</text>
-<text x="152" y="244" class="num" onclick="scrollToItem(17)">17</text>
-<text x="178" y="254" class="num" onclick="scrollToItem(18)">18</text>
-<text x="100" y="222" class="num" onclick="scrollToItem(19)">19</text>
-<text x="214" y="100" class="num" onclick="scrollToItem(20)">20</text>
-<text x="148" y="42" class="num" onclick="scrollToItem(21)">21-22</text>
 </svg>`,
-  signal: `<svg viewBox="0 0 300 540" xmlns="http://www.w3.org/2000/svg">
+  operation: `<svg viewBox="0 0 300 500" xmlns="http://www.w3.org/2000/svg">
 <style>
-  .b{stroke:#152C53;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+  .b{stroke:#152C53;stroke-width:2.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
   .j{fill:#152C53}
-  .bo{fill:none;stroke:#152C53;stroke-width:1.8;stroke-linecap:round}
-  .d{stroke:#152C53;stroke-width:0.8;fill:none}
-  .num{font-family:'Oswald',sans-serif;font-size:8px;fill:#7C3AED;font-weight:700;cursor:pointer}
+  .jo{fill:none;stroke:#152C53;stroke-width:2;stroke-linecap:round}
+  .t{font-family:'Noto Sans JP',sans-serif;font-size:7px;fill:#152C53;font-weight:700}
+  .ts{font-family:'Noto Sans JP',sans-serif;font-size:5.5px;fill:#6B7280}
+  .d{stroke:#152C53;stroke-width:0.7;fill:none}
+  .df{fill:#EFF6FF;stroke:#152C53;stroke-width:0.7}
+  .n{font-family:'Oswald',sans-serif;font-size:8px;fill:#059669;font-weight:700;cursor:pointer}
+  .n:hover{opacity:0.5}
 </style>
 
-<!-- Head -->
-<circle cx="150" cy="55" r="24" class="bo" stroke-width="2.2"/>
-<circle cx="142" cy="51" r="1.5" class="j"/>
-<circle cx="158" cy="51" r="1.5" class="j"/>
-<path d="M145,62 Q150,66 155,62" class="d"/>
+  <!-- Head -->
+  <circle cx="150" cy="48" r="22" class="jo" stroke-width="2.5"/>
+  <circle cx="143" cy="44" r="1.8" class="j"/>
+  <circle cx="157" cy="44" r="1.8" class="j"/>
+  <!-- Neck -->
+  <line x1="150" y1="70" x2="150" y2="86" class="b"/>
+  <!-- Shoulders (wider) -->
+  <line x1="150" y1="86" x2="96" y2="98" class="b"/>
+  <line x1="150" y1="86" x2="204" y2="98" class="b"/>
+  <circle cx="150" cy="86" r="3.5" class="j"/>
+  <circle cx="96" cy="98" r="4.5" class="j"/>
+  <circle cx="204" cy="98" r="4.5" class="j"/>
+  <!-- Spine -->
+  <line x1="150" y1="86" x2="150" y2="244" class="b"/>
+  <!-- Left arm (spread ~40deg) -->
+  <line x1="96" y1="98" x2="56" y2="155" class="b"/>
+  <circle cx="56" cy="155" r="4.5" class="j"/>
+  <line x1="56" y1="155" x2="30" y2="226" class="b"/>
+  <circle cx="30" cy="226" r="3.5" class="j"/>
+  <ellipse cx="24" cy="246" rx="8" ry="10" class="jo"/>
+  <!-- Right arm (spread ~40deg) -->
+  <line x1="204" y1="98" x2="244" y2="155" class="b"/>
+  <circle cx="244" cy="155" r="4.5" class="j"/>
+  <line x1="244" y1="155" x2="270" y2="226" class="b"/>
+  <circle cx="270" cy="226" r="3.5" class="j"/>
+  <ellipse cx="276" cy="246" rx="8" ry="10" class="jo"/>
+  <!-- Pelvis -->
+  <line x1="130" y1="244" x2="170" y2="244" class="b"/>
+  <circle cx="150" cy="244" r="3.5" class="j"/>
+  <circle cx="130" cy="244" r="4.5" class="j"/>
+  <circle cx="170" cy="244" r="4.5" class="j"/>
+  <!-- Left leg -->
+  <line x1="130" y1="244" x2="126" y2="340" class="b"/>
+  <circle cx="126" cy="340" r="4.5" class="j"/>
+  <line x1="126" y1="340" x2="124" y2="426" class="b"/>
+  <circle cx="124" cy="426" r="3.5" class="j"/>
+  <path d="M116,429 L112,452 Q124,460 136,452 L132,429" class="jo"/>
+  <!-- Right leg -->
+  <line x1="170" y1="244" x2="174" y2="340" class="b"/>
+  <circle cx="174" cy="340" r="4.5" class="j"/>
+  <line x1="174" y1="340" x2="176" y2="426" class="b"/>
+  <circle cx="176" cy="426" r="3.5" class="j"/>
+  <path d="M168,429 L164,452 Q176,460 188,452 L184,429" class="jo"/>
+  <!-- 4BOX grid hint on torso -->
+  <rect x="135" y="132" width="30" height="50" rx="1" stroke="#152C53" stroke-width="0.5" fill="none" opacity="0.2" stroke-dasharray="2,2"/>
+  <line x1="135" y1="149" x2="165" y2="149" stroke="#152C53" stroke-width="0.3" stroke-dasharray="1.5,1.5" opacity="0.2"/>
+  <line x1="135" y1="165" x2="165" y2="165" stroke="#152C53" stroke-width="0.3" stroke-dasharray="1.5,1.5" opacity="0.2"/>
 
-<!-- Neck -->
-<line x1="150" y1="79" x2="150" y2="95" class="b"/>
+  <!-- Numbers -->
+  <text x="153" y="142" class="n" onclick="scrollToItem(1)">1</text>
+  <text x="153" y="158" class="n" onclick="scrollToItem(2)">2</text>
+  <text x="153" y="178" class="n" onclick="scrollToItem(3)">3</text>
+  <text x="218" y="118" class="n" onclick="scrollToItem(4)">4</text>
+  <text x="72" y="118" class="n" onclick="scrollToItem(5)">5</text>
+  <text x="126" y="268" class="n" onclick="scrollToItem(6)">6</text>
+  <text x="170" y="130" class="n" onclick="scrollToItem(7)">7</text>
+  <text x="14" y="244" class="n" onclick="scrollToItem(8)">8</text>
+  <text x="153" y="252" class="n" onclick="scrollToItem(9)">9</text>
+  <text x="153" y="300" class="n" onclick="scrollToItem(10)">10</text>
+  <text x="153" y="280" class="n" onclick="scrollToItem(11)">11</text>
+  <text x="48" y="158" class="n" onclick="scrollToItem(12)">12</text>
+  <text x="248" y="158" class="n" onclick="scrollToItem(13)">13</text>
+  <text x="280" y="244" class="n" onclick="scrollToItem(14)">14</text>
+  <text x="140" y="162" class="n" onclick="scrollToItem(15)">15</text>
+  <text x="153" y="330" class="n" onclick="scrollToItem(16)">16</text>
+  <text x="153" y="238" class="n" onclick="scrollToItem(17)">17</text>
+  <text x="174" y="248" class="n" onclick="scrollToItem(18)">18</text>
+  <text x="100" y="210" class="n" onclick="scrollToItem(19)">19</text>
+  <text x="210" y="92" class="n" onclick="scrollToItem(20)">20</text>
+  <text x="153" y="38" class="n" onclick="scrollToItem(21)">21</text>
 
-<!-- Shoulders -->
-<path d="M150,95 L108,102" class="b"/>
-<path d="M150,95 L192,102" class="b"/>
-<circle cx="150" cy="95" r="4" class="j"/>
-<circle cx="108" cy="102" r="5" class="j"/>
-<circle cx="192" cy="102" r="5" class="j"/>
+</svg>`,
+  signal: `<svg viewBox="0 0 300 500" xmlns="http://www.w3.org/2000/svg">
+<style>
+  .b{stroke:#152C53;stroke-width:2.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
+  .j{fill:#152C53}
+  .jo{fill:none;stroke:#152C53;stroke-width:2;stroke-linecap:round}
+  .t{font-family:'Noto Sans JP',sans-serif;font-size:7px;fill:#152C53;font-weight:700}
+  .ts{font-family:'Noto Sans JP',sans-serif;font-size:5.5px;fill:#6B7280}
+  .d{stroke:#152C53;stroke-width:0.7;fill:none}
+  .df{fill:#EFF6FF;stroke:#152C53;stroke-width:0.7}
+  .n{font-family:'Oswald',sans-serif;font-size:8px;fill:#7C3AED;font-weight:700;cursor:pointer}
+  .n:hover{opacity:0.5}
+</style>
 
-<!-- Signal waves -->
-<path d="M95,96 Q85,90 75,96 Q65,102 55,96" stroke="#7C3AED" stroke-width="1" fill="none" opacity="0.4"/>
-<path d="M93,88 Q80,80 67,88 Q54,96 41,88" stroke="#7C3AED" stroke-width="0.7" fill="none" opacity="0.25"/>
-<path d="M205,96 Q215,90 225,96 Q235,102 245,96" stroke="#7C3AED" stroke-width="1" fill="none" opacity="0.4"/>
-<path d="M207,88 Q220,80 233,88 Q246,96 259,88" stroke="#7C3AED" stroke-width="0.7" fill="none" opacity="0.25"/>
+  <!-- Head -->
+  <circle cx="150" cy="48" r="22" class="jo" stroke-width="2.5"/>
+  <circle cx="143" cy="44" r="1.8" class="j"/>
+  <circle cx="157" cy="44" r="1.8" class="j"/>
+  <!-- Neck -->
+  <line x1="150" y1="70" x2="150" y2="86" class="b"/>
+  <!-- Shoulders -->
+  <line x1="150" y1="86" x2="104" y2="96" class="b"/>
+  <line x1="150" y1="86" x2="196" y2="96" class="b"/>
+  <circle cx="150" cy="86" r="3.5" class="j"/>
+  <circle cx="104" cy="96" r="4.5" class="j"/>
+  <circle cx="196" cy="96" r="4.5" class="j"/>
+  <!-- Spine -->
+  <line x1="150" y1="86" x2="150" y2="244" class="b"/>
+  <!-- Left arm -->
+  <line x1="104" y1="96" x2="90" y2="165" class="b"/>
+  <circle cx="90" cy="165" r="4.5" class="j"/>
+  <line x1="90" y1="165" x2="78" y2="238" class="b"/>
+  <circle cx="78" cy="238" r="3.5" class="j"/>
+  <ellipse cx="74" cy="258" rx="8" ry="10" class="jo"/>
+  <!-- Right arm -->
+  <line x1="196" y1="96" x2="210" y2="165" class="b"/>
+  <circle cx="210" cy="165" r="4.5" class="j"/>
+  <line x1="210" y1="165" x2="222" y2="238" class="b"/>
+  <circle cx="222" cy="238" r="3.5" class="j"/>
+  <ellipse cx="226" cy="258" rx="8" ry="10" class="jo"/>
+  <!-- Pelvis -->
+  <line x1="130" y1="244" x2="170" y2="244" class="b"/>
+  <circle cx="150" cy="244" r="3.5" class="j"/>
+  <circle cx="130" cy="244" r="4.5" class="j"/>
+  <circle cx="170" cy="244" r="4.5" class="j"/>
+  <!-- Left leg -->
+  <line x1="130" y1="244" x2="126" y2="340" class="b"/>
+  <circle cx="126" cy="340" r="4.5" class="j"/>
+  <line x1="126" y1="340" x2="124" y2="426" class="b"/>
+  <circle cx="124" cy="426" r="3.5" class="j"/>
+  <path d="M116,429 L112,452 Q124,460 136,452 L132,429" class="jo"/>
+  <!-- Right leg -->
+  <line x1="170" y1="244" x2="174" y2="340" class="b"/>
+  <circle cx="174" cy="340" r="4.5" class="j"/>
+  <line x1="174" y1="340" x2="176" y2="426" class="b"/>
+  <circle cx="176" cy="426" r="3.5" class="j"/>
+  <path d="M168,429 L164,452 Q176,460 188,452 L184,429" class="jo"/>
+  <!-- Signal waves from shoulders -->
+  <path d="M94,90 Q84,84 74,90 Q64,96 54,90" stroke="#7C3AED" stroke-width="0.8" fill="none" opacity="0.35"/>
+  <path d="M90,82 Q78,74 66,82 Q54,90 42,82" stroke="#7C3AED" stroke-width="0.5" fill="none" opacity="0.2"/>
+  <path d="M206,90 Q216,84 226,90 Q236,96 246,90" stroke="#7C3AED" stroke-width="0.8" fill="none" opacity="0.35"/>
+  <path d="M210,82 Q222,74 234,82 Q246,90 258,82" stroke="#7C3AED" stroke-width="0.5" fill="none" opacity="0.2"/>
 
-<!-- Torso -->
-<line x1="150" y1="95" x2="150" y2="256" class="b"/>
+  <!-- Numbers -->
+  <text x="148" y="32" class="n" onclick="scrollToItem(1)">1</text>
+  <text x="165" y="42" class="n" onclick="scrollToItem(2)">2</text>
+  <text x="68" y="210" class="n" onclick="scrollToItem(3)">3</text>
+  <text x="82" y="140" class="n" onclick="scrollToItem(4)">4</text>
+  <text x="178" y="318" class="n" onclick="scrollToItem(5)">5</text>
+  <text x="178" y="430" class="n" onclick="scrollToItem(6)">6</text>
+  <text x="212" y="126" class="n" onclick="scrollToItem(7)">7</text>
+  <text x="118" y="365" class="n" onclick="scrollToItem(8)">8</text>
+  <text x="112" y="455" class="n" onclick="scrollToItem(9)">9</text>
+  <text x="80" y="165" class="n" onclick="scrollToItem(10)">10</text>
+  <text x="153" y="252" class="n" onclick="scrollToItem(11)">11</text>
+  <text x="153" y="172" class="n" onclick="scrollToItem(12)">12</text>
+  <text x="153" y="195" class="n" onclick="scrollToItem(13)">13</text>
+  <text x="153" y="145" class="n" onclick="scrollToItem(14)">14</text>
+  <text x="133" y="236" class="n" onclick="scrollToItem(15)">15</text>
+  <text x="153" y="218" class="n" onclick="scrollToItem(16)">16</text>
+  <text x="218" y="165" class="n" onclick="scrollToItem(17)">17</text>
+  <text x="153" y="125" class="n" onclick="scrollToItem(18)">18</text>
+  <text x="198" y="195" class="n" onclick="scrollToItem(19)">19</text>
+  <text x="228" y="195" class="n" onclick="scrollToItem(20)">20</text>
+  <text x="100" y="195" class="n" onclick="scrollToItem(21)">21</text>
+  <text x="153" y="275" class="n" onclick="scrollToItem(22)">22</text>
 
-<!-- Left arm -->
-<line x1="108" y1="102" x2="82" y2="178" class="b"/>
-<circle cx="82" cy="178" r="5" class="j"/>
-<line x1="82" y1="178" x2="62" y2="258" class="b"/>
-<circle cx="62" cy="258" r="4" class="j"/>
-<ellipse cx="56" cy="282" rx="9" ry="12" class="bo" stroke-width="1.5"/>
-
-<!-- Right arm -->
-<line x1="192" y1="102" x2="218" y2="178" class="b"/>
-<circle cx="218" cy="178" r="5" class="j"/>
-<line x1="218" y1="178" x2="238" y2="258" class="b"/>
-<circle cx="238" cy="258" r="4" class="j"/>
-<ellipse cx="244" cy="282" rx="9" ry="12" class="bo" stroke-width="1.5"/>
-
-<!-- Pelvis -->
-<path d="M130,256 L150,256 L190,256" class="b"/>
-<circle cx="150" cy="256" r="4" class="j"/>
-<circle cx="130" cy="256" r="5" class="j"/>
-<circle cx="190" cy="256" r="5" class="j"/>
-
-<!-- Left leg -->
-<line x1="130" y1="256" x2="122" y2="358" class="b"/>
-<circle cx="122" cy="358" r="5" class="j"/>
-<line x1="122" y1="358" x2="117" y2="448" class="b"/>
-<circle cx="117" cy="448" r="4" class="j"/>
-<path d="M107,451 L102,474 Q114,484 127,474 L122,451" class="bo" stroke-width="1.5"/>
-
-<!-- Right leg -->
-<line x1="190" y1="256" x2="198" y2="358" class="b"/>
-<circle cx="198" cy="358" r="5" class="j"/>
-<line x1="198" y1="358" x2="203" y2="448" class="b"/>
-<circle cx="203" cy="448" r="4" class="j"/>
-<path d="M193,451 L188,474 Q200,484 213,474 L208,451" class="bo" stroke-width="1.5"/>
-
-<!-- Number labels -->
-<text x="148" y="38" class="num" onclick="scrollToItem(1)">1</text>
-<text x="172" y="48" class="num" onclick="scrollToItem(2)">2</text>
-<text x="55" y="225" class="num" onclick="scrollToItem(3)">3</text>
-<text x="74" y="148" class="num" onclick="scrollToItem(4)">4</text>
-<text x="178" y="330" class="num" onclick="scrollToItem(5)">5</text>
-<text x="206" y="446" class="num" onclick="scrollToItem(6)">6</text>
-<text x="222" y="132" class="num" onclick="scrollToItem(7)">7</text>
-<text x="112" y="375" class="num" onclick="scrollToItem(8)">8</text>
-<text x="108" y="475" class="num" onclick="scrollToItem(9)">9</text>
-<text x="68" y="172" class="num" onclick="scrollToItem(10)">10</text>
-<text x="152" y="262" class="num" onclick="scrollToItem(11)">11</text>
-<text x="152" y="180" class="num" onclick="scrollToItem(12)">12</text>
-<text x="152" y="205" class="num" onclick="scrollToItem(13)">13</text>
-<text x="152" y="150" class="num" onclick="scrollToItem(14)">14</text>
-<text x="124" y="244" class="num" onclick="scrollToItem(15)">15</text>
-<text x="152" y="230" class="num" onclick="scrollToItem(16)">16</text>
-<text x="238" y="168" class="num" onclick="scrollToItem(17)">17</text>
-<text x="152" y="130" class="num" onclick="scrollToItem(18)">18</text>
-<text x="198" y="205" class="num" onclick="scrollToItem(19)">19-20</text>
-<text x="98" y="205" class="num" onclick="scrollToItem(21)">21</text>
-<text x="152" y="290" class="num" onclick="scrollToItem(22)">22</text>
 </svg>`
 };
 
