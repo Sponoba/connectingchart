@@ -189,8 +189,7 @@ body{font-family:'Noto Sans JP',-apple-system,BlinkMacSystemFont,sans-serif;back
       <button class="hb" onclick="toggleSearch()">🔍 検索</button>
       <button class="hb" onclick="exportAll()" style="background:var(--orange)">📥 全員出力</button>
       <button class="hb" onclick="toggleHistory()">履歴 <span id="hc">0</span></button>
-      <button class="hb" onclick="document.getElementById('pwMo').classList.add('on')" style="opacity:.7">🔑</button>
-      <button class="hb" onclick="doLogout()" style="opacity:.7">⏏</button>
+      <!-- ログインなし運用のため非表示 -->
     </div>
   </div>
   <div class="tabs" id="tabBar">
@@ -449,17 +448,9 @@ document.addEventListener('DOMContentLoaded',async()=>{
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd2V2a2Jma2tlZWh2bHpkd2JkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1NjQxMzUsImV4cCI6MjA4ODE0MDEzNX0.szx_qnr7hP1BtQb-VZX7g4Q0JpN-ziUv-H_ECQvHuh4'
   );
   document.getElementById('pD').value=new Date().toISOString().split('T')[0];
-  // Check existing session
-  const{data:{session}}=await _sb.auth.getSession();
-  if(session){
-    document.getElementById('authWall').classList.add('gone');
-    render();
-  }
-  // Listen for auth changes
-  _sb.auth.onAuthStateChange((ev,session)=>{
-    if(session) document.getElementById('authWall').classList.add('gone');
-    else document.getElementById('authWall').classList.remove('gone');
-  });
+  // ログインスキップ（社内専用）
+  document.getElementById('authWall').classList.add('gone');
+  render();
 });
 
 // ═══ TAB SWITCH ═══
