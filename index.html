@@ -1,0 +1,2546 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>SPONOBA Assessment</title>
+<!-- PWA disabled for reliable updates -->
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="SPONOBA">
+<meta name="theme-color" content="#0F1F3D">
+<link rel="apple-touch-icon" href="icon-180.png">
+<script>let _sb,_editIds={};const TPL_VER='2.0';</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700;800&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0F1F3D;--navy-l:#1A2E52;--navy-ll:#243B66;--orange:#E8530E;--orange-h:#FF6B2C;--orange-light:#FFF5F0;--accent:#F59E0B;--g50:#F8FAFC;--g100:#F1F5F9;--g200:#E2E8F0;--g300:#CBD5E1;--g400:#94A3B8;--g500:#64748B;--g600:#475569;--g700:#334155;--g800:#1E293B;--ok:#10B981;--ok-bg:#ECFDF5;--warn:#F59E0B;--radius:10px;--shadow:0 1px 3px rgba(15,31,61,.08),0 4px 12px rgba(15,31,61,.04)}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'Noto Sans JP',-apple-system,BlinkMacSystemFont,sans-serif;background:#F0F2F5;color:var(--g700);min-height:100vh;min-height:100dvh;max-width:1200px;margin:0 auto;padding-bottom:76px}
+
+/* ══════ HEADER ══════ */
+.hd{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-l) 100%);color:#fff;padding:12px 16px 8px;position:sticky;top:0;z-index:200;box-shadow:0 2px 20px rgba(15,31,61,.35)}
+.hd-top{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.logo{font-family:'Oswald',sans-serif;font-weight:700;font-size:18px;letter-spacing:2.5px}
+.logo-s{font-size:9px;color:rgba(255,255,255,.45);letter-spacing:1px;font-weight:500;text-transform:uppercase}
+.li{width:32px;height:32px;background:var(--orange);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-weight:700;font-size:14px;color:#fff}
+.hd-r{margin-left:auto;display:flex;gap:5px}
+.hb{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.85);border-radius:8px;padding:6px 12px;font-size:11px;cursor:pointer;font-family:'Noto Sans JP',sans-serif;font-weight:600;transition:all .2s;backdrop-filter:blur(4px)}
+.hb:hover,.hb:active{background:rgba(255,255,255,.18)}
+
+/* ══════ TAB BAR ══════ */
+.tabs{display:flex;background:rgba(0,0,0,.2);border-radius:var(--radius);padding:3px;overflow-x:auto;gap:2px;scrollbar-width:none;-ms-overflow-style:none}
+.tabs::-webkit-scrollbar{display:none}
+.tb{flex-shrink:0;padding:8px 14px;border:none;border-radius:8px;background:transparent;color:rgba(255,255,255,.4);font-family:'Oswald',sans-serif;font-weight:600;font-size:11.5px;letter-spacing:.8px;cursor:pointer;transition:all .2s;white-space:nowrap;position:relative}
+.tb:active{transform:scale(.96)}
+.tb.on{background:var(--orange);color:#fff;box-shadow:0 2px 8px rgba(232,83,14,.4)}
+
+/* ══════ PLAYER INFO CARD ══════ */
+.pi{background:#fff;padding:12px 16px;border-bottom:none;box-shadow:var(--shadow)}
+.ir{display:grid;gap:6px;margin-bottom:0}
+.ir.c2{grid-template-columns:1fr 80px}
+.ir.eq{grid-template-columns:1fr 1fr}
+.ir.cr{grid-template-columns:80px 1fr;align-items:center;margin-bottom:0}
+.fl{font-size:10px;color:var(--g400);font-weight:700;margin-bottom:2px;display:block;text-transform:uppercase;letter-spacing:.5px}
+.fi{width:100%;padding:7px 10px;border:1.5px solid var(--g200);border-radius:8px;font-size:14px;font-family:'Noto Sans JP',sans-serif;outline:none;transition:all .2s;background:var(--g50);color:var(--g800)}
+.fi:focus{border-color:var(--orange);background:#fff;box-shadow:0 0 0 3px rgba(232,83,14,.1)}
+select.fi{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2394A3B8'%3E%3Cpath d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
+
+/* ══════ EDIT BANNER ══════ */
+.eb{display:none;background:linear-gradient(90deg,#FEF3C7,#FDE68A);border-bottom:2px solid var(--warn);padding:8px 16px;text-align:center;font-size:12px;font-weight:700;color:#92400E}
+.eb.on{display:flex;align-items:center;justify-content:center;gap:12px}
+.eb button{background:#92400E;color:#fff;border:none;border-radius:6px;padding:4px 16px;font-size:11px;cursor:pointer;font-family:'Noto Sans JP',sans-serif;font-weight:600}
+
+/* ══════ MAIN LAYOUT ══════ */
+.main-layout{display:flex;gap:0;min-height:calc(100vh - 120px);min-height:calc(100dvh - 120px)}
+.svg-panel{width:34%;min-width:280px;position:sticky;top:100px;height:calc(100vh - 120px);height:calc(100dvh - 120px);overflow-y:auto;background:#fff;border-right:1px solid var(--g200);padding:8px;box-shadow:inset -4px 0 12px rgba(0,0,0,.03)}
+.svg-panel svg{width:100%;height:auto}
+.input-panel{flex:1;min-width:0;background:var(--g50)}
+@media(max-width:768px){.main-layout{flex-direction:column}.svg-panel{width:100%;position:relative;top:0;height:auto;max-height:35vh;border-right:none;border-bottom:1px solid var(--g200);box-shadow:none}}
+
+/* SVG Panel */
+.bp-circle{cursor:pointer;transition:all .15s}
+.bp-circle:hover{transform:scale(1.3);filter:brightness(1.2)}
+.bp-num{font-family:'Oswald',sans-serif;font-weight:700;font-size:9px;fill:#fff;pointer-events:none;text-anchor:middle;dominant-baseline:central}
+.bp-label{font-family:'Noto Sans JP',sans-serif;font-size:7px;fill:var(--g500);text-anchor:middle}
+.svg-title{font-family:'Oswald',sans-serif;font-weight:700;font-size:13px;color:var(--navy);text-align:center;padding:6px 0 2px;letter-spacing:1px}
+.svg-panel .num:hover{opacity:0.6;font-size:10px}
+
+/* ══════ PROGRESS BAR ══════ */
+.ps{padding:8px 16px;background:#fff;border-bottom:1px solid var(--g100)}
+.ph{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.pl{font-size:10px;color:var(--g400);font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.pv{font-size:11px;font-weight:800}
+.pb{height:4px;background:var(--g100);border-radius:2px;overflow:hidden}
+.pf{height:100%;border-radius:2px;transition:width .4s cubic-bezier(.4,0,.2,1)}
+
+/* ══════ CHART TITLE ══════ */
+.ct{padding:12px 16px 6px}
+.ctt{font-family:'Oswald',sans-serif;font-size:15px;font-weight:700;color:var(--navy);letter-spacing:1px}
+.cts{font-size:11px;color:var(--g400);margin-top:1px}
+
+/* ══════ INPUT ROWS ══════ */
+.ic{background:transparent}
+.row{display:grid;grid-template-columns:36px 1fr;gap:8px;padding:10px 14px;border-bottom:1px solid var(--g100);background:#fff;margin:0 0 1px;transition:background .15s}
+.row:active{background:var(--g50)}
+.rn{font-family:'Oswald',sans-serif;font-size:13px;font-weight:700;color:var(--navy-ll);text-align:center;padding-top:2px;width:32px;height:32px;border-radius:8px;background:var(--g50);display:flex;align-items:center;justify-content:center;border:1px solid var(--g200)}
+.rl{font-size:13px;font-weight:700;color:var(--g800);margin-bottom:5px}
+.og{margin-bottom:4px;display:flex;align-items:flex-start;flex-wrap:wrap;gap:4px}
+.gl{font-size:10px;color:var(--g400);font-weight:800;min-width:22px;padding-top:6px;flex-shrink:0;text-transform:uppercase}
+
+/* ══════ PILL BUTTONS ══════ */
+.pls{display:flex;flex-wrap:wrap;gap:4px}
+.p{padding:6px 14px;border-radius:20px;border:1.5px solid var(--g200);background:#fff;color:var(--g600);font-size:13px;font-weight:500;font-family:'Noto Sans JP',sans-serif;cursor:pointer;transition:all .15s;white-space:nowrap;user-select:none;-webkit-user-select:none;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.p:hover{border-color:var(--orange);color:var(--orange)}
+.p:active{transform:scale(.95)}
+.p.on{background:var(--navy);color:#fff;border-color:var(--navy);font-weight:700;box-shadow:0 2px 8px rgba(15,31,61,.25)}
+
+/* ══════ BOTTOM BAR ══════ */
+.bb{position:fixed;bottom:0;left:0;right:0;max-width:1200px;margin:0 auto;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--g200);padding:10px 16px;display:flex;gap:8px;z-index:200;box-shadow:0 -4px 20px rgba(0,0,0,.06)}
+.ab{flex:1;padding:12px 0;border-radius:var(--radius);font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans JP',sans-serif;transition:all .2s;letter-spacing:.3px}
+.ab:active{transform:scale(.97)}
+.bc{border:1.5px solid var(--g300);background:#fff;color:var(--g500)}
+.be{border:1.5px solid var(--navy);background:#fff;color:var(--navy)}
+.bs{flex:1.5;border:none;background:linear-gradient(135deg,var(--orange),var(--orange-h));color:#fff;font-weight:800;box-shadow:0 4px 12px rgba(232,83,14,.3)}
+.bs.ok{background:linear-gradient(135deg,var(--ok),#34D399)}
+
+/* ══════ TOAST ══════ */
+.toast{position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-8px);background:var(--navy);color:#fff;padding:10px 28px;border-radius:var(--radius);font-size:13px;font-weight:700;box-shadow:0 8px 24px rgba(15,31,61,.3);opacity:0;transition:all .35s cubic-bezier(.4,0,.2,1);z-index:999;pointer-events:none;letter-spacing:.3px}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.ft{padding:24px 16px;text-align:center;font-size:10px;color:var(--g400)}
+
+/* ══════ SEARCH ══════ */
+.sp{display:none;background:#fff;border-bottom:2px solid var(--orange);padding:14px 16px;box-shadow:0 4px 16px rgba(0,0,0,.08)}
+.sp.open{display:block}
+.srow{display:flex;gap:8px;margin-bottom:8px;align-items:end}
+.srow .fi{flex:1}
+.sbtn{padding:8px 20px;background:var(--navy);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans JP',sans-serif;white-space:nowrap;transition:all .2s}
+.sbtn:active{transform:scale(.96)}
+.scls{padding:8px 14px;background:var(--g100);color:var(--g600);border:none;border-radius:8px;font-size:12px;cursor:pointer;font-family:'Noto Sans JP',sans-serif;font-weight:600}
+.srl{margin-top:8px;max-height:360px;overflow-y:auto}
+.sri{padding:12px 14px;border:1px solid var(--g200);border-radius:var(--radius);margin-bottom:6px;cursor:pointer;transition:all .15s;background:#fff}
+.sri:hover,.sri:active{background:var(--g50);border-color:var(--g300);transform:translateX(2px)}
+.sri b{color:var(--navy);font-size:14px}
+.sri small{display:block;font-size:11px;color:var(--g400);margin-top:3px}
+.sr0{color:var(--g400);font-size:12px;text-align:center;padding:20px}
+.csv-btn{background:var(--navy);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:12px;cursor:pointer;font-family:'Noto Sans JP',sans-serif;font-weight:700;margin-top:8px;width:100%;transition:all .2s}
+
+/* ══════ DETAIL MODAL ══════ */
+.dmo{position:fixed;inset:0;background:rgba(15,31,61,.6);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:500;display:none;align-items:center;justify-content:center;padding:16px}
+.dmo.on{display:flex}
+.dmd{background:#fff;border-radius:16px;width:100%;max-width:560px;max-height:85vh;overflow-y:auto;padding:24px;box-shadow:0 24px 48px rgba(15,31,61,.2)}
+.dmh{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.dmt{font-family:'Oswald',sans-serif;font-size:20px;color:var(--navy);letter-spacing:.5px}
+.dmx{background:var(--g100);border:none;border-radius:8px;padding:6px 16px;font-size:12px;cursor:pointer;font-weight:600;transition:all .2s}
+.dmx:hover{background:var(--g200)}
+.dtbl{width:100%;border-collapse:collapse;font-size:13px;border-radius:8px;overflow:hidden}
+.dtbl th{background:var(--navy);color:#fff;padding:7px 12px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.dtbl td{padding:7px 12px;border-bottom:1px solid var(--g100)}
+.dtbl tr:nth-child(even){background:var(--g50)}
+.det-edit{background:linear-gradient(135deg,var(--orange),var(--orange-h));color:#fff;border:none;border-radius:var(--radius);padding:12px;font-size:14px;cursor:pointer;font-family:'Noto Sans JP',sans-serif;font-weight:800;width:100%;margin-top:16px;box-shadow:0 4px 12px rgba(232,83,14,.25);transition:all .2s;letter-spacing:.3px}
+.det-edit:active{transform:scale(.98)}
+
+/* ══════ HISTORY ══════ */
+.hp{display:none;background:#fff;padding:14px 16px;border-bottom:2px solid var(--orange)}
+.hp.open{display:block}
+.ht{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:8px}
+.hi{padding:8px 0;border-bottom:1px solid var(--g100);font-size:13px}
+.hn{font-weight:600}.hm{color:var(--g400);margin-left:8px;font-size:12px}
+.he{font-size:12px;color:var(--g400)}
+
+/* ══════ TRAITS ══════ */
+.sec-hd{padding:10px 16px;background:var(--navy);color:#fff;font-family:'Oswald',sans-serif;font-weight:600;font-size:13px;letter-spacing:1px;margin-top:2px}
+.traits-row{padding:12px 16px;border-bottom:1px solid var(--g100);background:#fff}
+.tr-label{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:6px}
+.tr-sub{font-size:10px;color:var(--g400);font-weight:700;margin-bottom:3px;text-transform:uppercase;letter-spacing:.5px}
+.tr-input{width:100%;padding:7px 10px;border:1.5px solid var(--g200);border-radius:8px;font-size:14px;font-family:'Noto Sans JP',sans-serif;outline:none;background:var(--g50);transition:all .2s}
+.tr-input:focus{border-color:var(--orange);background:#fff;box-shadow:0 0 0 3px rgba(232,83,14,.1)}
+.tr-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.tr-grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px}
+.rating-group{display:flex;gap:4px;margin-top:4px}
+.rating-btn{width:38px;height:38px;border-radius:50%;border:2px solid var(--g200);background:#fff;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;color:var(--g600)}
+.rating-btn:active{transform:scale(.9)}
+.rating-btn.on{background:var(--navy);color:#fff;border-color:var(--navy);box-shadow:0 2px 8px rgba(15,31,61,.25)}
+
+/* PW modal (unused but kept) */
+.pwmo{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:600;display:none;align-items:center;justify-content:center;padding:24px}
+.pwmo.on{display:flex}
+.pwbox{background:#fff;border-radius:16px;padding:28px 24px;width:100%;max-width:360px}
+.pwbox h3{font-family:'Oswald',sans-serif;color:var(--navy);font-size:20px;text-align:center;margin-bottom:16px}
+.pwbox .fi{margin-bottom:12px}
+.pwok{width:100%;padding:12px;background:var(--navy);color:#fff;border:none;border-radius:var(--radius);font-size:15px;font-weight:700;font-family:'Noto Sans JP',sans-serif;cursor:pointer}
+.pwok:disabled{opacity:.5}
+.pwmsg{font-size:13px;text-align:center;margin-top:8px;min-height:18px}
+.lb .fi{margin-bottom:12px}
+.lbt{width:100%;padding:14px;background:var(--orange);color:#fff;border:none;border-radius:var(--radius);font-size:16px;font-weight:700;font-family:'Noto Sans JP',sans-serif;cursor:pointer}
+.lbt:disabled{opacity:.5}
+.lerr{color:#B91C1C;font-size:13px;text-align:center;margin-top:8px;min-height:18px}
+.llogo{font-family:'Oswald',sans-serif;font-size:32px;color:#fff;letter-spacing:3px;margin-bottom:24px}
+
+/* ══════ AUTO SUMMARY PANEL ══════ */
+.as{display:none;background:#fff;border:2px solid var(--navy);border-radius:12px;margin:8px 12px;overflow:hidden;box-shadow:0 4px 20px rgba(15,31,61,.12)}
+.as.on{display:block}
+.as-h{background:var(--navy);color:#fff;padding:10px 14px}
+.as-b{padding:12px 14px}
+.as-sec{margin-bottom:12px}
+.as-sec h4{font-size:12px;font-weight:800;color:var(--navy);margin-bottom:6px;display:flex;align-items:center;gap:4px}
+.as-ta{width:100%;padding:8px 10px;border:1.5px solid var(--g200);border-radius:8px;font-size:13px;font-family:'Noto Sans JP',sans-serif;resize:vertical;min-height:60px;line-height:1.6}
+.as-ta:focus{border-color:var(--orange);outline:none}
+.as-act{display:flex;gap:8px;margin-top:8px}
+.as-save{flex:1;padding:10px;background:var(--navy);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans JP',sans-serif}
+.as-save:active{transform:scale(.98)}
+.as-close{padding:10px 16px;background:var(--g100);color:var(--g600);border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Noto Sans JP',sans-serif}
+.trait-tag{display:inline-block;font-size:11px;padding:3px 10px;border-radius:12px;background:#EFF3FB;color:var(--navy);font-weight:600;border:1px solid #CBD5E1;margin:2px}
+.gap-bar{height:6px;border-radius:3px;background:var(--g100);overflow:hidden;margin-top:3px}
+.gap-fill{height:100%;border-radius:3px;transition:width .4s}
+.ms-step{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--g100)}
+.ms-step:last-child{border-bottom:none}
+.ms-num{width:28px;height:28px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-weight:700;font-size:12px;flex-shrink:0}
+.ms-body{flex:1}
+.ms-title{font-weight:700;font-size:12px;color:var(--navy)}
+.ms-desc{font-size:11px;color:var(--g500);margin-top:1px;line-height:1.5}
+
+/* ══════ RESPONSIVE ══════ */
+@media(max-width:400px){
+  .p{padding:5px 10px;font-size:12px}
+  .rl{font-size:12px}
+  .tb{font-size:10.5px;padding:7px 10px}
+  .rn{width:28px;height:28px;font-size:11px}
+}
+@media(min-width:769px){
+  .row:hover{background:var(--g50)}
+  .sri:hover{transform:translateX(3px)}
+}
+</style>
+</head>
+<body>
+<!-- DETAIL MODAL -->
+<div class="dmo" id="detMo">
+  <div class="dmd">
+    <div class="dmh">
+      <div class="dmt" id="detTitle">データ詳細</div>
+      <button class="dmx" onclick="document.getElementById('detMo').classList.remove('on');document.getElementById('detEditBtn').style.display='block'">閉じる</button>
+    </div>
+    <div id="detBody"></div>
+    <button class="det-edit" id="detEditBtn" onclick="">このデータを編集する</button>
+  </div>
+</div>
+
+
+
+<div class="toast" id="toast">✓ 保存しました</div>
+
+<div class="hd">
+  <div class="hd-top">
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZAAAABaCAYAAACWuwCqAAAFiklEQVR4nO3d3W6kOBAGUHq17//K7EUUzYRNN2Dsctk+RxrlYtSAwfij+H3t+74BwF3/9F4AAMYkQAAoIkAAKCJAACgiQAAoIkAAKCJAACgiQAAoIkAAKCJAACgiQAAoIkAAKCJAACgiQAAoIkAAKPJv7wVY1J2PsLyaLQXAAyqQeL7gBUxBgOQncICUBAgARQRIrE/VhGsdwFAEyBicxgLSESA5vA5/AdITIHGeVhGqECAVAdKfqgMYkgCJ4cFBYDoCZCxOYwFpCJC+VBtf9k04wnC8C6u9koHxVfi7EXxq1/H/RgrYq9trpDYdrdBGbhAg49m3nzvoKNdXSgLx+zfvlrtmyJasmxZtKp3ucXq1+kWmNr5T2q+fLsPyQekUVj9nna9F5+xV1YxwC/Pd02g12pS9yhyljSOsyykJkLZader98DezWssY1dYrg1HNZcm6DUdsY9Z1OS0B0sdop5KyzCvDsrdYhhrTzD7gZzoAoBIB0k6NTlx6DjnDudnW1VcPKwxMK7Rx29ZpZ1MCZF5RFzBnlqHimcls63OFbfaRAInXujqYufqImj5wgQBpI8Mtime/NQhfs9INCyO08Y7Z2pOOAJnLb4EhRMaxwvZYoY3LECD1tbi4feV3GU5dPTH68h/N1p7frNBGPhAga4isQp48RR1xfShi0Ov5gbCoI/zoNpZuu9/WhyqoEgESp+WO5kgwL9umLuszEQFSV+YjG9dC/jAI1bXy+lxt3/lBgIwh8tUaAJcIkBhPjtCibgmuNZ+ot9rynvVJCAFST++dNtv7lFpa+ZQJ9+grDfkeSHtZqo9vWT9W9f2dEzs8n2Tsu8tSgdQxWqdufSqr1wd+mFett+zqYxUJkLyefAluZDO0gRxUs40JkLYyd+CsVUit+fecPmtZtj+5BvLZWcdodT3hyutQZu+0x2+/wx1P+07Wa4WpqEDeu9J5Mn657c7vM1chtZbhOD2DwvwceAQRIL/LMHieTTNiJ8mwHgz4kJQA+b+sn0y9MxDXqkJqESJEqvU9e5XMCQHyU8+nsXvK+oT633qFyGjbki8OOgIIkD+uXDDvNf938x5tcBs1RBjTbN9gT0eAfLkaHiMN2DXL9Syf6N222B11pO0N4QTI/crjyqByd5Br8RXDzGZsE23V/KAUlaweIC1PW13tuE87eM3KIfKbIZkfNNw2IZeV7ZLIygEScc2jZTj0kClEWvFCx/xsnyRWDJArD5PV7KCf5lXr1FXN5Y3eObO8eFFwzK3ktLLTXydWe5XJlQ5xNoiUvuSw1+BUMu9Pr3G4Mr2r6+jvmxOcloLBrFSB1AiPmvNf7cL50QptjGA95rFcxbJKgNQKj6eDfssOVnsgibygfjY/IKEVAiSy8rgaItHVhweq5mV9083sARIVHtEvOXxnpCrEwFdP7+otelvqO0nMHCC1wyPiBYWR12CyTXPWQWHWdsG0AdL7gnnJ9HsfRb7Tsh37dn5Kb0T74e+Motv4pK/MvB26mjVAztwdFEuvWfR4tqD1d0iO7Jy/i14vPQ5AbPvFrRggPXa0s3lGLZMdPresVWhNs7dxqX1s1gCJev15r6fFe8j2SvkZKrtsZmxjSZteh3+84Un0HNOb7TbbqCfL+cl6J9SsFci2OXKIsEr1EWHGNh2NUDWusB2qmTlA6KvVjjjTczYZzdLG73aoyBoSIJS6MtD0vObUSvRdbj2M3sZs63NasweIjtRGj5sHMm3LzK/Pz7i+VwuPZaqe2QOEHJ7ezZJhUDh6ukyf1kmWu/tatrGm1ndMZex/Kbz2fZmwJI8MbwqobcY2Ha3QRm4QIAAUcQoLgCICBIAiAgSAIgIEgCICBIAiAgSAIgIEgCICBIAiAgSAIgIEgCICBIAiAgSAIv8B1In+rrX+itMAAAAASUVORK5CYII=" alt="SPONOBA" style="height:28px;filter:brightness(0) invert(1)">
+    <div><div class="logo-s">CONNECTING CHART ASSESSMENT</div></div>
+    <div class="hd-r">
+      <button class="hb" onclick="toggleSearch()">🔍 検索</button>
+      <button class="hb" onclick="exportAll()" style="background:rgba(232,83,14,.3);border-color:rgba(232,83,14,.4)">📥 CSV出力</button>
+      <button class="hb" onclick="toggleHistory()">📋 <span id="hc">0</span></button>
+      <!-- ログインなし運用のため非表示 -->
+    </div>
+  </div>
+  <div class="tabs" id="tabBar">
+    <button class="tb on" data-tab="connect" onclick="sw('connect')">CONNECT</button>
+    <button class="tb" data-tab="kinnetic" onclick="sw('kinnetic')">KINETIC</button>
+    <button class="tb" data-tab="operation" onclick="sw('operation')">OPERATION</button>
+    <button class="tb" data-tab="signal" onclick="sw('signal')">SIGNAL</button>
+    <button class="tb" data-tab="traits" onclick="sw('traits')">TRAITS</button>
+    <button class="tb" data-tab="comments" onclick="sw('comments')">COMMENTS</button>
+  </div>
+</div>
+
+<!-- EDIT BANNER -->
+<div class="eb" id="editBanner">
+  ✏️ 編集モード：保存すると上書きされます
+  <button onclick="clearEditMode()">キャンセル</button>
+</div>
+
+<div class="hp" id="hp">
+  <div class="ht">保存履歴</div>
+  <div id="hl"><div class="he">まだ保存データはありません</div></div>
+</div>
+
+<!-- SEARCH -->
+<div class="sp" id="searchP">
+  <div class="srow">
+    <input class="fi" id="sQ" placeholder="選手名で検索">
+    <button class="sbtn" onclick="doSearch()">検索</button>
+    <button class="scls" onclick="toggleSearch()">閉じる</button>
+  </div>
+  <div class="srow">
+    <div style="flex:1"><label class="fl">開始日</label><input class="fi" id="sFrom" type="date"></div>
+    <div style="flex:1"><label class="fl">終了日</label><input class="fi" id="sTo" type="date"></div>
+    <div><label class="fl">タブ</label>
+      <select class="fi" id="sTab" style="padding:7px 8px">
+        <option value="">すべて</option>
+        <option value="connect">CONNECT</option>
+        <option value="kinnetic">KINETIC</option>
+        <option value="operation">OPERATION</option>
+        <option value="signal">SIGNAL</option>
+        <option value="traits">TRAITS</option>
+      </select>
+    </div>
+  </div>
+  <div class="srl" id="sRes"><div class="sr0">検索条件を入力して「検索」を押してください</div></div>
+  <button class="csv-btn" onclick="exportCSV()">📥 検索結果をCSVダウンロード</button>
+</div>
+
+<!-- Player Info -->
+<div class="main-layout">
+<!-- SVG DIAGRAM -->
+<div class="svg-panel">
+<div class="svg-title" id="svgTitle">POWER CONNECT CHARTS</div>
+<div id="svgBody"></div>
+</div>
+<!-- INPUT PANEL -->
+<div class="input-panel">
+<div class="pi">
+  <!-- 行1: 姓・名・性別・担当者 -->
+  <div class="ir" style="grid-template-columns:1fr 1fr 72px 1fr">
+    <div><label class="fl">姓</label><input class="fi" id="pLN" placeholder="山田"></div>
+    <div><label class="fl">名</label><input class="fi" id="pFN" placeholder="太郎"></div>
+    <div><label class="fl">性別</label>
+      <select class="fi" id="pGender">
+        <option value="">—</option>
+        <option value="男">男</option>
+        <option value="女">女</option>
+      </select>
+    </div>
+    <div><label class="fl">担当者</label>
+      <select class="fi" id="pTrainer">
+        <option value="">—</option>
+        <option value="木村">木村</option>
+        <option value="田丸">田丸</option>
+        <option value="万城目">万城目</option>
+        <option value="中川">中川</option>
+        <option value="佐藤">佐藤</option>
+        <option value="柿崎">柿崎</option>
+        <option value="真砂">真砂</option>
+        <option value="田中">田中</option>
+      </select>
+    </div>
+  </div>
+  <!-- 行2: 生年月日・ポジション・チーム名 -->
+  <div class="ir" style="grid-template-columns:1fr 1fr 1fr;margin-top:8px">
+    <div><label class="fl">生年月日</label>
+      <div style="display:flex;gap:4px;align-items:center">
+        <input class="fi" id="pDOB" type="text" inputmode="numeric" placeholder="2008-05-15" style="flex:1"
+          oninput="formatDOB(this)"
+          onblur="validateDOB(this)">
+        <input type="date" id="pDOB_picker" style="position:absolute;opacity:0;width:0;height:0;pointer-events:none" onchange="document.getElementById('pDOB').value=this.value">
+        <button onclick="openDOBPicker()" style="flex-shrink:0;padding:8px 8px;background:var(--navy);color:#fff;border:none;border-radius:8px;font-size:16px;cursor:pointer;line-height:1" title="カレンダー">📅</button>
+      </div>
+    </div>
+    <div><label class="fl">ポジション</label><input class="fi" id="pPos" placeholder="投手・捕手 等"></div>
+    <div><label class="fl">チーム名</label><input class="fi" id="pT" placeholder="チーム名"></div>
+  </div>
+  <!-- 行3: 身長・体重・測定日 -->
+  <div class="ir" style="grid-template-columns:1fr 1fr 1fr;margin-top:8px">
+    <div><label class="fl">身長 (cm)</label><input class="fi" id="pH" placeholder="183" type="number"></div>
+    <div><label class="fl">体重 (kg)</label><input class="fi" id="pW" placeholder="81" type="number"></div>
+    <div><label class="fl">測定日</label><input class="fi" id="pD" type="date"></div>
+  </div>
+  <!-- 行4: 所属・動画リンク・C度 -->
+  <div class="ir" style="grid-template-columns:140px 1fr 100px;margin-top:8px">
+    <div><label class="fl">所属</label>
+      <select class="fi" id="pLevel">
+        <option value="">—</option>
+        <option value="小学">小学</option>
+        <option value="中学">中学</option>
+        <option value="高校">高校</option>
+        <option value="大学">大学</option>
+        <option value="社会人">社会人</option>
+        <option value="独立・育成">独立・育成</option>
+        <option value="NPB２軍">NPB２軍</option>
+        <option value="NPB１軍">NPB１軍</option>
+      </select>
+    </div>
+    <div>
+      <label class="fl">動画リンク</label>
+      <div style="display:flex;gap:6px;align-items:center">
+        <input class="fi" id="pV" placeholder="OneDrive URLを貼り付け" style="flex:1">
+        <button onclick="openVideo()" style="flex-shrink:0;padding:8px 10px;background:var(--navy);color:#fff;border:none;border-radius:8px;font-size:18px;cursor:pointer;line-height:1" title="動画を開く">▶</button>
+      </div>
+    </div>
+    <div><label class="fl">C度</label><input class="fi" id="pC" placeholder="C度を入力"></div>
+  </div>
+</div>
+
+<!-- Progress -->
+<div class="ps">
+  <div class="ph">
+    <span class="pl">入力進捗</span>
+    <span class="pv" id="pvt" style="color:var(--orange)">0/0 (0%)</span>
+  </div>
+  <div class="pb"><div class="pf" id="pfl" style="width:0%;background:linear-gradient(90deg,var(--orange),#F59E0B)"></div></div>
+</div>
+
+<!-- Chart Title -->
+<div class="ct">
+  <div class="ctt" id="cttl">⚡ POWER CONNECT CHARTS 34</div>
+  <div class="cts" id="ctst">身体の接続・配置パターンの評価</div>
+</div>
+
+<!-- Items Container -->
+<!-- AUTO SUMMARY PANEL (inline, shown after save) -->
+<div class="as" id="autoSummary">
+  <div class="as-h">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <b>📊 Assessment Report</b>
+      <button onclick="hideAutoSummary()" style="background:rgba(255,255,255,.15);border:none;color:#fff;border-radius:6px;padding:4px 12px;font-size:11px;cursor:pointer">閉じる</button>
+    </div>
+    <div style="font-size:11px;color:rgba(255,255,255,.8);margin-top:3px" id="asMeta">—</div>
+  </div>
+  <div class="as-b">
+    <div id="asProfile"></div>
+    <div id="asGaps"></div>
+    <div id="asRoadmap"></div>
+    <div class="as-sec">
+      <h4>📝 次回セッションの内容</h4>
+      <textarea class="fi as-ta" id="asNextAction" rows="3" placeholder="次回セッションで取り組む具体的な内容を記入..."></textarea>
+      <div class="as-act">
+        <button class="as-save" onclick="saveSummaryInline()">💾 レポートを保存</button>
+        <button class="as-close" onclick="hideAutoSummary()">閉じる</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="mainContent"></div>
+
+<div class="ft">© SPOZANIA / SPONOBA Digital Assessment Platform v2.0</div>
+
+</div><!-- /input-panel -->
+</div><!-- /main-layout -->
+
+<div class="bb">
+  <button class="ab bc" onclick="newPlayer()" style="flex:.7">＋ 新規</button>
+  <button class="ab bc" onclick="clearTab()" style="flex:.5">クリア</button>
+  <button class="ab be" onclick="exportJSON()" style="flex:.6">PDF</button>
+  <button class="ab bs" id="svb" onclick="saveData()">保存</button>
+  <button class="ab" onclick="finishSession()" style="flex:.9;border:none;background:linear-gradient(135deg,var(--navy),var(--navy-l));color:#fff;font-weight:800;letter-spacing:.3px">📊 終了</button>
+</div>
+
+<script>
+// ═══ CONNECT 34 ═══
+const D_CON=[
+{id:1,l:"肘",g:[{g:"右",o:["近","中","遠"]},{g:"左",o:["近","中","遠"]}]},
+{id:2,l:"肩ー上腕",g:[{g:"右",o:["1","2","3","4"]},{g:"右",o:["内","中","外"]},{g:"左",o:["1","2","3","4"]},{g:"左",o:["内","中","外"]}]},
+{id:3,l:"肩ー鎖骨",g:[{g:"",o:["高","中","低"]}]},
+{id:4,l:"前腕",g:[{g:"",o:["クロス","パラレル"]}]},
+{id:5,l:"手首",g:[{g:"",o:["Inside","Outside"]}]},
+{id:6,l:"（手首屈伸）",g:[{g:"",o:["Bend","Stretch"]}]},
+{id:7,l:"腕",g:[{g:"",o:["右","左"]}]},
+{id:8,l:"腕組み",g:[{g:"上",o:["右","左"]},{g:"下",o:["右","左"]}]},
+{id:9,l:"手（親指）",g:[{g:"",o:["外","内"]}]},
+{id:10,l:"骨盤",g:[{g:"",o:["F","B"]}]},
+{id:11,l:"（骨盤左右）",g:[{g:"",o:["右","左"]}]},
+{id:12,l:"股関節",g:[{g:"",o:["右","左"]}]},
+{id:13,l:"大腿骨",g:[{g:"",o:["内","外"]}]},
+{id:14,l:"下腿",g:[{g:"",o:["内","外"]}]},
+{id:15,l:"脚（膝）",g:[{g:"",o:["右","左"]}]},
+{id:16,l:"足向き（仙骨）",g:[{g:"",o:["右向き","左向き"]}]},
+{id:17,l:"足指",g:[{g:"",o:["掴み","反らし"]}]},
+{id:18,l:"股関節ー脚（上）",g:[{g:"右",o:["外","中","内"]},{g:"左",o:["内","中","外"]}]},
+{id:19,l:"股関節ー脚（下）",g:[{g:"右",o:["外旋","内旋"]},{g:"左",o:["外旋","内旋"]}]},
+{id:20,l:"肋骨",g:[{g:"",o:["F","B"]}]},
+{id:21,l:"（肋骨左右）",g:[{g:"",o:["右","左"]}]},
+{id:22,l:"肩甲骨ー肋骨",g:[{g:"",o:["前回り","後回り"]}]},
+{id:23,l:"鎖骨",g:[{g:"",o:["前→","後ろ→"]}]},
+{id:24,l:"腕 遠心性ー求心",g:[{g:"",o:["遠→","求→"]}]},
+{id:25,l:"肩甲骨スライド",g:[{g:"右",o:["1","2","3","4"],m:2},{g:"左",o:["1","2","3","4"],m:2}]},
+{id:26,l:"肩甲骨ー骨盤",g:[{g:"右",o:["上","中","下"]},{g:"左",o:["上","中","下"]}]},
+{id:27,l:"腕の方向",g:[{g:"右",o:["横","前"]},{g:"左",o:["横","前"]}]},
+{id:28,l:"腕の高さ",g:[{g:"右",o:["1","2","3","4"],m:2},{g:"左",o:["1","2","3","4"],m:2}]},
+{id:29,l:"腕のハマり",g:[{g:"右",o:["表","裏"]},{g:"左",o:["表","裏"]}]},
+{id:30,l:"頭（顎の向き）",g:[{g:"",o:["上","下"]}]},
+{id:31,l:"目の向き",g:[{g:"",o:["右","左"]}]},
+{id:32,l:"眉毛",g:[{g:"",o:["上","下"]}]},
+{id:33,l:"口",g:[{g:"",o:["開","閉"]}]},
+{id:34,l:"数",g:[{g:"",o:["偶数","奇数"]}]},
+];
+
+// ═══ KINETIC 34 ═══
+const D_KIN=[
+{id:1,l:"手",g:[{g:"",o:["第2関節ライン","基節骨ライン","MP関節ライン"]}]},
+{id:2,l:"指",g:[{g:"右",o:["1","2","3","4","5"]},{g:"左",o:["1","2","3","4","5"]}]},
+{id:3,l:"手首",g:[{g:"右",o:["上げ","下げ"]},{g:"左",o:["上げ","下げ"]}]},
+{id:4,l:"（手首回転）",g:[{g:"右",o:["前転","後転"]},{g:"左",o:["前転","後転"]}]},
+{id:5,l:"腕",g:[{g:"右",o:["in（小胸筋）","out（三角筋）"]},{g:"左",o:["in（小胸筋）","out（三角筋）"]}]},
+{id:6,l:"（腕前後）",g:[{g:"右",o:["前","後"]},{g:"左",o:["前","後"]}]},
+{id:7,l:"上腕",g:[{g:"右",o:["内回し","外回し"]},{g:"左",o:["内回し","外回し"]}]},
+{id:8,l:"手首→腕→肩",g:[{g:"右",o:["1","2","3","4","5","6","7","8内"],m:2},{g:"左",o:["1","2","3","4","5","6","7","8内"],m:2}]},
+{id:9,l:"脇（体温計）",g:[{g:"",o:["右","左"]}]},
+{id:10,l:"腕",g:[{g:"",o:["ライン","サイクル"]}]},
+{id:11,l:"（腕回し）",g:[{g:"",o:["右回し","左回し"]}]},
+{id:12,l:"腕ー肩甲骨ー体幹",g:[{g:"",o:["上キネ","下キネ"]}]},
+{id:13,l:"（弾き）",g:[{g:"",o:["上弾き","下弾き"]}]},
+{id:14,l:"（膝裏）",g:[{g:"",o:["膝裏","アキレス"]}]},
+{id:15,l:"脚",g:[{g:"右 ↑",o:["1","2","3","4"]},{g:"右 ↓",o:["1","2","3","4"]},{g:"左 ↑",o:["1","2","3","4"]},{g:"左 ↓",o:["1","2","3","4"]}]},
+{id:16,l:"（脚）",g:[{g:"",o:["ライン","サイクル"]}]},
+{id:17,l:"体幹",g:[{g:"",o:["クロス","パラレル"]}]},
+{id:18,l:"（体幹ライン）",g:[{g:"",o:["前芯","後芯"]}]},
+{id:19,l:"肩甲骨（左右連動）",g:[{g:"",o:["上下系","前後系"]}]},
+{id:20,l:"骨盤",g:[{g:"",o:["縦の入れ替え","前後の入れ替え"]}]},
+{id:21,l:"（骨盤）",g:[{g:"",o:["腸骨","坐骨"]}]},
+{id:22,l:"股関節ー骨盤",g:[{g:"",o:["時計回り","反時計回り"]}]},
+{id:23,l:"（股関節）",g:[{g:"右",o:["in","out"]},{g:"左",o:["in","out"]}]},
+{id:24,l:"膝の角度",g:[{g:"",o:["伸","1","2","3","4","屈"]}]},
+{id:25,l:"下腿",g:[{g:"",o:["回内系","回外系"]}]},
+{id:26,l:"（下腿in/out）",g:[{g:"右",o:["in","out"]},{g:"左",o:["in","out"]}]},
+{id:27,l:"足（ハマり）",g:[{g:"右",o:["上げ","下げ"]},{g:"左",o:["上げ","下げ"]}]},
+{id:28,l:"（足エッジ）",g:[{g:"右",o:["インエッジ","アウトエッジ"]},{g:"左",o:["インエッジ","アウトエッジ"]}]},
+{id:29,l:"（足方向）",g:[{g:"右",o:["フロント","リア"]},{g:"左",o:["フロント","リア"]}]},
+{id:30,l:"腸サイクル",g:[{g:"",o:["腸サイクル","逆サイクル"]}]},
+{id:31,l:"脱ー脚連動",g:[{g:"",o:["上","下"]}]},
+{id:32,l:"（保持）",g:[{g:"",o:["移動","保持"]}]},
+{id:33,l:"顔",g:[{g:"回旋",o:["右","左"]},{g:"傾き",o:["右","左"]}]},
+{id:34,l:"ベース（体幹の要）",g:[{g:"",o:["顎","一関節（ウマ）","地尾","一膝ライオン"]}]},
+];
+
+// ═══ OPERATION 22 ═══
+const D_OPE=[
+{id:1,l:"四肢連動",g:[{g:"",o:["固定","揺動"]}]},
+{id:2,l:"センター芯ワーク",g:[{g:"",o:["揺芯","軸芯"]}]},
+{id:3,l:"背骨ワーク",g:[{g:"",o:["S字","C字"]}]},
+{id:4,l:"セット（入り・反応開始）",g:[{g:"",o:["前","後"]}]},
+{id:5,l:"リズム",g:[{g:"",o:["縦系","横系"]}]},
+{id:6,l:"腕ー脚連動",g:[{g:"",o:["脚→腕","腕→脚"]}]},
+{id:7,l:"腕ー体幹連動",g:[{g:"",o:["胸","肋骨","骨盤","膝","足首"]}]},
+{id:8,l:"重心感覚",g:[{g:"",o:["先端","重心"]},{g:"",o:["エンド","先回し"]}]},
+{id:9,l:"スタンス",g:[{g:"",o:["真ん中から","右から","左から"]}]},
+{id:10,l:"ステップ（足の運び）",g:[{g:"右足軸",o:["IN","1","2","3","4","OUT"]},{g:"左足軸",o:["IN","1","2","3","4","OUT"]}]},
+{id:11,l:"チェーン（ネジの方向）",g:[{g:"股関節 右→左",o:["上ネジ","下ネジ"]},{g:"股関節 左→右",o:["上ネジ","下ネジ"]}]},
+{id:12,l:"ネジスト",g:[{g:"右腕",o:["ネジ","スト"]},{g:"左腕",o:["ネジ","スト"]},{g:"右脚",o:["ネジ","スト"]},{g:"左脚",o:["ネジ","スト"]}]},
+{id:13,l:"身体ねじりワーク",g:[{g:"腕",o:["※自由記述"]},{g:"体幹",o:["※自由記述"]},{g:"脚",o:["※自由記述"]}]},
+{id:14,l:"フィンガーワーク",g:[{g:"",o:["パー","チョッパー"]}]},
+{id:15,l:"4BOXオペレーション",g:[{g:"胸",o:["動","固"]},{g:"胸",o:["右","左"]},{g:"肋",o:["動","固"]},{g:"肋",o:["右","左"]},{g:"骨盤",o:["動","固"]},{g:"骨盤",o:["右","左"]},{g:"下腿",o:["動","固"]},{g:"下腿",o:["右","左"]}]},
+{id:16,l:"ジャンプ",g:[{g:"",o:["伸張反射","コンセントリック","腱反射"]}]},
+{id:17,l:"SET ONE POINT",g:[{g:"",o:["腕骨","補尾","下腹","膝","足首","上","下"]}]},
+{id:18,l:"BOOSTER",g:[{g:"",o:["上ケツ","下ケツ"]}]},
+{id:19,l:"コンディショニング",g:[{g:"",o:["熱系（左内関）","冷系（右内関）"]}]},
+{id:20,l:"マエケン体操",g:[{g:"",o:["前回し","後回し","八の字","逆八の字"],m:2}]},
+{id:21,l:"視覚・聴覚の使い方",g:[{g:"",o:["分散型","集約型"]},{g:"",o:["騒","静"]}]},
+{id:22,l:"思考",g:[{g:"",o:["過去","現在","未来"]},{g:"",o:["内向き","外向き"]}]},
+];
+
+// ═══ SIGNAL 22 ═══
+const D_SIG=[
+{id:1,l:"頭点",g:[{g:"",o:["前","中","後"]}]},
+{id:2,l:"顔点",g:[{g:"",o:["コメカミ","頬骨"]},{g:"",o:["前","横"]},{g:"",o:["右","左"]}]},
+{id:3,l:"前腕",g:[{g:"",o:["近位","遠位"]}]},
+{id:4,l:"上腕",g:[{g:"",o:["近位","遠位"]}]},
+{id:5,l:"大腿",g:[{g:"もも前",o:["近位","遠位"]},{g:"もも裏",o:["近位","遠位"]},{g:"",o:["外","内"]}]},
+{id:6,l:"下腿",g:[{g:"",o:["近位","遠位"]},{g:"",o:["外","内"]}]},
+{id:7,l:"肩ー肘連動",g:[{g:"",o:["固定","運動"]},{g:"",o:["右方向","左方向"]}]},
+{id:8,l:"軸足ポジショニング",g:[{g:"",o:["大腿","下腿"]},{g:"",o:["3","2","1"]}]},
+{id:9,l:"タップフットワーク",g:[{g:"",o:["膝","足"]},{g:"",o:["右","左"]},{g:"",o:["上","下"]}]},
+{id:10,l:"腕のリズム",g:[{g:"右腕",o:["1","2","3","4","5"]},{g:"左腕",o:["1","2","3","4","5"]}]},
+{id:11,l:"骨盤",g:[{g:"右",o:["前","後"]},{g:"左",o:["前","後"]}]},
+{id:12,l:"体幹 要",g:[{g:"",o:["胸","腹","肩甲骨","腰裏"]},{g:"",o:["→右","→左"]}]},
+{id:13,l:"脊柱",g:[{g:"",o:["上7","中5","腰5"]},{g:"",o:["Y字","T字"]},{g:"",o:["内旋","外旋"]}]},
+{id:14,l:"主体",g:[{g:"",o:["腕","脚","体幹"]}]},
+{id:15,l:"コア4",g:[{g:"右",o:["上","下","IN","OUT"],m:2},{g:"左",o:["上","下","IN","OUT"],m:2}]},
+{id:16,l:"お腹",g:[{g:"",o:["上","中","下"]}]},
+{id:17,l:"刺激の質",g:[{g:"",o:["ハード系（胸声）","ソフト系（頭声）"]}]},
+{id:18,l:"呼吸",g:[{g:"",o:["胸","腹"]},{g:"",o:["吸い","吐き"]}]},
+{id:19,l:"（配分）",g:[{g:"",o:["骨系","筋系","神経系"]}]},
+{id:20,l:"筋骨神運動感覚",g:[{g:"",o:["ユル系","キツ系","ストレッチ系"]}]},
+{id:21,l:"（加減速）",g:[{g:"",o:["アクセル系","ブレーキ系"]}]},
+{id:22,l:"（方向）",g:[{g:"",o:["縦","横"]}]},
+];
+
+// ═══ TABS CONFIG ═══
+const TABS={
+  connect:{data:D_CON,title:"⚡ POWER CONNECT CHARTS 34",sub:"身体の接続・配置パターンの評価",type:"chart"},
+  kinnetic:{data:D_KIN,title:"⚡ POWER KINETIC CHARTS 34",sub:"運動連鎖・キネティックチェーンの評価",type:"chart"},
+  operation:{data:D_OPE,title:"⚡ POWER OPERATION CHARTS",sub:"動作オペレーション・運動パターンの評価",type:"chart"},
+  signal:{data:D_SIG,title:"⚡ POWER SIGNAL CHARTS",sub:"シグナルポイント・刺激応答の評価",type:"chart"},
+  traits:{data:null,title:"⚡ SPONOBA TRAITS METHOD",sub:"Science Approach + Sensory Approach",type:"traits"},
+  comments:{data:null,title:"📋 COMMENTS",sub:"カルテ・経過記録",type:"comments"},
+};
+
+// ═══ STATE ═══
+let cur='connect';
+let vals={connect:{},kinnetic:{},operation:{},signal:{},traits:{},comments:{entries:[]}};
+let hist=[];
+
+// ═══ INIT ═══
+document.addEventListener('DOMContentLoaded',()=>{
+  _sb = window.supabase.createClient(
+    'https://cfwevkbfkkeehvlzdwbd.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd2V2a2Jma2tlZWh2bHpkd2JkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1NjQxMzUsImV4cCI6MjA4ODE0MDEzNX0.szx_qnr7hP1BtQb-VZX7g4Q0JpN-ziUv-H_ECQvHuh4'
+  );
+  document.getElementById('pD').value=new Date().toISOString().split('T')[0];
+  render();
+  renderSVG(cur);
+});
+
+// ═══ TAB SWITCH ═══
+function sw(tab){
+  cur=tab;
+  document.querySelectorAll('.tb').forEach(b=>b.classList.toggle('on',b.dataset.tab===tab));
+  const t=TABS[tab];
+  document.getElementById('cttl').textContent=t.title;
+  document.getElementById('ctst').textContent=t.sub;
+  // サマリーパネルを閉じる
+  const sp=document.getElementById('autoSummary');if(sp)sp.classList.remove('on');
+  render();
+  renderSVG(tab);
+}
+
+
+// ═══ SVG BODY DIAGRAM ═══
+const SVG_BODIES = {
+  connect: `<svg viewBox="0 0 400 550" xmlns="http://www.w3.org/2000/svg">
+<style>
+  .b{stroke:#152C53;stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round}
+  .jc{fill:none;stroke:#152C53;stroke-width:2;stroke-linejoin:round}
+  .jf{fill:#152C53}
+  .thin{stroke:#152C53;stroke-width:1;fill:none;stroke-linecap:round}
+  .dash{stroke:#152C53;stroke-width:0.7;fill:none;stroke-dasharray:5,4;opacity:0.3}
+  .spine{stroke:#D4628A;stroke-width:1.5;fill:none;opacity:0.25}
+  .t{font-family:"Noto Sans JP",sans-serif;font-size:8px;fill:#152C53;font-weight:700}
+  .ts{font-family:"Noto Sans JP",sans-serif;font-size:6.5px;fill:#7B8DA0}
+  .d{stroke:#152C53;stroke-width:0.8;fill:none}
+  .dl{stroke:#152C53;stroke-width:0.5;fill:none}
+  .df{fill:#F4F7FE;stroke:#152C53;stroke-width:0.5}
+  .n{font-family:Oswald,sans-serif;font-size:8px;fill:#E83E0B;font-weight:700;cursor:pointer}
+  .n:hover{opacity:0.5}
+</style>
+
+  <!-- Head -->
+  <circle cx="200" cy="52" r="24" class="jc" stroke-width="2.4"/>
+  <polygon points="200,48 195,58 205,58" class="jf"/>
+
+  <!-- Neck -->
+  <line x1="200" y1="76" x2="200" y2="90" class="b"/>
+
+  <!-- Shoulder bar -->
+  <line x1="140" y1="100" x2="260" y2="100" class="b"/>
+  <line x1="200" y1="90" x2="200" y2="100" class="b"/>
+  <circle cx="200" cy="94" r="3.5" class="jc" stroke-width="1.5"/>
+  <circle cx="140" cy="100" r="6" class="jc" stroke-width="2"/>
+  <circle cx="260" cy="100" r="6" class="jc" stroke-width="2"/>
+
+  <!-- Rib cage outline -->
+  <path d="M165,108 Q158,140 162,172 Q180,190 200,194 Q220,190 238,172 Q242,140 235,108" class="thin" opacity="0.2"/>
+
+  <!-- Pelvis outline -->
+  <path d="M172,262 Q176,238 184,224 L200,220 L216,224 Q224,238 228,262 Q200,278 172,262Z" class="thin" opacity="0.2"/>
+
+  <!-- Spine -->
+  <line x1="200" y1="100" x2="200" y2="268" class="spine"/>
+  <!-- Center dash -->
+  <line x1="200" y1="46" x2="200" y2="510" class="dash"/>
+
+  <!-- Left upper arm (nearly horizontal) -->
+  <line x1="140" y1="100" x2="104" y2="104" class="b"/>
+  <circle cx="104" cy="104" r="5" class="jc" stroke-width="1.8"/>
+  <!-- Arm height lines from left shoulder (4 levels) -->
+  <line x1="140" y1="100" x2="94" y2="74" class="thin" opacity="0.2"/>
+  <line x1="140" y1="100" x2="90" y2="88" class="thin" opacity="0.2"/>
+  <line x1="140" y1="100" x2="90" y2="108" class="thin" opacity="0.2"/>
+  <line x1="140" y1="100" x2="96" y2="124" class="thin" opacity="0.2"/>
+
+  <!-- Right upper arm -->
+  <line x1="260" y1="100" x2="296" y2="104" class="b"/>
+  <circle cx="296" cy="104" r="5" class="jc" stroke-width="1.8"/>
+  <line x1="260" y1="100" x2="306" y2="74" class="thin" opacity="0.2"/>
+  <line x1="260" y1="100" x2="310" y2="88" class="thin" opacity="0.2"/>
+  <line x1="260" y1="100" x2="310" y2="108" class="thin" opacity="0.2"/>
+  <line x1="260" y1="100" x2="304" y2="124" class="thin" opacity="0.2"/>
+
+  <!-- Left forearm -->
+  <line x1="104" y1="104" x2="92" y2="178" class="b"/>
+  <circle cx="92" cy="178" r="5" class="jc" stroke-width="1.8"/>
+  <line x1="92" y1="178" x2="86" y2="216" class="b"/>
+  <circle cx="86" cy="216" r="4" class="jc" stroke-width="1.5"/>
+
+  <!-- Right forearm -->
+  <line x1="296" y1="104" x2="308" y2="178" class="b"/>
+  <circle cx="308" cy="178" r="5" class="jc" stroke-width="1.8"/>
+  <line x1="308" y1="178" x2="314" y2="216" class="b"/>
+  <circle cx="314" cy="216" r="4" class="jc" stroke-width="1.5"/>
+
+  <!-- Hip joints -->
+  <circle cx="176" cy="268" r="6" class="jc" stroke-width="2"/>
+  <circle cx="224" cy="268" r="6" class="jc" stroke-width="2"/>
+
+  <!-- Left leg -->
+  <line x1="176" y1="274" x2="176" y2="370" class="b"/>
+  <circle cx="176" cy="370" r="5" class="jc" stroke-width="1.8"/>
+  <line x1="176" y1="375" x2="176" y2="456" class="b"/>
+  <circle cx="176" cy="456" r="4" class="jc" stroke-width="1.5"/>
+  <path d="M166,460 L164,488 Q176,496 188,488 L186,460" class="jc" stroke-width="1.5"/>
+
+  <!-- Right leg -->
+  <line x1="224" y1="274" x2="224" y2="370" class="b"/>
+  <circle cx="224" cy="370" r="5" class="jc" stroke-width="1.8"/>
+  <line x1="224" y1="375" x2="224" y2="456" class="b"/>
+  <circle cx="224" cy="456" r="4" class="jc" stroke-width="1.5"/>
+  <path d="M214,460 L212,488 Q224,496 236,488 L234,460" class="jc" stroke-width="1.5"/>
+
+
+  <!-- ═══ LEFT SIDE DETAILS ═══ -->
+
+  <!-- ▼ 肘 (Elbow) -->
+  <g transform="translate(6,120)">
+    <text x="0" y="0" class="t">肘</text>
+    <g transform="translate(2,8)">
+      <path d="M6,0 L6,18 Q12,24 6,30 L6,64" class="d"/>
+      <line x1="0" y1="12" x2="12" y2="12" class="dl"/>
+      <text x="16" y="15" class="ts">近</text>
+      <line x1="0" y1="34" x2="12" y2="34" class="dl"/>
+      <text x="16" y="37" class="ts">中</text>
+      <line x1="0" y1="56" x2="12" y2="56" class="dl"/>
+      <text x="16" y="59" class="ts">遠</text>
+    </g>
+  </g>
+
+  <!-- ▼ 腕の高さ (Arm Height) -->
+  <g transform="translate(6,224)">
+    <text x="0" y="0" class="t">腕の高さ</text>
+    <g transform="translate(6,10)">
+      <circle cx="18" cy="6" r="5" class="dl"/>
+      <line x1="18" y1="11" x2="18" y2="32" class="dl"/>
+      <line x1="18" y1="14" x2="2" y2="4" class="dl"/>
+      <line x1="18" y1="14" x2="2" y2="12" class="dl"/>
+      <line x1="18" y1="14" x2="2" y2="22" class="dl"/>
+      <line x1="18" y1="14" x2="2" y2="30" class="dl"/>
+      <line x1="18" y1="14" x2="34" y2="4" class="dl"/>
+      <line x1="18" y1="14" x2="34" y2="12" class="dl"/>
+      <line x1="18" y1="14" x2="34" y2="22" class="dl"/>
+      <line x1="18" y1="14" x2="34" y2="30" class="dl"/>
+      <text x="-8" y="8" class="ts">4</text>
+      <text x="-8" y="16" class="ts">3</text>
+      <text x="-8" y="24" class="ts">2</text>
+      <text x="-8" y="32" class="ts">1</text>
+      <text x="38" y="8" class="ts">4</text>
+      <text x="38" y="16" class="ts">3</text>
+      <text x="38" y="24" class="ts">2</text>
+      <text x="38" y="32" class="ts">1</text>
+    </g>
+  </g>
+
+  <!-- ▼ 腕の向き / 顔の向き -->
+  <g transform="translate(6,310)">
+    <text x="0" y="0" class="t">腕の向き</text>
+    <text x="38" y="0" class="t">顔の向き</text>
+    <g transform="translate(12,8)">
+      <ellipse cx="20" cy="12" rx="18" ry="10" class="dl"/>
+      <circle cx="20" cy="12" r="5" class="dl"/>
+      <line x1="0" y1="24" x2="0" y2="30" class="dl"/>
+      <line x1="40" y1="24" x2="40" y2="30" class="dl"/>
+    </g>
+  </g>
+
+  <!-- ═══ RIGHT SIDE DETAILS ═══ -->
+
+  <!-- ▼ 肩甲骨-骨盤 (Scapula-Pelvis) -->
+  <g transform="translate(318,74)">
+    <text x="0" y="0" class="t">肩甲骨-骨盤</text>
+    <g transform="translate(4,8)">
+      <circle cx="20" cy="6" r="5" class="dl"/>
+      <path d="M10,14 L20,12 L30,14 L30,38 Q20,44 10,38Z" class="dl"/>
+      <ellipse cx="20" cy="44" rx="14" ry="5" class="dl"/>
+      <text x="-6" y="18" class="ts">上</text>
+      <text x="-6" y="30" class="ts">中</text>
+      <text x="-6" y="42" class="ts">下</text>
+      <path d="M36,18 Q44,26 36,34" class="dl"/>
+      <text x="48" y="18" class="ts">上</text>
+      <text x="48" y="30" class="ts">中</text>
+      <text x="48" y="42" class="ts">下</text>
+    </g>
+  </g>
+
+  <!-- ▼ 肩甲骨スライド (Scapula Slide) -->
+  <g transform="translate(318,156)">
+    <text x="0" y="0" class="t">肩甲骨スライド</text>
+    <g transform="translate(4,10)">
+      <path d="M6,2 Q24,0 42,2 L42,32 Q24,38 6,32Z" class="dl"/>
+      <line x1="24" y1="0" x2="24" y2="36" class="dl"/>
+      <line x1="6" y1="17" x2="42" y2="17" class="dl"/>
+      <text x="10" y="13" class="ts">1</text>
+      <text x="28" y="13" class="ts">1</text>
+      <text x="10" y="30" class="ts">3</text>
+      <text x="28" y="30" class="ts">3</text>
+      <text x="0" y="13" class="ts">2</text>
+      <text x="44" y="13" class="ts">2</text>
+      <text x="0" y="30" class="ts">4</text>
+      <text x="44" y="30" class="ts">4</text>
+    </g>
+  </g>
+
+  <!-- ▼ 股関節ライン (Hip Joint) -->
+  <g transform="translate(318,244)">
+    <text x="0" y="0" class="t">股関節ライン</text>
+    <g transform="translate(4,10)">
+      <ellipse cx="24" cy="16" rx="22" ry="14" class="dl"/>
+      <line x1="10" y1="4" x2="10" y2="28" class="dl" stroke-dasharray="2,2"/>
+      <line x1="38" y1="4" x2="38" y2="28" class="dl" stroke-dasharray="2,2"/>
+      <line x1="24" y1="4" x2="24" y2="28" class="dl" stroke-dasharray="2,2"/>
+      <text x="-4" y="12" class="ts">外</text>
+      <text x="12" y="28" class="ts">中</text>
+      <text x="20" y="34" class="ts">内</text>
+      <text x="28" y="34" class="ts">内</text>
+      <text x="34" y="28" class="ts">中</text>
+      <text x="48" y="12" class="ts">外</text>
+    </g>
+  </g>
+
+  <!-- ═══ NUMBERS ═══ -->
+  <text x="78" y="180" class="n" onclick="scrollToItem(1)">1</text>
+  <text x="268" y="96" class="n" onclick="scrollToItem(2)">2</text>
+  <text x="208" y="92" class="n" onclick="scrollToItem(3)">3</text>
+  <text x="64" y="224" class="n" onclick="scrollToItem(4)">4-6</text>
+  <text x="316" y="180" class="n" onclick="scrollToItem(7)">7</text>
+  <text x="210" y="130" class="n" onclick="scrollToItem(8)">8</text>
+  <text x="68" y="310" class="n" onclick="scrollToItem(9)">9</text>
+  <text x="208" y="262" class="n" onclick="scrollToItem(10)">10</text>
+  <text x="230" y="276" class="n" onclick="scrollToItem(12)">12</text>
+  <text x="236" y="326" class="n" onclick="scrollToItem(13)">13</text>
+  <text x="162" y="426" class="n" onclick="scrollToItem(14)">14</text>
+  <text x="236" y="374" class="n" onclick="scrollToItem(15)">15</text>
+  <text x="208" y="290" class="n" onclick="scrollToItem(16)">16</text>
+  <text x="184" y="510" class="n" onclick="scrollToItem(17)">17</text>
+  <text x="190" y="304" class="n" onclick="scrollToItem(18)">18-19</text>
+  <text x="182" y="164" class="n" onclick="scrollToItem(20)">20-21</text>
+  <text x="158" y="140" class="n" onclick="scrollToItem(22)">22</text>
+  <text x="228" y="92" class="n" onclick="scrollToItem(23)">23</text>
+  <text x="194" y="38" class="n" onclick="scrollToItem(30)">30-34</text>
+
+</svg>`,
+  kinnetic: `<svg viewBox="0 0 400 550" xmlns="http://www.w3.org/2000/svg">
+<style>
+  .b{stroke:#152C53;stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round}
+  .jc{fill:none;stroke:#152C53;stroke-width:2;stroke-linejoin:round}
+  .jf{fill:#152C53}
+  .thin{stroke:#152C53;stroke-width:1;fill:none;stroke-linecap:round}
+  .dash{stroke:#152C53;stroke-width:0.7;fill:none;stroke-dasharray:5,4;opacity:0.3}
+  .spine{stroke:#D4628A;stroke-width:1.5;fill:none;opacity:0.25}
+  .t{font-family:"Noto Sans JP",sans-serif;font-size:8px;fill:#152C53;font-weight:700}
+  .ts{font-family:"Noto Sans JP",sans-serif;font-size:6.5px;fill:#7B8DA0}
+  .d{stroke:#152C53;stroke-width:0.8;fill:none}
+  .dl{stroke:#152C53;stroke-width:0.5;fill:none}
+  .df{fill:#F4F7FE;stroke:#152C53;stroke-width:0.5}
+  .n{font-family:Oswald,sans-serif;font-size:8px;fill:#2563EB;font-weight:700;cursor:pointer}
+  .n:hover{opacity:0.5}
+</style>
+
+  <circle cx="200" cy="52" r="24" class="jc" stroke-width="2.4"/>
+  <polygon points="200,48 195,58 205,58" class="jf"/>
+  <line x1="200" y1="76" x2="200" y2="90" class="b"/>
+  <line x1="140" y1="100" x2="260" y2="100" class="b"/>
+  <line x1="200" y1="90" x2="200" y2="100" class="b"/>
+  <circle cx="200" cy="94" r="3.5" class="jc" stroke-width="1.5"/>
+  <circle cx="140" cy="100" r="6" class="jc" stroke-width="2"/>
+  <circle cx="260" cy="100" r="6" class="jc" stroke-width="2"/>
+  <line x1="200" y1="100" x2="200" y2="268" class="spine"/>
+  <line x1="200" y1="46" x2="200" y2="510" class="dash"/>
+  <!-- Arms slightly down -->
+  <line x1="140" y1="100" x2="120" y2="178" class="b"/>
+  <circle cx="120" cy="178" r="5" class="jc" stroke-width="1.8"/>
+  <line x1="120" y1="178" x2="108" y2="252" class="b"/>
+  <circle cx="108" cy="252" r="4" class="jc" stroke-width="1.5"/>
+  <ellipse cx="104" cy="272" rx="8" ry="10" class="jc" stroke-width="1.2"/>
+  <line x1="260" y1="100" x2="280" y2="178" class="b"/>
+  <circle cx="280" cy="178" r="5" class="jc" stroke-width="1.8"/>
+  <line x1="280" y1="178" x2="292" y2="252" class="b"/>
+  <circle cx="292" cy="252" r="4" class="jc" stroke-width="1.5"/>
+  <ellipse cx="296" cy="272" rx="8" ry="10" class="jc" stroke-width="1.2"/>
+  <!-- Hips -->
+  <circle cx="176" cy="268" r="6" class="jc" stroke-width="2"/>
+  <circle cx="224" cy="268" r="6" class="jc" stroke-width="2"/>
+  <!-- Left leg -->
+  <line x1="176" y1="274" x2="176" y2="370" class="b"/>
+  <circle cx="176" cy="370" r="5" class="jc" stroke-width="1.8"/>
+  <line x1="176" y1="375" x2="176" y2="456" class="b"/>
+  <circle cx="176" cy="456" r="4" class="jc" stroke-width="1.5"/>
+  <path d="M166,460 L164,488 Q176,496 188,488 L186,460" class="jc" stroke-width="1.5"/>
+  <!-- Right leg -->
+  <line x1="224" y1="274" x2="224" y2="370" class="b"/>
+  <circle cx="224" cy="370" r="5" class="jc" stroke-width="1.8"/>
+  <line x1="224" y1="375" x2="224" y2="456" class="b"/>
+  <circle cx="224" cy="456" r="4" class="jc" stroke-width="1.5"/>
+  <path d="M214,460 L212,488 Q224,496 236,488 L234,460" class="jc" stroke-width="1.5"/>
+
+
+  <!-- 足裏ライン -->
+  <g transform="translate(152,500)">
+    <text x="0" y="0" class="t">足裏ライン</text>
+    <g transform="translate(2,6)">
+      <path d="M0,3 Q-1,14 0,26 Q6,32 13,26 Q16,14 13,3 Q9,0 4,0 Q1,0 0,3Z" class="df"/>
+      <line x1="6" y1="1" x2="6" y2="30" class="dl" stroke-dasharray="2,2"/>
+    </g>
+    <g transform="translate(22,6)">
+      <path d="M0,3 Q-1,14 0,26 Q6,32 13,26 Q16,14 13,3 Q9,0 4,0 Q1,0 0,3Z" class="df"/>
+      <line x1="6" y1="1" x2="6" y2="30" class="dl" stroke-dasharray="2,2"/>
+    </g>
+  </g>
+  <!-- Numbers -->
+  <text x="92" y="270" class="n" onclick="scrollToItem(1)">1</text>
+  <text x="302" y="270" class="n" onclick="scrollToItem(2)">2</text>
+  <text x="96" y="250" class="n" onclick="scrollToItem(3)">3</text>
+  <text x="300" y="250" class="n" onclick="scrollToItem(4)">4</text>
+  <text x="106" y="176" class="n" onclick="scrollToItem(5)">5</text>
+  <text x="286" y="176" class="n" onclick="scrollToItem(6)">6</text>
+  <text x="126" y="138" class="n" onclick="scrollToItem(7)">7</text>
+  <text x="268" y="138" class="n" onclick="scrollToItem(8)">8</text>
+  <text x="134" y="110" class="n" onclick="scrollToItem(9)">9</text>
+  <text x="210" y="160" class="n" onclick="scrollToItem(10)">10</text>
+  <text x="260" y="110" class="n" onclick="scrollToItem(11)">11</text>
+  <text x="156" y="152" class="n" onclick="scrollToItem(12)">12</text>
+  <text x="236" y="340" class="n" onclick="scrollToItem(14)">14</text>
+  <text x="160" y="330" class="n" onclick="scrollToItem(15)">15</text>
+  <text x="236" y="374" class="n" onclick="scrollToItem(16)">16</text>
+  <text x="210" y="190" class="n" onclick="scrollToItem(17)">17</text>
+  <text x="210" y="210" class="n" onclick="scrollToItem(18)">18</text>
+  <text x="158" y="162" class="n" onclick="scrollToItem(19)">19</text>
+  <text x="210" y="260" class="n" onclick="scrollToItem(20)">20</text>
+  <text x="230" y="276" class="n" onclick="scrollToItem(21)">21</text>
+  <text x="162" y="280" class="n" onclick="scrollToItem(22)">22</text>
+  <text x="162" y="420" class="n" onclick="scrollToItem(24)">24</text>
+  <text x="236" y="460" class="n" onclick="scrollToItem(25)">25</text>
+  <text x="156" y="460" class="n" onclick="scrollToItem(26)">26</text>
+  <text x="210" y="500" class="n" onclick="scrollToItem(27)">27-29</text>
+  <text x="210" y="234" class="n" onclick="scrollToItem(30)">30</text>
+  <text x="176" y="292" class="n" onclick="scrollToItem(31)">31</text>
+  <text x="208" y="98" class="n" onclick="scrollToItem(33)">33</text>
+  <text x="208" y="256" class="n" onclick="scrollToItem(34)">34</text>
+
+</svg>`,
+  operation: `<svg viewBox="0 0 400 540" xmlns="http://www.w3.org/2000/svg">
+<style>
+  .b{stroke:#152C53;stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round}
+  .jc{fill:none;stroke:#152C53;stroke-width:2;stroke-linejoin:round}
+  .jf{fill:#152C53}
+  .thin{stroke:#152C53;stroke-width:1;fill:none;stroke-linecap:round}
+  .dash{stroke:#152C53;stroke-width:0.7;fill:none;stroke-dasharray:5,4;opacity:0.3}
+  .spine{stroke:#D4628A;stroke-width:1.5;fill:none;opacity:0.25}
+  .t{font-family:"Noto Sans JP",sans-serif;font-size:8px;fill:#152C53;font-weight:700}
+  .ts{font-family:"Noto Sans JP",sans-serif;font-size:6.5px;fill:#7B8DA0}
+  .d{stroke:#152C53;stroke-width:0.8;fill:none}
+  .dl{stroke:#152C53;stroke-width:0.5;fill:none}
+  .df{fill:#F4F7FE;stroke:#152C53;stroke-width:0.5}
+  .n{font-family:Oswald,sans-serif;font-size:8px;fill:#059669;font-weight:700;cursor:pointer}
+  .n:hover{opacity:0.5}
+</style>
+
+  <circle cx="200" cy="52" r="24" class="jc" stroke-width="2.4"/>
+  <polygon points="200,48 195,58 205,58" class="jf"/>
+  <line x1="200" y1="76" x2="200" y2="90" class="b"/>
+  <line x1="134" y1="102" x2="266" y2="102" class="b"/>
+  <line x1="200" y1="90" x2="200" y2="102" class="b"/>
+  <circle cx="200" cy="94" r="3.5" class="jc" stroke-width="1.5"/>
+  <circle cx="134" cy="102" r="6" class="jc" stroke-width="2"/>
+  <circle cx="266" cy="102" r="6" class="jc" stroke-width="2"/>
+  <line x1="200" y1="102" x2="200" y2="268" class="spine"/>
+  <line x1="200" y1="46" x2="200" y2="510" class="dash"/>
+  <!-- Arms spread -->
+  <line x1="134" y1="102" x2="90" y2="164" class="b"/>
+  <circle cx="90" cy="164" r="5" class="jc" stroke-width="1.8"/>
+  <line x1="90" y1="164" x2="60" y2="240" class="b"/>
+  <circle cx="60" cy="240" r="4" class="jc" stroke-width="1.5"/>
+  <ellipse cx="54" cy="260" rx="8" ry="10" class="jc" stroke-width="1.2"/>
+  <line x1="266" y1="102" x2="310" y2="164" class="b"/>
+  <circle cx="310" cy="164" r="5" class="jc" stroke-width="1.8"/>
+  <line x1="310" y1="164" x2="340" y2="240" class="b"/>
+  <circle cx="340" cy="240" r="4" class="jc" stroke-width="1.5"/>
+  <ellipse cx="346" cy="260" rx="8" ry="10" class="jc" stroke-width="1.2"/>
+  <!-- Hips -->
+  <circle cx="176" cy="268" r="6" class="jc" stroke-width="2"/>
+  <circle cx="224" cy="268" r="6" class="jc" stroke-width="2"/>
+  <!-- Legs -->
+  <line x1="176" y1="274" x2="176" y2="370" class="b"/>
+  <circle cx="176" cy="370" r="5" class="jc" stroke-width="1.8"/>
+  <line x1="176" y1="375" x2="176" y2="456" class="b"/>
+  <circle cx="176" cy="456" r="4" class="jc" stroke-width="1.5"/>
+  <path d="M166,460 L164,488 Q176,496 188,488 L186,460" class="jc" stroke-width="1.5"/>
+  <line x1="224" y1="274" x2="224" y2="370" class="b"/>
+  <circle cx="224" cy="370" r="5" class="jc" stroke-width="1.8"/>
+  <line x1="224" y1="375" x2="224" y2="456" class="b"/>
+  <circle cx="224" cy="456" r="4" class="jc" stroke-width="1.5"/>
+  <path d="M214,460 L212,488 Q224,496 236,488 L234,460" class="jc" stroke-width="1.5"/>
+
+
+  <text x="210" y="148" class="n" onclick="scrollToItem(1)">1</text>
+  <text x="210" y="168" class="n" onclick="scrollToItem(2)">2</text>
+  <text x="210" y="190" class="n" onclick="scrollToItem(3)">3</text>
+  <text x="278" y="122" class="n" onclick="scrollToItem(4)">4</text>
+  <text x="112" y="122" class="n" onclick="scrollToItem(5)">5</text>
+  <text x="162" y="288" class="n" onclick="scrollToItem(6)">6</text>
+  <text x="222" y="138" class="n" onclick="scrollToItem(7)">7</text>
+  <text x="40" y="258" class="n" onclick="scrollToItem(8)">8</text>
+  <text x="210" y="274" class="n" onclick="scrollToItem(9)">9</text>
+  <text x="210" y="320" class="n" onclick="scrollToItem(10)">10</text>
+  <text x="210" y="300" class="n" onclick="scrollToItem(11)">11</text>
+  <text x="76" y="168" class="n" onclick="scrollToItem(12)">12</text>
+  <text x="318" y="168" class="n" onclick="scrollToItem(13)">13</text>
+  <text x="352" y="258" class="n" onclick="scrollToItem(14)">14</text>
+  <text x="186" y="172" class="n" onclick="scrollToItem(15)">15</text>
+  <text x="210" y="346" class="n" onclick="scrollToItem(16)">16</text>
+  <text x="210" y="258" class="n" onclick="scrollToItem(17)">17</text>
+  <text x="230" y="272" class="n" onclick="scrollToItem(18)">18</text>
+  <text x="150" y="224" class="n" onclick="scrollToItem(19)">19</text>
+  <text x="274" y="96" class="n" onclick="scrollToItem(20)">20</text>
+  <text x="194" y="38" class="n" onclick="scrollToItem(21)">21-22</text>
+
+</svg>`,
+  signal: `<svg viewBox="0 0 400 540" xmlns="http://www.w3.org/2000/svg">
+<style>
+  .b{stroke:#152C53;stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round}
+  .jc{fill:none;stroke:#152C53;stroke-width:2;stroke-linejoin:round}
+  .jf{fill:#152C53}
+  .thin{stroke:#152C53;stroke-width:1;fill:none;stroke-linecap:round}
+  .dash{stroke:#152C53;stroke-width:0.7;fill:none;stroke-dasharray:5,4;opacity:0.3}
+  .spine{stroke:#D4628A;stroke-width:1.5;fill:none;opacity:0.25}
+  .t{font-family:"Noto Sans JP",sans-serif;font-size:8px;fill:#152C53;font-weight:700}
+  .ts{font-family:"Noto Sans JP",sans-serif;font-size:6.5px;fill:#7B8DA0}
+  .d{stroke:#152C53;stroke-width:0.8;fill:none}
+  .dl{stroke:#152C53;stroke-width:0.5;fill:none}
+  .df{fill:#F4F7FE;stroke:#152C53;stroke-width:0.5}
+  .n{font-family:Oswald,sans-serif;font-size:8px;fill:#7C3AED;font-weight:700;cursor:pointer}
+  .n:hover{opacity:0.5}
+</style>
+
+  <circle cx="200" cy="52" r="24" class="jc" stroke-width="2.4"/>
+  <polygon points="200,48 195,58 205,58" class="jf"/>
+  <line x1="200" y1="76" x2="200" y2="90" class="b"/>
+  <line x1="140" y1="100" x2="260" y2="100" class="b"/>
+  <line x1="200" y1="90" x2="200" y2="100" class="b"/>
+  <circle cx="200" cy="94" r="3.5" class="jc" stroke-width="1.5"/>
+  <circle cx="140" cy="100" r="6" class="jc" stroke-width="2"/>
+  <circle cx="260" cy="100" r="6" class="jc" stroke-width="2"/>
+  <line x1="200" y1="100" x2="200" y2="268" class="spine"/>
+  <line x1="200" y1="46" x2="200" y2="510" class="dash"/>
+  <!-- Arms slightly down -->
+  <line x1="140" y1="100" x2="120" y2="178" class="b"/>
+  <circle cx="120" cy="178" r="5" class="jc" stroke-width="1.8"/>
+  <line x1="120" y1="178" x2="108" y2="252" class="b"/>
+  <circle cx="108" cy="252" r="4" class="jc" stroke-width="1.5"/>
+  <ellipse cx="104" cy="272" rx="8" ry="10" class="jc" stroke-width="1.2"/>
+  <line x1="260" y1="100" x2="280" y2="178" class="b"/>
+  <circle cx="280" cy="178" r="5" class="jc" stroke-width="1.8"/>
+  <line x1="280" y1="178" x2="292" y2="252" class="b"/>
+  <circle cx="292" cy="252" r="4" class="jc" stroke-width="1.5"/>
+  <ellipse cx="296" cy="272" rx="8" ry="10" class="jc" stroke-width="1.2"/>
+  <!-- Hips -->
+  <circle cx="176" cy="268" r="6" class="jc" stroke-width="2"/>
+  <circle cx="224" cy="268" r="6" class="jc" stroke-width="2"/>
+  <!-- Left leg -->
+  <line x1="176" y1="274" x2="176" y2="370" class="b"/>
+  <circle cx="176" cy="370" r="5" class="jc" stroke-width="1.8"/>
+  <line x1="176" y1="375" x2="176" y2="456" class="b"/>
+  <circle cx="176" cy="456" r="4" class="jc" stroke-width="1.5"/>
+  <path d="M166,460 L164,488 Q176,496 188,488 L186,460" class="jc" stroke-width="1.5"/>
+  <!-- Right leg -->
+  <line x1="224" y1="274" x2="224" y2="370" class="b"/>
+  <circle cx="224" cy="370" r="5" class="jc" stroke-width="1.8"/>
+  <line x1="224" y1="375" x2="224" y2="456" class="b"/>
+  <circle cx="224" cy="456" r="4" class="jc" stroke-width="1.5"/>
+  <path d="M214,460 L212,488 Q224,496 236,488 L234,460" class="jc" stroke-width="1.5"/>
+
+  <path d="M130,94 Q118,88 106,94 Q94,100 82,94" stroke="#7C3AED" stroke-width="0.8" fill="none" opacity="0.3"/>
+  <path d="M270,94 Q282,88 294,94 Q306,100 318,94" stroke="#7C3AED" stroke-width="0.8" fill="none" opacity="0.3"/>
+
+
+  <text x="194" y="38" class="n" onclick="scrollToItem(1)">1</text>
+  <text x="218" y="48" class="n" onclick="scrollToItem(2)">2</text>
+  <text x="92" y="226" class="n" onclick="scrollToItem(3)">3</text>
+  <text x="106" y="158" class="n" onclick="scrollToItem(4)">4</text>
+  <text x="236" y="340" class="n" onclick="scrollToItem(5)">5</text>
+  <text x="236" y="460" class="n" onclick="scrollToItem(6)">6</text>
+  <text x="286" y="136" class="n" onclick="scrollToItem(7)">7</text>
+  <text x="162" y="392" class="n" onclick="scrollToItem(8)">8</text>
+  <text x="162" y="500" class="n" onclick="scrollToItem(9)">9</text>
+  <text x="106" y="182" class="n" onclick="scrollToItem(10)">10</text>
+  <text x="210" y="274" class="n" onclick="scrollToItem(11)">11</text>
+  <text x="210" y="192" class="n" onclick="scrollToItem(12)">12</text>
+  <text x="210" y="214" class="n" onclick="scrollToItem(13)">13</text>
+  <text x="210" y="162" class="n" onclick="scrollToItem(14)">14</text>
+  <text x="168" y="258" class="n" onclick="scrollToItem(15)">15</text>
+  <text x="210" y="238" class="n" onclick="scrollToItem(16)">16</text>
+  <text x="286" y="178" class="n" onclick="scrollToItem(17)">17</text>
+  <text x="210" y="140" class="n" onclick="scrollToItem(18)">18</text>
+  <text x="250" y="210" class="n" onclick="scrollToItem(19)">19-20</text>
+  <text x="148" y="210" class="n" onclick="scrollToItem(21)">21</text>
+  <text x="210" y="296" class="n" onclick="scrollToItem(22)">22</text>
+
+</svg>`,
+};
+
+function renderSVG(chartKey){
+  const container = document.getElementById('svgBody');
+  const titleEl = document.getElementById('svgTitle');
+  if(!container) return;
+  
+  if(chartKey === 'traits'){
+    titleEl.textContent = 'BENCHMARK';
+    container.innerHTML = `<div style="padding:8px 6px">
+      <div style="font-size:11px;font-weight:700;color:var(--navy);margin-bottom:6px;text-align:center">📊 年齢別 基準値テーブル</div>
+      <table style="width:100%;border-collapse:collapse;font-size:9px;border:1px solid var(--navy)">
+        <thead><tr style="background:var(--navy);color:#fff">
+          <th style="padding:4px 3px;font-size:8px"></th>
+          <th style="padding:4px 2px;font-size:7px">15–16</th>
+          <th style="padding:4px 2px;font-size:7px">17–18</th>
+          <th style="padding:4px 2px;font-size:7px">19–20</th>
+          <th style="padding:4px 2px;font-size:7px">20–21</th>
+          <th style="padding:4px 2px;font-size:7px">22–24</th>
+          <th style="padding:4px 2px;font-size:7px">25+</th>
+        </tr></thead>
+        <tbody>
+          <tr><td style="padding:3px;font-weight:700;background:#E8EDF5;font-size:8px">CMJ (cm)</td><td style="padding:3px;text-align:center">36–42</td><td style="padding:3px;text-align:center">42–48</td><td style="padding:3px;text-align:center">46–52</td><td style="padding:3px;text-align:center">48–54</td><td style="padding:3px;text-align:center">50–56</td><td style="padding:3px;text-align:center">48–54</td></tr>
+          <tr style="background:#F0F4FA"><td style="padding:3px;font-weight:700;background:#E8EDF5;font-size:8px">SJ (cm)</td><td style="padding:3px;text-align:center">31–37</td><td style="padding:3px;text-align:center">36–42</td><td style="padding:3px;text-align:center">40–46</td><td style="padding:3px;text-align:center">42–48</td><td style="padding:3px;text-align:center">44–50</td><td style="padding:3px;text-align:center">42–48</td></tr>
+          <tr><td style="padding:3px;font-weight:700;background:#E8EDF5;font-size:8px">10-Hop RSI</td><td style="padding:3px;text-align:center">1.5–2.0</td><td style="padding:3px;text-align:center">1.8–2.3</td><td style="padding:3px;text-align:center">2.1–2.6</td><td style="padding:3px;text-align:center">2.3–2.8</td><td style="padding:3px;text-align:center">2.4–3.0</td><td style="padding:3px;text-align:center">2.4–3.0</td></tr>
+          <tr style="background:#F0F4FA"><td style="padding:3px;font-weight:700;background:#E8EDF5;font-size:8px">Plyo PU (N/kg)</td><td style="padding:3px;text-align:center">13–17</td><td style="padding:3px;text-align:center">15–20</td><td style="padding:3px;text-align:center">18–23</td><td style="padding:3px;text-align:center">19–24</td><td style="padding:3px;text-align:center">20–25</td><td style="padding:3px;text-align:center">21–26</td></tr>
+          <tr><td style="padding:3px;font-weight:700;background:#E8EDF5;font-size:8px">IMTP (N/kg)</td><td style="padding:3px;text-align:center">26–32</td><td style="padding:3px;text-align:center">30–37</td><td style="padding:3px;text-align:center">34–40</td><td style="padding:3px;text-align:center">36–42</td><td style="padding:3px;text-align:center">38–45</td><td style="padding:3px;text-align:center">38–45</td></tr>
+        </tbody>
+      </table>
+      <div style="font-size:8px;color:var(--g400);margin-top:4px;text-align:center">※ 25+は加齢による低下傾向を反映</div>
+    </div>`;
+    return;
+  }
+
+  if(chartKey === 'comments'){
+    titleEl.textContent = 'COMMENTS';
+    container.innerHTML = '<div style="padding:30px 10px;text-align:center;color:var(--g400);font-size:13px">📋 カルテ・経過記録<br><br>セッションごとのコメントを<br>時系列で記録します</div>';
+    return;
+  }
+  
+  const names = {connect:'POWER CONNECT CHARTS 34',kinnetic:'POWER KINETIC CHARTS 34',operation:'POWER OPERATION CHARTS 22',signal:'POWER SIGNAL CHARTS 22'};
+  titleEl.textContent = names[chartKey] || '';
+  container.innerHTML = SVG_BODIES[chartKey] || '';
+}
+
+function scrollToItem(id){
+  // Find the row with this item number and scroll to it
+  const rows = document.querySelectorAll('.row');
+  for(const row of rows){
+    const numEl = row.querySelector('.rn');
+    if(numEl && parseInt(numEl.textContent) === id){
+      row.scrollIntoView({behavior:'smooth',block:'center'});
+      row.style.background='var(--orange-light)';
+      setTimeout(()=>{row.style.background='';},1500);
+      break;
+    }
+  }
+}
+
+// ═══ RENDER ═══
+function render(){
+  const mc=document.getElementById('mainContent');
+  if(TABS[cur].type==='traits'){
+    mc.innerHTML=renderTraits();
+  } else if(TABS[cur].type==='comments'){
+    mc.innerHTML=renderComments();
+  } else {
+    mc.innerHTML='<div class="ic">'+TABS[cur].data.map(item=>renderRow(item)).join('')+'</div>';
+  }
+  updateProgress();
+}
+
+function renderRow(item){
+  let h=`<div class="row"><div class="rn">${item.id}</div><div><div class="rl">${item.l}</div>`;
+  item.g.forEach((gr,gi)=>{
+    const key=`${item.id}_${gi}`;
+    const mx=gr.m||1;
+    h+=`<div class="og">`;
+    if(gr.g) h+=`<span class="gl">${gr.g}</span>`;
+    h+=`<div class="pls">`;
+    gr.o.forEach(opt=>{
+      if(opt==='※自由記述'){
+        h+=`<input class="fi" style="width:160px;padding:5px 8px;font-size:13px" placeholder="自由記述" value="${vals[cur][key]||''}" oninput="setFree('${key}',this.value)">`;
+      } else {
+        const v=vals[cur][key]||'';
+        const isOn= mx>1 ? v.split(',').includes(opt) : v===opt;
+        h+=`<button class="p ${isOn?'on':''}" onclick="sel('${key}','${opt.replace(/'/g,"\\'")}',this,${mx})">${opt}</button>`;
+      }
+    });
+    h+=`</div></div>`;
+  });
+  h+=`</div></div>`;
+  return h;
+}
+
+// ═══ TRAITS RENDER ═══
+function renderTraits(){
+  const v=vals.traits;
+  const fpTests=['Countermovement Jump','Squat Jump','10 Hop Test','Plyometric PushUp','Isometric Test'];
+  const sensory=[
+    {id:1,l:'バランス',g:[{g:'',o:['ライオン','ウマ']},{g:'体幹',o:['クロス','パラレル']},{g:'前腕',o:['クロス','パラレル','インサイド','アウトサイド']}]},
+    {id:2,l:'リズム',g:[{g:'',o:['指先','基節骨','MP関節']},{g:'',o:['鎖骨','みぞおち','下腹','膝','足首']},{g:'',o:['上','下']}]},
+    {id:3,l:'姿勢',g:[{g:'',o:['上7','中5','下5']},{g:'',o:['S字','C字']},{g:'',o:['額','頭頂','後頭']}]},
+    {id:4,l:'体勢',g:[{g:'骨盤',o:['フロント','バック']},{g:'大腿骨',o:['外','内']},{g:'',o:['ベント','ストレッチ']},{g:'',o:['肩甲骨','胸','お腹','腰']}]},
+    {id:5,l:'連動',g:[{g:'肩甲骨',o:['ハンドル','ターン']},{g:'',o:['固定連動','四肢連動']},{g:'',o:['腕','脚','体幹']},{g:'',o:['上キネ','下キネ']}]},
+    {id:6,l:'出力づくり',g:[{g:'',o:['ユル','キツ','ストレッチ']},{g:'',o:['膝裏','アキレス腱']}]},
+    {id:7,l:'呼吸',g:[{g:'配分',o:['筋','骨','神経']},{g:'',o:['胸','腹']},{g:'',o:['吸い','吐き']}]},
+  ];
+
+  let h='';
+
+  // Science Approach
+  h+=`<div class="sec-hd">SCIENCE APPROACH — Force Plate Data</div>`;
+  fpTests.forEach((test,i)=>{
+    const kv=`fp_val_${i}`,kr=`fp_react_${i}`,ks=`fp_subj_${i}`;
+    h+=`<div class="traits-row">
+      <div class="tr-label">${test}</div>
+      <div class="tr-grid3">
+        <div><span class="tr-sub">数値</span><input class="tr-input" placeholder="数値" value="${v[kv]||''}" oninput="setT('${kv}',this.value)"></div>
+        <div><span class="tr-sub">Connecting Reaction</span>
+          <select class="tr-input" onchange="setT('${kr}',this.value)">
+            <option value="">—</option>
+            <option value="◎"${v[kr]==='◎'?' selected':''}>◎</option>
+            <option value="〇"${v[kr]==='〇'?' selected':''}>〇</option>
+            <option value="△"${v[kr]==='△'?' selected':''}>△</option>
+            <option value="×"${v[kr]==='×'?' selected':''}>×</option>
+          </select></div>
+        <div><span class="tr-sub">主観 (1-5)</span>
+          <div class="rating-group">${[1,2,3,4,5].map(n=>`<button class="rating-btn ${v[ks]==n?'on':''}" onclick="setT('${ks}',${n});render()">${n}</button>`).join('')}</div>
+        </div>
+      </div>
+    </div>`;
+  });
+
+  // Sensory Approach
+  h+=`<div class="sec-hd">SENSORY APPROACH — Connecting Data</div>`;
+  sensory.forEach(item=>{
+    h+=`<div class="traits-row"><div class="tr-label">${item.id}. ${item.l}</div>`;
+    item.g.forEach((gr,gi)=>{
+      const key=`sen_${item.id}_${gi}`;
+      h+=`<div class="og" style="margin-bottom:6px">`;
+      if(gr.g) h+=`<span class="gl">${gr.g}</span>`;
+      h+=`<div class="pls">`;
+      gr.o.forEach(opt=>{
+        const sel=vals.traits[key]===opt?'on':'';
+        h+=`<button class="p ${sel}" onclick="selT('${key}','${opt.replace(/'/g,"\\'")}',this)">${opt}</button>`;
+      });
+      h+=`</div></div>`;
+    });
+    h+=`</div>`;
+  });
+
+  return h;
+}
+
+// ═══ COMMENTS RENDER ═══
+function renderComments(){
+  const c=vals.comments||{entries:[]};
+  const entries=c.entries||[];
+  let h='';
+
+  // 新規コメント入力欄
+  h+=`<div style="padding:14px 16px;background:#fff;border-bottom:2px solid var(--g200)">
+    <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:8px">📝 新しいコメントを追加</div>
+    <div style="display:flex;gap:8px;margin-bottom:8px;align-items:end">
+      <div style="flex:1"><label class="fl">担当者</label>
+        <select class="fi" id="cmtAuthor" style="padding:6px 8px">
+          <option value="">—</option>
+          <option value="木村">木村</option>
+          <option value="田丸">田丸</option>
+          <option value="万城目">万城目</option>
+          <option value="中川">中川</option>
+          <option value="佐藤">佐藤</option>
+          <option value="柿崎">柿崎</option>
+          <option value="真砂">真砂</option>
+          <option value="田中">田中</option>
+          <option value="古川">古川</option>
+        </select>
+      </div>
+      <div style="flex:1"><label class="fl">カテゴリ</label>
+        <select class="fi" id="cmtCat" style="padding:6px 8px">
+          <option value="セッション記録">セッション記録</option>
+          <option value="コンディション">コンディション</option>
+          <option value="目標・方針">目標・方針</option>
+          <option value="保護者連絡">保護者連絡</option>
+          <option value="その他">その他</option>
+        </select>
+      </div>
+    </div>
+    <textarea class="fi" id="cmtText" rows="3" placeholder="コメントを入力..." style="resize:vertical;font-size:14px;line-height:1.6"></textarea>
+    <button onclick="addComment()" style="margin-top:8px;padding:10px 20px;background:var(--navy);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;font-family:'Noto Sans JP',sans-serif;cursor:pointer;width:100%">＋ コメントを追加</button>
+  </div>`;
+
+  // 過去コメント一覧（新しい順）
+  h+=`<div style="padding:14px 16px">
+    <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:8px">履歴（${entries.length}件）</div>`;
+
+  if(!entries.length){
+    h+=`<div style="text-align:center;color:var(--g400);padding:24px;font-size:13px">まだコメントはありません</div>`;
+  } else {
+    // 新しい順で表示
+    [...entries].reverse().forEach((e,i)=>{
+      const idx=entries.length-1-i;
+      const catColor={'セッション記録':'#152C53','コンディション':'#059669','目標・方針':'#D97706','保護者連絡':'#7C3AED','その他':'#6B7280'};
+      const bg=catColor[e.category]||'#6B7280';
+      h+=`<div style="background:#fff;border:1px solid var(--g200);border-radius:10px;padding:12px;margin-bottom:8px;border-left:4px solid ${bg}">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <div>
+            <span style="font-size:12px;font-weight:700;color:var(--navy)">${e.author||'—'}</span>
+            <span style="font-size:11px;color:#fff;background:${bg};border-radius:10px;padding:1px 8px;margin-left:6px">${e.category||''}</span>
+          </div>
+          <div style="font-size:11px;color:var(--g400)">${e.date||''} ${e.time||''}</div>
+        </div>
+        <div style="font-size:13px;line-height:1.7;color:var(--g700);white-space:pre-wrap">${(e.text||'').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+        <button onclick="deleteComment(${idx})" style="margin-top:6px;font-size:11px;color:var(--g400);background:none;border:none;cursor:pointer;padding:2px 0">🗑 削除</button>
+      </div>`;
+    });
+  }
+  h+=`</div>`;
+  return h;
+}
+
+function addComment(){
+  const author=document.getElementById('cmtAuthor').value;
+  const category=document.getElementById('cmtCat').value;
+  const text=document.getElementById('cmtText').value.trim();
+  if(!text){alert('コメントを入力してください');return;}
+  if(!author){alert('担当者を選択してください');return;}
+
+  if(!vals.comments) vals.comments={entries:[]};
+  if(!vals.comments.entries) vals.comments.entries=[];
+
+  const now=new Date();
+  vals.comments.entries.push({
+    date:now.toISOString().split('T')[0],
+    time:now.toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'}),
+    author:author,
+    category:category,
+    text:text
+  });
+  render();
+}
+
+function deleteComment(idx){
+  if(!confirm('このコメントを削除しますか？'))return;
+  if(vals.comments&&vals.comments.entries){
+    vals.comments.entries.splice(idx,1);
+    render();
+  }
+}
+
+// ═══ INTERACTIONS ═══
+function sel(key,opt,el,mx){
+  mx=mx||1;
+  const v=vals[cur];
+  if(mx===1){
+    if(v[key]===opt){delete v[key];el.classList.remove('on');}
+    else{v[key]=opt;el.parentElement.querySelectorAll('.p').forEach(p=>p.classList.remove('on'));el.classList.add('on');}
+  } else {
+    let arr=(v[key]||'').split(',').filter(x=>x);
+    const idx=arr.indexOf(opt);
+    if(idx>=0){arr.splice(idx,1);el.classList.remove('on');}
+    else if(arr.length<mx){arr.push(opt);el.classList.add('on');}
+    v[key]=arr.join(',');
+    if(!v[key]) delete v[key];
+  }
+  updateProgress();
+}
+function selT(key,opt,el){
+  if(vals.traits[key]===opt) delete vals.traits[key];
+  else vals.traits[key]=opt;
+  render();
+}
+function setT(key,val){vals.traits[key]=val;}
+function setFree(key,val){vals[cur][key]=val;}
+
+// ═══ PROGRESS ═══
+function updateProgress(){
+  if(TABS[cur].type==='comments'){
+    const entries=(vals.comments&&vals.comments.entries)||[];
+    document.getElementById('pvt').textContent=entries.length+'件のコメント';
+    document.getElementById('pvt').style.color=entries.length?'var(--ok)':'var(--orange)';
+    document.getElementById('pfl').style.width=entries.length?'100%':'0%';
+    document.getElementById('pfl').style.background='linear-gradient(90deg,#7C3AED,#A78BFA)';
+    return;
+  }
+  if(TABS[cur].type==='traits'){
+    const v=vals.traits;
+    const filled=Object.values(v).filter(x=>x!==null&&x!==undefined&&x!=='').length;
+    const total=5*3+7*3; // rough estimate
+    const pct=Math.min(100,Math.round((filled/total)*100));
+    document.getElementById('pvt').textContent=`${filled}項目入力済`;
+    document.getElementById('pvt').style.color=pct>=80?'var(--ok)':'var(--orange)';
+    document.getElementById('pfl').style.width=pct+'%';
+    return;
+  }
+  const items=TABS[cur].data;
+  let total=0;items.forEach(i=>{total+=i.g.length;});
+  const filled=Object.keys(vals[cur]).filter(k=>vals[cur][k]!==null&&vals[cur][k]!==undefined&&vals[cur][k]!=='').length;
+  const pct=Math.round((filled/total)*100);
+  const done=pct===100;
+  document.getElementById('pvt').textContent=`${filled}/${total} (${pct}%)`;
+  document.getElementById('pvt').style.color=done?'var(--ok)':'var(--orange)';
+  document.getElementById('pfl').style.width=pct+'%';
+  document.getElementById('pfl').style.background=done?'linear-gradient(90deg,#059669,#10B981)':'linear-gradient(90deg,var(--orange),#F59E0B)';
+}
+
+// ═══ ACTIONS ═══
+// 新規選手：全タブ + プロフィールをリセットして新規入力モードへ
+function newPlayer(){
+  if(!confirm('新しい選手の入力を開始します。\n※保存済みデータはDBに残ります。'))return;
+  vals={connect:{},kinnetic:{},operation:{},signal:{},traits:{},comments:{entries:[]}};
+  _editIds={};
+  document.getElementById('editBanner').classList.remove('on');
+  document.getElementById('pLN').value='';
+  document.getElementById('pFN').value='';
+  document.getElementById('pDOB').value='';
+  document.getElementById('pGender').value='';
+  document.getElementById('pTrainer').value='';
+  document.getElementById('pLevel').value='';
+  document.getElementById('pV').value='';
+  document.getElementById('pT').value='';
+  document.getElementById('pPos').value='';
+  document.getElementById('pH').value='';
+  document.getElementById('pW').value='';
+  document.getElementById('pC').value='';
+  document.getElementById('pD').value=new Date().toISOString().split('T')[0];
+  sw('connect');
+  render();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// クリア：今のタブの入力だけやり直し（プロフィール・他タブは残る）
+function clearTab(){
+  if(cur==='comments'){
+    alert('コメント履歴はクリアできません。\n個別のコメントは削除ボタンで消せます。');
+    return;
+  }
+  const tabName=TABS[cur]?TABS[cur].title:'このタブ';
+  if(!confirm(tabName+' の入力をクリアしますか？\n※他のタブとプロフィールはそのままです。'))return;
+  vals[cur]={};
+  render();
+}
+async function saveData(){
+  const lastName=document.getElementById('pLN').value.trim();
+  const firstName=document.getElementById('pFN').value.trim();
+  const name=(lastName+' '+firstName).trim();
+  const dob=document.getElementById('pDOB').value;
+  const date=document.getElementById('pD').value;
+  const heightVal=document.getElementById('pH').value;
+  const weightVal=document.getElementById('pW').value;
+  const levelVal=document.getElementById('pLevel').value;
+
+  // 必須チェック（姓・名・生年月日・測定日・身長・体重・所属）
+  if(!lastName){alert('姓を入力してください');return;}
+  if(!firstName){alert('名を入力してください');return;}
+  if(!dob){alert('生年月日を入力してください');return;}
+  if(!date){alert('測定日を入力してください');return;}
+  if(!heightVal){alert('身長を入力してください');return;}
+  if(!weightVal){alert('体重を入力してください');return;}
+  if(!levelVal){alert('所属を選択してください');return;}
+
+  const b=document.getElementById('svb');
+  b.textContent='保存中...';b.disabled=true;
+
+  const row={
+    player_name:name,
+    player_last_name:lastName,
+    player_first_name:firstName,
+    player_dob:dob||null,
+    player_gender:document.getElementById('pGender').value||null,
+    player_team:document.getElementById('pT').value||null,
+    player_level:levelVal||null,
+    trainer_name:document.getElementById('pTrainer').value||null,
+    player_position:document.getElementById('pPos').value||null,
+    height_cm:parseFloat(heightVal)||null,
+    weight_kg:parseFloat(weightVal)||null,
+    assessment_date:date,
+    c_degree:document.getElementById('pC').value||null,
+    video_url:document.getElementById('pV').value.trim()||null,
+    chart_type:cur,
+    template_version:TPL_VER,
+    values:vals[cur],
+  };
+
+  // コメントの場合、既存エントリとマージ
+  if(cur==='comments' && !_editIds[cur]){
+    try{
+      const{data:existing}=await _sb.from('assessments')
+        .select('id,values')
+        .eq('player_name',name)
+        .eq('chart_type','comments')
+        .order('created_at',{ascending:false})
+        .limit(1);
+      if(existing&&existing.length){
+        _editIds['comments']=existing[0].id;
+        const oldEntries=(existing[0].values&&existing[0].values.entries)||[];
+        const newEntries=(vals.comments&&vals.comments.entries)||[];
+        const merged=[...oldEntries];
+        newEntries.forEach(ne=>{
+          const dup=merged.some(oe=>oe.date===ne.date&&oe.time===ne.time&&oe.text===ne.text);
+          if(!dup) merged.push(ne);
+        });
+        row.values={entries:merged};
+        vals.comments={entries:merged};
+      }
+    }catch(e){console.warn('コメントマージエラー:',e);}
+  }
+
+  // 保存試行
+  let error;
+  const curEditId=_editIds[cur]||null;
+  if(curEditId){
+    ({error}=await _sb.from('assessments').update(row).eq('id',curEditId));
+  } else {
+    const{data:inserted,error:insErr}=await _sb.from('assessments').insert(row).select('id');
+    error=insErr;
+    if(!error&&inserted&&inserted[0]) _editIds[cur]=inserted[0].id;
+  }
+
+  // カラム未存在エラーの場合、新カラムを除外してリトライ
+  if(error && error.message && (error.message.includes('player_level') || error.message.includes('trainer_name'))){
+    console.warn('新カラム未検出 → 除外してリトライ:', error.message);
+    delete row.player_level;
+    delete row.trainer_name;
+    if(curEditId){
+      ({error}=await _sb.from('assessments').update(row).eq('id',curEditId));
+    } else {
+      const{data:inserted2,error:insErr2}=await _sb.from('assessments').insert(row).select('id');
+      error=insErr2;
+      if(!error&&inserted2&&inserted2[0]) _editIds[cur]=inserted2[0].id;
+    }
+  }
+
+  if(error){
+    alert('保存エラー: '+error.message);
+    b.textContent='保存する';b.disabled=false;
+    return;
+  }
+
+  const rec={date,name,chart:cur.toUpperCase(),time:new Date().toLocaleString('ja-JP'),values:{...vals[cur]}};
+  hist.unshift(rec);
+  document.getElementById('hc').textContent=hist.length;
+  renderHist();
+
+  const t=document.getElementById('toast');t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000);
+  const msg=curEditId?'✓ 更新済み':'✓ 保存済み';
+  b.textContent=msg;b.classList.add('ok');b.disabled=false;
+  // 編集モードは維持（他タブに移動してもOK）
+  setTimeout(()=>{b.textContent='保存する';b.classList.remove('ok');},2500);
+}
+
+// 終了→レポート表示（保存は別途行う）
+function finishSession(){
+  const lastName=document.getElementById('pLN').value.trim();
+  const firstName=document.getElementById('pFN').value.trim();
+  const name=(lastName+' '+firstName).trim();
+  const date=document.getElementById('pD').value;
+  if(!name){alert('選手名を入力してください');return;}
+  try{
+    showAutoSummary(name,date);
+  }catch(e){
+    console.error('Report error:',e);
+    alert('レポート表示エラー: '+e.message);
+  }
+}
+
+// ═══ AUTO SUMMARY ═══
+
+// 年齢×所属別の発達段階フレーム
+const DEV_FRAMES={
+  '小学':{stage:'基礎運動能力の獲得',focus:'動きの多様性・楽しさ・基本連動パターン',goal:'野球に必要な身体の基盤づくり。多様な動きを経験し、自分の身体の使い方を知る段階',parentMsg:'この時期は「できた！」という成功体験の積み重ねが最も大切です。SPONOBAでは、お子様の身体の特性（型）を見極めた上で、その子に合った動きを引き出していきます。'},
+  '中学':{stage:'専門動作の精度向上',focus:'連動性・出力の基盤・競技特異的な動作精度',goal:'野球の動作をコネクティングの視点で最適化。成長期の身体変化に対応しながら、効率の良い動きを身につける',parentMsg:'成長期はバランスが崩れやすい時期。身体の変化に合わせてフォームを調整し続けることで、ケガを防ぎながらパフォーマンスを伸ばせます。'},
+  '高校':{stage:'パフォーマンス最大化',focus:'出力向上・動作の再現性・メンタル統合',goal:'限られた時間で最大の成果を出す。試合で使える動きの精度と、自分で調整できる力を身につける',parentMsg:'高校野球は時間との勝負です。お子様の現在地を数値で把握し、最短ルートで目標に到達するためのプログラムを組みます。'},
+  '大学':{stage:'競技力の総合強化',focus:'フィジカル強化・動作効率・自己調整能力',goal:'より高いレベルで戦うための身体づくりと動作改善。データに基づく継続的な最適化',parentMsg:'大学レベルでは、感覚だけでなくデータに基づいた改善が差を生みます。'},
+  '独立・育成':{stage:'プロへの基盤構築',focus:'出力最大化・動作の安定性・コンディション管理',goal:'プロ基準の身体能力とスキルの両立。ケガ予防とパフォーマンスの最大化',parentMsg:'プロへの道は身体の土台づくりから。SPONOBAのデータ管理で、確実なステップアップを支援します。'},
+};
+
+// Force Plate基準値（年齢帯別）
+const FP_BENCH={
+  '15-16':{cmj:[36,42],sj:[31,37],hop:[1.5,2.0],plyo:[13,17],imtp:[26,32]},
+  '17-18':{cmj:[42,48],sj:[36,42],hop:[1.8,2.3],plyo:[15,20],imtp:[30,37]},
+  '19-20':{cmj:[46,52],sj:[40,46],hop:[2.1,2.6],plyo:[18,23],imtp:[34,40]},
+  '21-24':{cmj:[50,56],sj:[44,50],hop:[2.4,3.0],plyo:[20,25],imtp:[38,45]},
+};
+function getAgeBand(age){
+  if(age<=16)return '15-16';
+  if(age<=18)return '17-18';
+  if(age<=20)return '19-20';
+  return '21-24';
+}
+
+// Sensory Approachから選手の型を特定
+function identifyPlayerType(){
+  var tv=vals.traits||{};
+  var traits=[];
+  var bal=tv['sen_1_0'];if(bal)traits.push(bal+'型');
+  var trunk=tv['sen_1_1'];if(trunk)traits.push('体幹:'+trunk);
+  var arm=tv['sen_1_2'];if(arm)traits.push('前腕:'+arm);
+  var kine=tv['sen_5_3'];if(kine)traits.push(kine);
+  var output=tv['sen_6_0'];if(output)traits.push('出力:'+output);
+  var breath=tv['sen_7_1'];if(breath)traits.push('呼吸:'+breath);
+  return traits;
+}
+
+// 発達段階×データに基づくフォーカスエリア分析
+function analyzeInsights(age,level){
+  var areas=[];
+  var cv=vals.connect||{};
+  var lrItems=[{id:1,name:'肘'},{id:18,name:'股関節ー脚'},{id:25,name:'肩甲骨スライド'},{id:26,name:'肩甲骨ー骨盤'},{id:28,name:'腕の高さ'},{id:29,name:'腕のハマり'}];
+  var lrDiffs=[];
+  lrItems.forEach(function(item){
+    var r=cv[item.id+'_0']||'';var l=cv[item.id+'_1']||'';
+    if(r&&l&&r!==l)lrDiffs.push(item.name);
+  });
+  if(lrDiffs.length>=2){
+    areas.push({area:'左右差の調整',detail:lrDiffs.slice(0,3).join('・')+'など'+lrDiffs.length+'箇所。左右バランスを整えると動作効率が上がります。',priority:1});
+  }
+  var ov=vals.operation||{};
+  var det=[];
+  if(ov['9_0'])det.push('スタンス:'+ov['9_0']);
+  if(ov['5_0'])det.push('リズム:'+ov['5_0']);
+  if(ov['4_0'])det.push('セット:'+ov['4_0']);
+  if(det.length){
+    areas.push({area:'動作の起点パターン',detail:det.join(' / ')+'。この組み合わせに合ったドリルで再現性を高めます。',priority:2});
+  }
+  var tv=vals.traits||{};
+  if(age){
+    var band=getAgeBand(age);var bench=FP_BENCH[band];
+    if(bench){
+      var below=[];
+      if((parseFloat(tv['fp_val_0'])||0)>0&&parseFloat(tv['fp_val_0'])<bench.cmj[0])below.push('CMJ');
+      if((parseFloat(tv['fp_val_1'])||0)>0&&parseFloat(tv['fp_val_1'])<bench.sj[0])below.push('SJ');
+      if((parseFloat(tv['fp_val_2'])||0)>0&&parseFloat(tv['fp_val_2'])<bench.hop[0])below.push('10-Hop');
+      if(below.length) areas.push({area:'出力の基盤強化',detail:below.join('・')+'が年齢基準を下回っています。S&Cプログラムで改善が見込めます。',priority:1});
+    }
+  }
+  var sv=vals.signal||{};
+  if(sv['14_0']) areas.push({area:'主体パターンの活用',detail:'主体は「'+sv['14_0']+'」。この特性を活かした練習で自然な動作を引き出します。',priority:3});
+  if(tv['sen_1_0']&&tv['sen_5_3']) areas.push({area:'コネクティング特性',detail:tv['sen_1_0']+'型×'+tv['sen_5_3']+'。この型に最適化されたアプローチで効率的に向上。',priority:2});
+  if(level==='小学') areas.push({area:'動きの多様性',detail:'多様な運動パターンの経験が重要。コネクティングで野球の土台を作ります。',priority:3});
+  areas.sort(function(a,b){return a.priority-b.priority;});
+  return {areas:areas.slice(0,3)};
+}
+
+// Force Plate測定値の基準比較
+function evaluateForce(age){
+  if(!age)return[];
+  var tv=vals.traits||{};
+  var band=getAgeBand(age);var bench=FP_BENCH[band];
+  if(!bench)return[];
+  var results=[];
+  [{key:'fp_val_0',name:'CMJ',ref:bench.cmj},{key:'fp_val_1',name:'SJ',ref:bench.sj},{key:'fp_val_2',name:'10-Hop RSI',ref:bench.hop},{key:'fp_val_3',name:'Plyo PushUp',ref:bench.plyo},{key:'fp_val_4',name:'IMTP',ref:bench.imtp}].forEach(function(t){
+    var v=parseFloat(tv[t.key]);if(!v)return;
+    var lv='within';if(v<t.ref[0])lv='below';else if(v>t.ref[1])lv='above';
+    results.push({name:t.name,value:v,level:lv});
+  });
+  return results;
+}
+
+function showAutoSummary(playerName,date){
+  const level=document.getElementById('pLevel').value||'';
+  const dob=document.getElementById('pDOB').value||'';
+  let age='';
+  if(dob&&/^\d{4}-\d{2}-\d{2}$/.test(dob)){
+    const bd=new Date(dob),td=date?new Date(date):new Date();
+    age=Math.floor((td-bd)/(365.25*24*60*60*1000));
+  }
+  const devFrame=DEV_FRAMES[level]||DEV_FRAMES['中学'];
+  const insights=analyzeInsights(age,level);
+  const traits=identifyPlayerType();
+
+  document.getElementById('asMeta').textContent=playerName+(age?' ('+age+'歳)':'')+' — '+(level||'')+' — '+date;
+
+  let h='';
+
+  // ① 発達段階
+  h+='<div style="padding:8px 10px;background:#EFF3FB;border-radius:8px;margin-bottom:10px;font-size:12px">';
+  h+='<span style="font-weight:800;color:var(--navy)">📍 '+devFrame.stage+'</span>';
+  h+='<div style="font-size:11px;color:var(--g500);margin-top:2px">'+devFrame.focus+'</div></div>';
+
+  // ② 選手の特性
+  if(traits.length){
+    h+='<div style="font-size:12px;font-weight:800;color:var(--navy);margin-bottom:4px">🧬 この選手の特性</div>';
+    h+='<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px">';
+    traits.forEach(function(t){h+='<span class="trait-tag">'+t+'</span>';});
+    h+='</div>';
+  }
+
+  // ③ 測定値の評価
+  var fpEval=evaluateForce(age);
+  if(fpEval.length){
+    h+='<div style="font-size:12px;font-weight:800;color:var(--navy);margin-bottom:6px">📊 測定値の評価</div>';
+    fpEval.forEach(function(e){
+      var pct=e.level==='above'?95:e.level==='within'?65:30;
+      var col=e.level==='above'?'#10B981':e.level==='within'?'#3B82F6':'#E8530E';
+      var label=e.level==='above'?'年齢基準以上':e.level==='within'?'年齢相応':'伸びしろあり';
+      h+='<div style="margin-bottom:6px"><div style="display:flex;justify-content:space-between;font-size:11px"><span style="font-weight:700">'+e.name+'</span><span style="font-weight:700;color:'+col+'">'+e.value+' — '+label+'</span></div>';
+      h+='<div class="gap-bar"><div class="gap-fill" style="width:'+pct+'%;background:'+col+'"></div></div></div>';
+    });
+  }
+
+  // ④ 課題
+  if(insights.areas.length){
+    h+='<div style="font-size:12px;font-weight:800;color:var(--navy);margin:10px 0 6px">🎯 今日の評価から見えた課題</div>';
+    insights.areas.forEach(function(f){
+      h+='<div style="padding:5px 10px;margin-bottom:4px;border-radius:6px;background:var(--g50);border-left:3px solid var(--orange);font-size:11px;line-height:1.5">';
+      h+='<span style="font-weight:700;color:var(--navy)">'+f.area+'</span><br>';
+      h+='<span style="color:var(--g500)">'+f.detail+'</span></div>';
+    });
+  }
+
+  // ⑤ 保護者メッセージ
+  h+='<div style="margin-top:10px;padding:8px 10px;background:#FFFBEB;border:1px solid #FDE68A;border-radius:8px">';
+  h+='<div style="font-size:10px;font-weight:700;color:#92400E;margin-bottom:2px">💬 保護者の方へ</div>';
+  h+='<div style="font-size:11px;color:#78350F;line-height:1.6">'+devFrame.parentMsg+'</div></div>';
+
+  // ⑥ 3ヶ月ロードマップ
+  var roadmap=buildRoadmap(insights,level,traits);
+  h+='<div style="font-size:12px;font-weight:800;color:var(--navy);margin:12px 0 6px">🗓️ 3ヶ月の成長ロードマップ</div>';
+  roadmap.forEach(function(step,i){
+    h+='<div class="ms-step"><div class="ms-num">'+(i+1)+'</div><div class="ms-body">';
+    h+='<div class="ms-title">'+step.title+'</div>';
+    h+='<div class="ms-desc">'+step.desc+'</div></div></div>';
+  });
+  h+='<div style="margin-top:8px;padding:6px 8px;background:#EFF3FB;border-radius:6px;font-size:11px;color:var(--navy);font-weight:600;text-align:center">';
+  h+='この成果を実現するために、お子様に最適なプランをご提案します</div>';
+
+  // asProfile にセット
+  document.getElementById('asProfile').innerHTML=h;
+
+  // asGaps, asRoadmap は空にする（全部asProfileに入れた）
+  document.getElementById('asGaps').innerHTML='';
+  document.getElementById('asRoadmap').innerHTML='';
+
+  document.getElementById('asNextAction').value=generateNextAction(insights,traits,level);
+  document.getElementById('autoSummary').classList.add('on');
+  setTimeout(function(){document.getElementById('autoSummary').scrollIntoView({behavior:'smooth',block:'start'});},150);
+  window._sumPlayerName=playerName;
+}
+
+function hideAutoSummary(){
+  document.getElementById('autoSummary').classList.remove('on');
+}
+
+// 3ヶ月ロードマップ生成
+function buildRoadmap(insights,level,traits){
+  const steps=[];
+  const hasLR=insights.areas.some(a=>a.area.includes('左右差'));
+  const hasFP=insights.areas.some(a=>a.area.includes('出力'));
+  const hasKine=traits.some(t=>t.includes('キネ'));
+
+  if(level==='小学'){
+    steps.push({title:'1ヶ月目 — 身体の特性を理解する',desc:'コネクティング測定で「この子の型」を確定。基本的な動きのパターンを楽しみながら体験し、得意な動きを見つけます。'});
+    steps.push({title:'2ヶ月目 — 得意を伸ばす',desc:'見つかった得意パターンを野球動作に落とし込み。バッティング・スローイングで「自分に合ったフォーム」を体得。'});
+    steps.push({title:'3ヶ月目 — 実戦で使える力に',desc:'試合や練習で使える再現性を高める。保護者の方にも成長の数値をレポートでお伝えします。'});
+  } else if(level==='中学'){
+    steps.push({title:'1ヶ月目 — 現状の課題を特定',desc:(hasLR?'左右差の調整から着手。':'基本連動パターンの最適化。')+'成長期の身体変化に合わせた動作の土台を作ります。'});
+    steps.push({title:'2ヶ月目 — 専門動作の精度向上',desc:(hasFP?'出力の基盤を強化しながら、':'')+'ピッチング・バッティングの動作効率を上げます。データで変化を可視化。'});
+    steps.push({title:'3ヶ月目 — 試合パフォーマンスへ',desc:'練習での成果を試合で発揮する再現性を構築。VALD測定で成長を数値で実感。'});
+  } else if(level==='高校'){
+    steps.push({title:'1ヶ月目 — 課題の優先順位づけ',desc:(hasLR?'左右差の解消と':'')+(hasFP?'出力の底上げ':'動作効率の改善')+'を最優先で取り組みます。限られた時間で最大の成果を。'});
+    steps.push({title:'2ヶ月目 — 動作の再現性向上',desc:'試合で使える動きの精度を高める。'+(hasKine?'キネティックチェーンの連動を磨き、':'')+'パフォーマンスの安定化。'});
+    steps.push({title:'3ヶ月目 — 数値目標の達成',desc:'球速・打球速度・出力の数値目標を設定し、達成度をVALDとTrackmanで検証。'});
+  } else {
+    steps.push({title:'1ヶ月目 — ベースライン確立',desc:'全測定の初期値を取得し、身体特性に基づいた個別プログラムを設計。'});
+    steps.push({title:'2ヶ月目 — 集中改善フェーズ',desc:'データに基づく重点改善。S&Cとコネクティングの統合プログラム。'});
+    steps.push({title:'3ヶ月目 — パフォーマンス検証',desc:'再測定で成長を定量化。次の3ヶ月の方針を決定。'});
+  }
+  return steps;
+}
+
+// 次回アクションのデフォルトテキスト生成
+function generateNextAction(insights,traits,level){
+  let lines=[];
+  lines.push('【次回セッション予定】');
+
+  if(insights.areas.length){
+    lines.push('重点項目: '+insights.areas[0].area);
+  }
+  if(traits.length>=2){
+    lines.push('アプローチ: '+traits[0]+'の特性を活かした'+(traits.some(t=>t.includes('キネ'))?'連動ドリル':'動作調整'));
+  }
+
+  const freqMap={'小学':'まずは月2〜4回のペースで','中学':'週1〜2回のペースで','高校':'週2回以上のペースで','大学':'週2〜3回のペースで'};
+  lines.push('推奨頻度: '+(freqMap[level]||'定期的に')+'取り組むことで、3ヶ月後の成長を実感いただけます。');
+  lines.push('');
+  lines.push('メモ: ');
+
+  return lines.join('\n');
+}
+
+// saveSummary → saveSummaryInline（インライン版）
+async function saveSummaryInline(){
+  const action=document.getElementById('asNextAction').value.trim();
+  const playerName=window._sumPlayerName;
+  const level=document.getElementById('pLevel').value||'';
+  const dob=document.getElementById('pDOB').value||'';
+  const date=document.getElementById('pD').value||'';
+  let age=0;
+  if(dob&&/^\d{4}-\d{2}-\d{2}$/.test(dob)){
+    age=Math.floor((new Date(date||Date.now())-new Date(dob))/(365.25*24*60*60*1000));
+  }
+  const insights=analyzeInsights(age,level);
+  const traits=identifyPlayerType();
+  const focusSummary=insights.areas.map((a,i)=>(i+1)+'.'+a.area).join(' / ');
+
+  if(!vals.comments) vals.comments={entries:[]};
+  if(!vals.comments.entries) vals.comments.entries=[];
+  const now=new Date();
+  const trainer=document.getElementById('pTrainer').value||'';
+  let text='【Assessment Report】\n';
+  if(traits.length) text+='特性: '+traits.join(', ')+'\n';
+  if(focusSummary) text+='課題: '+focusSummary+'\n';
+  if(action) text+=action;
+
+  vals.comments.entries.push({
+    date:now.toISOString().split('T')[0],
+    time:now.toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'}),
+    author:trainer||'System',
+    category:'目標・方針',
+    text:text
+  });
+
+  const name=playerName;
+  const curEditId=_editIds['comments']||null;
+  const row={
+    player_name:name,
+    player_last_name:document.getElementById('pLN').value.trim(),
+    player_first_name:document.getElementById('pFN').value.trim(),
+    player_dob:document.getElementById('pDOB').value||null,
+    player_team:document.getElementById('pT').value||null,
+    player_level:document.getElementById('pLevel').value||null,
+    trainer_name:trainer||null,
+    assessment_date:document.getElementById('pD').value,
+    chart_type:'comments',
+    template_version:TPL_VER,
+    values:vals.comments,
+  };
+  let error;
+  if(curEditId){
+    ({error}=await _sb.from('assessments').update(row).eq('id',curEditId));
+  }else{
+    const{data:ins,error:ie}=await _sb.from('assessments').insert(row).select('id');
+    error=ie;
+    if(!error&&ins&&ins[0]) _editIds['comments']=ins[0].id;
+  }
+  if(error) console.warn('Summary save error:',error.message);
+
+  hideAutoSummary();
+  const t=document.getElementById('toast');
+  t.textContent='✓ レポートを保存しました';
+  t.classList.add('show');
+  setTimeout(()=>{t.classList.remove('show');t.textContent='✓ 保存しました';},2000);
+}
+
+// ═══ SEARCH ═══
+function toggleSearch(){
+  document.getElementById('searchP').classList.toggle('open');
+  document.getElementById('hp').classList.remove('open');
+}
+async function doSearch(){
+  const el=document.getElementById('sRes');
+  el.innerHTML='<div class="sr0">検索中...</div>';
+  let q=_sb.from('assessments').select('*').order('assessment_date',{ascending:false}).limit(200);
+  const name=document.getElementById('sQ').value.trim();
+  if(name) q=q.ilike('player_name','%'+name+'%');
+  const from=document.getElementById('sFrom').value;
+  const to=document.getElementById('sTo').value;
+  if(from) q=q.gte('assessment_date',from);
+  if(to) q=q.lte('assessment_date',to);
+  const tab=document.getElementById('sTab').value;
+  if(tab) q=q.eq('chart_type',tab);
+
+  const{data,error}=await q;
+  if(error){el.innerHTML='<div class="sr0">エラー: '+error.message+'</div>';return;}
+  if(!data||!data.length){el.innerHTML='<div class="sr0">該当データなし</div>';return;}
+
+  // 選手名でグルーピング
+  const grouped={};
+  data.forEach(r=>{
+    const key=r.player_name||'不明';
+    if(!grouped[key]) grouped[key]={name:key,records:[],info:r};
+    grouped[key].records.push(r);
+  });
+
+  _lastGrouped=grouped;
+
+  el.innerHTML=Object.values(grouped).map(g=>{
+    const r=g.info;
+    const charts=g.records.map(rec=>(rec.chart_type||'').toUpperCase()).filter((v,i,a)=>a.indexOf(v)===i);
+    const chartBadges=charts.map(c=>'<span style="display:inline-block;font-size:10px;background:var(--navy);color:#fff;border-radius:10px;padding:1px 7px;margin:1px 2px">'+c+'</span>').join('');
+    const safeName=g.name.replace(/'/g,"\\'").replace(/"/g,'&quot;');
+    return '<div class="sri" onclick="showPlayerDetail(\''+safeName+'\')">'+
+      '<b>'+g.name+'</b> <span style="font-size:12px;color:var(--g400)">'+(r.player_level||'')+'</span>'+
+      '<small>'+chartBadges+' | '+(r.assessment_date||'')+' | '+(r.player_team||'')+'</small>'+
+    '</div>';
+  }).join('');
+}
+
+let _lastGrouped={};
+
+function showPlayerDetail(name){
+  const g=_lastGrouped[name];
+  if(!g)return;
+  const r=g.info;
+
+  document.getElementById('detTitle').textContent=r.player_name;
+  let h='<table class="dtbl"><tr><th>選手名</th><td>'+r.player_name+'</td></tr>';
+  h+='<tr><th>生年月日</th><td>'+(r.player_dob||'—')+'</td></tr>';
+  h+='<tr><th>性別</th><td>'+(r.player_gender||'—')+'</td></tr>';
+  h+='<tr><th>所属</th><td>'+(r.player_level||'—')+'</td></tr>';
+  h+='<tr><th>チーム</th><td>'+(r.player_team||'—')+'</td></tr>';
+  h+='<tr><th>ポジション</th><td>'+(r.player_position||'—')+'</td></tr>';
+  h+='<tr><th>身長</th><td>'+(r.height_cm?r.height_cm+'cm':'—')+'</td></tr>';
+  h+='<tr><th>体重</th><td>'+(r.weight_kg?r.weight_kg+'kg':'—')+'</td></tr>';
+  h+='<tr><th>最終測定日</th><td>'+(r.assessment_date||'—')+'</td></tr>';
+  h+='</table>';
+
+  // 保存済みチャート数を表示
+  const charts=g.records.map(rec=>(rec.chart_type||'').toUpperCase()).filter((v,i,a)=>a.indexOf(v)===i);
+  h+='<div style="margin-top:12px;font-size:12px;color:var(--g500)">';
+  h+='保存済み: '+charts.map(c=>'<span style="display:inline-block;font-size:11px;background:var(--navy);color:#fff;border-radius:10px;padding:1px 8px;margin:2px 2px">'+c+'</span>').join('')+'</div>';
+
+  document.getElementById('detBody').innerHTML=h;
+
+  const eb=document.getElementById('detEditBtn');
+  eb.style.display='block';
+  eb.textContent='📂 レビュー・更新';
+  eb.onclick=function(){ loadPlayerAll(name); };
+
+  document.getElementById('detMo').classList.add('on');
+}
+
+function loadRecordFromList(idx,name){
+  loadPlayerAll(name);
+}
+
+// 選手の全データを読み込み
+async function loadPlayerAll(name){
+  const g=_lastGrouped[name];
+  if(!g) return;
+  const r=g.info;
+
+  // モーダル閉じる
+  document.getElementById('detMo').classList.remove('on');
+  document.getElementById('searchP').classList.remove('open');
+
+  // プロフィール入力欄にセット
+  document.getElementById('pLN').value=r.player_last_name||r.player_name||'';
+  document.getElementById('pFN').value=r.player_first_name||'';
+  document.getElementById('pDOB').value=r.player_dob||'';
+  document.getElementById('pGender').value=r.player_gender||'';
+  document.getElementById('pTrainer').value=r.trainer_name||'';
+  document.getElementById('pT').value=r.player_team||'';
+  document.getElementById('pLevel').value=r.player_level||'';
+  document.getElementById('pPos').value=r.player_position||'';
+  document.getElementById('pH').value=r.height_cm||'';
+  document.getElementById('pW').value=r.weight_kg||'';
+  document.getElementById('pD').value=r.assessment_date||'';
+  document.getElementById('pC').value=r.c_degree||'';
+  document.getElementById('pV').value=r.video_url||'';
+
+  // DBから全レコードを取得（キャッシュに頼らない）
+  _editIds={};
+  vals={connect:{},kinnetic:{},operation:{},signal:{},traits:{},comments:{entries:[]}};
+
+  try{
+    const{data:allRecs,error}=await _sb.from('assessments')
+      .select('*')
+      .eq('player_name',r.player_name)
+      .order('created_at',{ascending:false});
+    if(!error&&allRecs){
+      allRecs.forEach(rec=>{
+        const ct=rec.chart_type||'unknown';
+        if(!_editIds[ct]){
+          _editIds[ct]=rec.id;
+          if(ct==='comments'){
+            vals.comments={entries:(rec.values&&rec.values.entries)||[]};
+          } else {
+            vals[ct]=rec.values||{};
+          }
+        }
+      });
+    }
+  }catch(e){
+    console.warn('DB取得エラー、キャッシュにフォールバック:',e);
+    g.records.forEach(rec=>{
+      const ct=rec.chart_type||'unknown';
+      if(!_editIds[ct]){
+        _editIds[ct]=rec.id;
+        if(ct==='comments') vals.comments={entries:(rec.values&&rec.values.entries)||[]};
+        else vals[ct]=rec.values||{};
+      }
+    });
+  }
+
+  // 編集モードON
+  document.getElementById('editBanner').classList.add('on');
+  sw('connect');
+  render();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ═══ DETAIL VIEW (single record) ═══
+let _lastSearchResults = [];
+
+function showDetail(r){
+  document.getElementById('detTitle').textContent=r.player_name+' — '+(r.chart_type||'').toUpperCase()+' ('+r.assessment_date+')';
+  let h='<table class="dtbl"><tr><th>選手名</th><td>'+r.player_name+'</td></tr>';
+  h+='<tr><th>生年月日</th><td>'+(r.player_dob||'—')+'</td></tr>';
+  h+='<tr><th>性別</th><td>'+(r.player_gender||'—')+'</td></tr>';
+  h+='<tr><th>担当者</th><td>'+(r.trainer_name||'—')+'</td></tr>';
+  h+='<tr><th>チーム</th><td>'+(r.player_team||'—')+'</td></tr>';
+  h+='<tr><th>所属</th><td>'+(r.player_level||'—')+'</td></tr>';
+  h+='<tr><th>ポジション</th><td>'+(r.player_position||'—')+'</td></tr>';
+  h+='<tr><th>身長</th><td>'+(r.height_cm?r.height_cm+'cm':'—')+'</td></tr>';
+  h+='<tr><th>体重</th><td>'+(r.weight_kg?r.weight_kg+'kg':'—')+'</td></tr>';
+  h+='<tr><th>C度</th><td>'+(r.c_degree||'—')+'</td></tr>';
+  h+='<tr><th>チャート</th><td>'+(r.chart_type||'').toUpperCase()+'</td></tr>';
+  h+='<tr><th>測定日</th><td>'+r.assessment_date+'</td></tr>';
+  if(r.video_url) h+='<tr><th>動画</th><td><a href="'+r.video_url+'" target="_blank" style="color:var(--orange);font-weight:700">▶ 動画を開く</a></td></tr>';
+  h+='</table>';
+
+  const v=r.values||{};
+  const keys=Object.keys(v);
+  if(keys.length){
+    h+='<div style="margin-top:12px;font-weight:700;color:var(--navy);font-size:14px">入力データ ('+keys.length+'項目)</div>';
+    h+='<table class="dtbl" style="margin-top:4px"><tr><th>項目</th><th>値</th></tr>';
+    keys.forEach(k=>{h+='<tr><td>'+k+'</td><td>'+v[k]+'</td></tr>';});
+    h+='</table>';
+  }
+  document.getElementById('detBody').innerHTML=h;
+
+  const eb=document.getElementById('detEditBtn');
+  eb.style.display='block';
+  eb.onclick=function(){loadRecord(r);};
+
+  document.getElementById('detMo').classList.add('on');
+}
+
+// ═══ LOAD RECORD FOR EDITING ═══
+async function loadRecord(r){
+  // 既にグルーピングデータがあればそこから全データ読み込み
+  const name=r.player_name;
+  if(_lastGrouped[name]){
+    loadPlayerAll(name);
+    if(r.chart_type) setTimeout(()=>sw(r.chart_type),100);
+    return;
+  }
+
+  // グルーピングデータがない場合（直接呼び出し）、DBから取得
+  document.getElementById('detMo').classList.remove('on');
+  document.getElementById('searchP').classList.remove('open');
+  document.getElementById('pLN').value=r.player_last_name||r.player_name||'';
+  document.getElementById('pFN').value=r.player_first_name||'';
+  document.getElementById('pDOB').value=r.player_dob||'';
+  document.getElementById('pGender').value=r.player_gender||'';
+  document.getElementById('pTrainer').value=r.trainer_name||'';
+  document.getElementById('pT').value=r.player_team||'';
+  document.getElementById('pLevel').value=r.player_level||'';
+  document.getElementById('pPos').value=r.player_position||'';
+  document.getElementById('pH').value=r.height_cm||'';
+  document.getElementById('pW').value=r.weight_kg||'';
+  document.getElementById('pD').value=r.assessment_date||'';
+  document.getElementById('pC').value=r.c_degree||'';
+  document.getElementById('pV').value=r.video_url||'';
+
+  _editIds={};
+  vals={connect:{},kinnetic:{},operation:{},signal:{},traits:{},comments:{entries:[]}};
+
+  try{
+    const{data:allRecs}=await _sb.from('assessments')
+      .select('*').eq('player_name',name)
+      .order('created_at',{ascending:false});
+    if(allRecs){
+      allRecs.forEach(rec=>{
+        const ct=rec.chart_type||'unknown';
+        if(!_editIds[ct]){
+          _editIds[ct]=rec.id;
+          if(ct==='comments') vals.comments={entries:(rec.values&&rec.values.entries)||[]};
+          else vals[ct]=rec.values||{};
+        }
+      });
+    }
+  }catch(e){
+    console.warn('全レコード取得エラー:',e);
+    const ct=r.chart_type||cur;
+    _editIds[ct]=r.id;
+    if(ct==='comments') vals.comments={entries:(r.values||{}).entries||[]};
+    else vals[ct]=r.values||{};
+  }
+
+  document.getElementById('editBanner').classList.add('on');
+  if(r.chart_type) sw(r.chart_type);
+  render();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function clearEditMode(){
+  _editIds={};
+  document.getElementById('editBanner').classList.remove('on');
+}
+
+// ═══ CSV EXPORT ═══
+async function exportCSV(){
+  // Use same search filters
+  let q=_sb.from('assessments').select('*').order('assessment_date',{ascending:false}).limit(1000);
+  const name=document.getElementById('sQ').value.trim();
+  if(name) q=q.ilike('player_name','%'+name+'%');
+  const from=document.getElementById('sFrom').value;
+  const to=document.getElementById('sTo').value;
+  if(from) q=q.gte('assessment_date',from);
+  if(to) q=q.lte('assessment_date',to);
+  const tab=document.getElementById('sTab').value;
+  if(tab) q=q.eq('chart_type',tab);
+
+  const{data,error}=await q;
+  if(error){alert('エラー: '+error.message);return;}
+  if(!data||!data.length){alert('ダウンロードするデータがありません');return;}
+
+  // Collect all value keys across all records
+  const allKeys=new Set();
+  data.forEach(r=>{if(r.values)Object.keys(r.values).forEach(k=>allKeys.add(k));});
+  const vKeys=[...allKeys].sort();
+
+  // Build CSV header
+  const headers=['選手名','年齢','チーム','所属','ポジション','担当者','身長cm','体重kg','測定日','C度','チャート',...vKeys];
+  const rows=[headers.join(',')];
+
+  data.forEach(r=>{
+    const base=[
+      '"'+(r.player_name||'').replace(/"/g,'""')+'"',
+      r.player_age||'',
+      '"'+(r.player_team||'').replace(/"/g,'""')+'"',
+      '"'+(r.player_level||'').replace(/"/g,'""')+'"',
+      '"'+(r.player_position||'').replace(/"/g,'""')+'"',
+      '"'+(r.trainer_name||'').replace(/"/g,'""')+'"',
+      r.height_cm||'',
+      r.weight_kg||'',
+      r.assessment_date||'',
+      '"'+(r.c_degree||'')+'"',
+      (r.chart_type||'').toUpperCase()
+    ];
+    const vCols=vKeys.map(k=>{
+      const v=(r.values||{})[k];
+      return v!==undefined?'"'+String(v).replace(/"/g,'""')+'"':'';
+    });
+    rows.push([...base,...vCols].join(','));
+  });
+
+  const bom='\uFEFF';
+  const blob=new Blob([bom+rows.join('\n')],{type:'text/csv;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;
+  const d=new Date().toISOString().slice(0,10);
+  a.download='SPONOBA_assessment_'+d+'.csv';
+  a.click();URL.revokeObjectURL(url);
+}
+function exportJSON(){
+  const lastName  = document.getElementById('pLN').value||'';
+  const firstName = document.getElementById('pFN').value||'';
+  const fullName  = (lastName+'\u3000'+firstName).trim()||'';
+  const dob    = document.getElementById('pDOB').value||'';
+  const gender = document.getElementById('pGender').value||'';
+  const level  = document.getElementById('pLevel').value||'';
+  const date   = document.getElementById('pD').value||'';
+  const height = document.getElementById('pH').value||'';
+  const weight = document.getElementById('pW').value||'';
+  const cdeg   = document.getElementById('pC').value||'';
+
+  let age='';
+  if(dob&&/^\d{4}-\d{2}-\d{2}$/.test(dob)){
+    const bd=new Date(dob),td=date?new Date(date):new Date();
+    age=Math.floor((td-bd)/(365.25*24*60*60*1000));
+    if(age<0||age>120)age='';
+  }
+
+  /* ---- テーブル生成 ---- */
+  function buildChart(chartKey,data){
+    const v=vals[chartKey]||{};
+    let rows='';
+    data.forEach(item=>{
+      const cells=item.g.map((gr,gi)=>{
+        const key=item.id+'_'+gi;
+        const selVal=v[key]||'';
+        const mx=gr.m||1;
+        const selArr=mx>1?selVal.split(',').filter(x=>x):[selVal];
+        const side=gr.g?'<span class="sd">'+gr.g+'</span>':'';
+        const opts=(gr.o||[]).map(o=>{
+          if(o==='\u203b\u81ea\u7531\u8a18\u8ff0') return '<span class="fv">'+(selVal||'')+'</span>';
+          return selArr.includes(o)?'<span class="on">'+o+'</span>':'<span class="off">'+o+'</span>';
+        }).join('<span class="sp">\u30FB</span>');
+        return '<td class="oc">'+side+opts+'</td>';
+      }).join('');
+      rows+='<tr><td class="nc">'+item.id+'</td><td class="lc">'+item.l+'</td>'+cells+'</tr>';
+    });
+    return '<table class="ct"><tbody>'+rows+'</tbody></table>';
+  }
+
+  /* ---- TRAITS ---- */
+  function buildTraits(){
+    const v=vals['traits']||{};
+    const fpTests=['Countermovement Jump','Squat Jump','10 Hop Test','Plyometric PushUp','Isometric Test'];
+    let fp='<table class="ct"><thead><tr><th class="lc" style="width:120px">\u7a2e\u76ee</th><th>\u6570\u5024</th><th>Reaction</th><th>\u4e3b\u89b3</th></tr></thead><tbody>';
+    fpTests.forEach((t,i)=>{
+      const va=v['fp_val_'+i]||'';
+      const re=v['fp_react_'+i]||'';
+      const su=v['fp_subj_'+i]||'';
+      const subj=[1,2,3,4,5].map(n=>su==n?'<span class="on">'+n+'</span>':'<span class="off">'+n+'</span>').join('<span class="sp">\u30FB</span>');
+      fp+='<tr><td class="lc">'+t+'</td><td class="vc">'+va+'</td><td class="vc" style="font-size:9pt">'+(re||'')+'</td><td class="oc">'+subj+'</td></tr>';
+    });
+    fp+='</tbody></table>';
+
+    const senDef=[
+      {id:1,l:'\u30d0\u30e9\u30f3\u30b9',g:[{g:'\u578b',o:['\u30e9\u30a4\u30aa\u30f3','\u30a6\u30de']},{g:'\u4f53\u5e79',o:['\u30af\u30ed\u30b9','\u30d1\u30e9\u30ec\u30eb']},{g:'\u524d\u8155',o:['\u30af\u30ed\u30b9','\u30d1\u30e9\u30ec\u30eb','\u30a4\u30f3\u30b5\u30a4\u30c9','\u30a2\u30a6\u30c8\u30b5\u30a4\u30c9']}]},
+      {id:2,l:'\u30ea\u30ba\u30e0',g:[{g:'\u6307\u5148\u7cfb',o:['\u6307\u5148','\u57fa\u7bc0\u9aa8','MP\u95a2\u7bc0']},{g:'\u90e8\u4f4d',o:['\u9396\u9aa8','\u307f\u305e\u304a\u3061','\u4e0b\u8179','\u819d','\u8db3\u9996']},{g:'\u4e0a\u4e0b',o:['\u4e0a','\u4e0b']}]},
+      {id:3,l:'\u59ff\u52e2',g:[{g:'',o:['\u4e0a7','\u4e2d5','\u4e0b5']},{g:'',o:['S\u5b57','C\u5b57']},{g:'',o:['\u984d','\u982d\u9802','\u5f8c\u982d']}]},
+      {id:4,l:'\u4f53\u52e2',g:[{g:'\u9aa8\u76e4',o:['\u30d5\u30ed\u30f3\u30c8','\u30d0\u30c3\u30af']},{g:'\u5927\u8136\u9aa8',o:['\u5916','\u5185']},{g:'',o:['\u30d9\u30f3\u30c8','\u30b9\u30c8\u30ec\u30c3\u30c1']},{g:'',o:['\u80a9\u7532\u9aa8','\u80f8','\u304a\u8179','\u8170']}]},
+      {id:5,l:'\u9023\u52d5',g:[{g:'\u80a9\u7532\u9aa8',o:['\u30cf\u30f3\u30c9\u30eb','\u30bf\u30fc\u30f3']},{g:'',o:['\u56fa\u5b9a\u9023\u52d5','\u56db\u80a2\u9023\u52d5']},{g:'',o:['\u8155','\u811a','\u4f53\u5e79']},{g:'',o:['\u4e0a\u30ad\u30cd','\u4e0b\u30ad\u30cd']}]},
+      {id:6,l:'\u51fa\u529b\u3065\u304f\u308a',g:[{g:'',o:['\u30e6\u30eb','\u30ad\u30c4','\u30b9\u30c8\u30ec\u30c3\u30c1']},{g:'',o:['\u819d\u88cf','\u30a2\u30ad\u30ec\u30b9\u8171']}]},
+      {id:7,l:'\u547c\u5438',g:[{g:'\u914d\u5206',o:['\u7b4b','\u9aa8','\u795e\u7d4c']},{g:'',o:['\u80f8','\u8179']},{g:'',o:['\u5438\u3044','\u5410\u304d']}]},
+    ];
+    let sen='<table class="ct"><tbody>';
+    senDef.forEach(item=>{
+      const cells=item.g.map((gr,gi)=>{
+        const key='sen_'+item.id+'_'+gi;
+        const sel=v[key]||'';
+        const side=gr.g?'<span class="sd">'+gr.g+'</span>':'';
+        const opts=(gr.o||[]).map(o=>sel===o?'<span class="on">'+o+'</span>':'<span class="off">'+o+'</span>').join('<span class="sp">\u30FB</span>');
+        return '<td class="oc">'+side+opts+'</td>';
+      }).join('');
+      sen+='<tr><td class="nc">'+item.id+'</td><td class="lc">'+item.l+'</td>'+cells+'</tr>';
+    });
+    sen+='</tbody></table>';
+    return {fp,sen};
+  }
+
+  /* ---- ヘッダー（横一行：名前・年齢・性別・所属・測定日） ---- */
+  function hdrRow(title){
+    return '<div class="hdr">'+
+      '<div class="hdr-title"><span class="logo-mark">N N</span> '+title+'</div>'+
+      '<div class="hdr-info">'+
+        '<div class="hi hi-name"><span class="hl">Name</span><span class="hv">'+fullName+'</span></div>'+
+        '<div class="hi"><span class="hl">Age</span><span class="hv">'+age+'</span></div>'+
+        '<div class="hi"><span class="hl">\u6027\u5225</span><span class="hv">'+gender+'</span></div>'+
+        '<div class="hi hi-wide"><span class="hl">\u6240\u5c5e</span><span class="hv">'+level+'</span></div>'+
+        '<div class="hi"><span class="hl">\u6e2c\u5b9a\u65e5</span><span class="hv">'+date+'</span></div>'+
+      '</div>'+
+    '</div>';
+  }
+
+  /* ---- CSS ---- */
+  const css=`
+    @page{size:A4 portrait;margin:4mm 5mm}
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Noto Sans JP','Hiragino Kaku Gothic Pro',sans-serif;font-size:6.5pt;color:#0F1F3D;background:#fff}
+    .page{width:200mm;min-height:287mm;padding:3mm 4mm;page-break-after:always;position:relative}
+    .page:last-child{page-break-after:auto}
+
+    /* ヘッダー */
+    .hdr{border-bottom:2.5px solid #0F1F3D;padding-bottom:3px;margin-bottom:3px}
+    .hdr-title{font-family:'Oswald',sans-serif;font-weight:700;font-size:9pt;color:#0F1F3D;letter-spacing:1.5px;margin-bottom:2px}
+    .logo-mark{display:inline-block;background:#0F1F3D;color:#fff;padding:1px 4px;border-radius:2px;font-size:7pt;margin-right:4px;letter-spacing:2px}
+    .hdr-info{display:flex;gap:0;border:1.5px solid #0F1F3D;border-radius:3px;overflow:hidden}
+    .hi{padding:2.5px 10px;border-right:0.5px solid #94A3B8;display:flex;flex-direction:column;white-space:nowrap}
+    .hi:last-child{border-right:none}
+    .hi-name{flex:2;min-width:60px}
+    .hi-wide{flex:1.5}
+    .hl{font-size:4.5pt;color:#94A3B8;font-weight:700;line-height:1;text-transform:uppercase;letter-spacing:.5px}
+    .hv{font-weight:800;font-size:8pt;color:#0F1F3D;line-height:1.4}
+
+    /* 2列レイアウト */
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:3px}
+    .col-hd{font-family:'Oswald',sans-serif;font-size:6.5pt;font-weight:700;background:#0F1F3D;color:#fff;padding:2px 5px;letter-spacing:.8px;margin-bottom:0.5px}
+
+    /* テーブル */
+    .ct{width:100%;border-collapse:collapse;font-size:5.8pt;border:0.75px solid #0F1F3D}
+    .ct th,.ct td{padding:1px 2px;border:0.4px solid #CBD5E1;vertical-align:middle;line-height:1.25}
+    .ct thead th{background:#0F1F3D;color:#fff;font-size:5.5pt;font-weight:700;text-align:center;padding:1.5px 3px}
+    .ct tr:nth-child(even){background:#F1F5F9}
+    .nc{font-family:'Oswald',sans-serif;font-weight:700;text-align:center;width:13px;font-size:5.8pt;background:#E2E8F0;border-right:0.75px solid #94A3B8 !important;color:#0F1F3D}
+    .lc{font-weight:700;white-space:nowrap;min-width:42px;max-width:60px;overflow:hidden;text-overflow:ellipsis;border-right:0.75px solid #94A3B8 !important;font-size:5.5pt}
+    .oc{white-space:nowrap;font-size:5.5pt}
+    .vc{font-weight:700;text-align:center;min-width:28px;font-size:6pt}
+    .sd{font-size:4.5pt;color:#E8530E;font-weight:700;margin-right:0.5px}
+    .sp{color:#CBD5E1;font-size:4pt;margin:0 0.3px}
+    .off{color:#94A3B8;padding:0 0.3px;font-size:5.3pt}
+    .on{font-weight:800;color:#fff;background:#0F1F3D;border-radius:6px;padding:0.5px 3.5px;display:inline-block;font-size:5.5pt}
+    .fv{font-weight:700;font-size:5.5pt;border-bottom:0.5px solid #94A3B8;display:inline-block;min-width:20px}
+
+    /* TRAITS */
+    .sec-bar{font-family:'Oswald',sans-serif;font-size:6.5pt;font-weight:700;background:#0F1F3D;color:#fff;padding:2px 5px;letter-spacing:.8px;margin:2px 0 0.5px}
+    .fp-bench{display:grid;grid-template-columns:1fr 1fr;gap:3px}
+
+    /* ベンチマーク */
+    .bench{border-collapse:collapse;font-size:5.5pt;border:0.75px solid #0F1F3D;width:100%}
+    .bench th,.bench td{padding:1.5px 2.5px;border:0.4px solid #CBD5E1;text-align:center;line-height:1.25}
+    .bench thead th{background:#0F1F3D;color:#fff;font-size:5pt;font-weight:700;padding:2px 2px}
+    .bench tr:nth-child(even){background:#F1F5F9}
+    .bench .item-cell{font-weight:700;background:#E2E8F0;font-size:5.5pt;white-space:nowrap;text-align:left;padding-left:3px}
+
+    /* コメント */
+    .cmt-entry{border-bottom:0.5px solid #CBD5E1;padding:2.5px 0;font-size:5.8pt;line-height:1.4}
+    .cmt-meta{font-weight:700;color:#0F1F3D}
+    .cmt-cat{font-size:5pt;color:#E8530E;font-weight:700}
+    .cmt-text{color:#334155}
+
+    /* ページ2-3用 */
+    .chart-sec{margin-bottom:2mm}
+    .chart-sec-hd{font-family:'Oswald',sans-serif;font-size:7pt;font-weight:700;background:#0F1F3D;color:#fff;padding:2px 5px;letter-spacing:.8px;margin-bottom:0.5px}
+
+    .footer{position:absolute;bottom:2mm;right:4mm;font-size:4.5pt;color:#CBD5E1;letter-spacing:.5px}
+    @media print{
+      body{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+      .page{page-break-after:always}
+    }
+  `;
+
+  const {fp,sen}=buildTraits();
+
+  /* ベンチマーク（年齢が横軸、項目が縦軸） */
+  const benchTbl=
+    '<table class="bench"><thead><tr>'+
+      '<th></th><th>15\u201316</th><th>17\u201318</th><th>19\u201320</th><th>20\u201321</th><th>22\u201324</th><th>25+</th>'+
+    '</tr></thead><tbody>'+
+      '<tr><td class="item-cell">CMJ (cm)</td><td>36\u201342</td><td>42\u201348</td><td>46\u201352</td><td>48\u201354</td><td>50\u201356</td><td>48\u201354</td></tr>'+
+      '<tr><td class="item-cell">SJ (cm)</td><td>31\u201337</td><td>36\u201342</td><td>40\u201346</td><td>42\u201348</td><td>44\u201350</td><td>42\u201348</td></tr>'+
+      '<tr><td class="item-cell">10-Hop RSI</td><td>1.5\u20132.0</td><td>1.8\u20132.3</td><td>2.1\u20132.6</td><td>2.3\u20132.8</td><td>2.4\u20133.0</td><td>2.4\u20133.0</td></tr>'+
+      '<tr><td class="item-cell">Plyo PU (N/kg)</td><td>13\u201317</td><td>15\u201320</td><td>18\u201323</td><td>19\u201324</td><td>20\u201325</td><td>21\u201326</td></tr>'+
+      '<tr><td class="item-cell">IMTP (N/kg)</td><td>26\u201332</td><td>30\u201337</td><td>34\u201340</td><td>36\u201342</td><td>38\u201345</td><td>38\u201345</td></tr>'+
+    '</tbody></table>';
+
+  /* コメント履歴を生成 */
+  function buildCommentsPDF(){
+    const c=vals.comments||{entries:[]};
+    const entries=c.entries||[];
+    if(!entries.length) return '<div style="padding:6px;font-size:6pt;color:#94A3B8;text-align:center">\u30b3\u30e1\u30f3\u30c8\u306a\u3057</div>';
+    let h='';
+    [...entries].reverse().forEach(e=>{
+      h+='<div class="cmt-entry">'+
+        '<span class="cmt-meta">'+((e.date||'')+' '+(e.author||''))+'</span> '+
+        '<span class="cmt-cat">'+(e.category||'')+'</span><br>'+
+        '<span class="cmt-text">'+(e.text||'').replace(/</g,'&lt;')+'</span>'+
+      '</div>';
+    });
+    return h;
+  }
+
+  /* ===== ページ1: Traits + Comments（表紙・サマリー） ===== */
+  const p1='<div class="page">'+
+    hdrRow('Individualized Performance Traits \u2014 SPONOBA TRAITS METHOD')+
+    '<div class="fp-bench">'+
+      '<div>'+
+        '<div class="sec-bar">Science Approach \u2014 Force Plate</div>'+fp+
+      '</div>'+
+      '<div>'+
+        '<div class="sec-bar">\ud83d\udcca Benchmark \u2014 \u5e74\u9f62\u5225\u57fa\u6e96\u5024</div>'+benchTbl+
+      '</div>'+
+    '</div>'+
+    '<div style="margin-top:2px">'+
+      '<div class="sec-bar">Sensory Approach \u2014 Connecting Data</div>'+sen+
+    '</div>'+
+    '<div style="margin-top:3px">'+
+      '<div class="sec-bar">\ud83d\udcdd Comments \u2014 \u30ab\u30eb\u30c6\u30fb\u7d4c\u904e\u8a18\u9332</div>'+
+      '<div style="max-height:60mm;overflow:hidden;border:0.75px solid #CBD5E1;padding:3px 5px;border-radius:2px">'+
+        buildCommentsPDF()+
+      '</div>'+
+    '</div>'+
+    '<div class="footer">\u00a9 spozania \u2014 1/3</div>'+
+  '</div>';
+
+  /* ===== ページ2: CONNECT + KINETIC 50:50 ===== */
+  const p2='<div class="page">'+
+    hdrRow('POWER CONNECT CHARTS 34 / POWER KINETIC CHARTS 34')+
+    '<div class="two-col">'+
+      '<div><div class="col-hd">POWER CONNECT CHARTS 34</div>'+buildChart('connect',D_CON)+'</div>'+
+      '<div><div class="col-hd">POWER KINETIC CHARTS 34</div>'+buildChart('kinnetic',D_KIN)+'</div>'+
+    '</div>'+
+    '<div class="footer">\u00a9 spozania \u2014 2/3</div>'+
+  '</div>';
+
+  /* ===== ページ3: OPERATION + SIGNAL ===== */
+  const p3='<div class="page">'+
+    hdrRow('POWER OPERATION CHARTS / POWER SIGNAL CHARTS')+
+    '<div class="chart-sec">'+
+      '<div class="chart-sec-hd">POWER OPERATION CHARTS</div>'+
+      buildChart('operation',D_OPE)+
+    '</div>'+
+    '<div class="chart-sec">'+
+      '<div class="chart-sec-hd">POWER SIGNAL CHARTS</div>'+
+      buildChart('signal',D_SIG)+
+    '</div>'+
+    '<div class="footer">\u00a9 spozania \u2014 3/3</div>'+
+  '</div>';
+
+  const html='<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">'+
+  '<title>SPONOBA \u2014 '+fullName+' '+date+'</title>'+
+  '<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Noto+Sans+JP:wght@400;500;600;700;800&display=swap" rel="stylesheet">'+
+  '<style>'+css+'</style></head>'+
+  '<body>'+p1+p2+p3+
+  '<script>window.onload=()=>{window.print();}<\/script>'+
+  '</body></html>';
+
+  const w=window.open('','_blank');
+  w.document.write(html);
+  w.document.close();
+}
+
+// ═══ EXPORT ALL MEMBERS ═══
+async function exportAll(){
+  if(!confirm('全会員の全データをCSV出力します。よろしいですか？'))return;
+
+  const{data,error}=await _sb.from('assessments').select('*').order('player_name').order('assessment_date',{ascending:false}).limit(5000);
+  if(error){alert('エラー: '+error.message);return;}
+  if(!data||!data.length){alert('データがありません');return;}
+
+  // 選手名でグルーピング（最新レコードのプロフィールを使用）
+  const grouped={};
+  data.forEach(r=>{
+    const key=r.player_name||'不明';
+    if(!grouped[key]) grouped[key]={info:r,charts:{}};
+    const ct=r.chart_type||'unknown';
+    // 各チャートタイプで最新のものだけ保持
+    if(!grouped[key].charts[ct]) grouped[key].charts[ct]=r;
+  });
+
+  // カラム定義
+  const allCols=[];
+  const chartDefs=[
+    {name:'CONNECT',data:D_CON},
+    {name:'KINETIC',data:D_KIN},
+    {name:'OPERATION',data:D_OPE},
+    {name:'SIGNAL',data:D_SIG}
+  ];
+  chartDefs.forEach(cd=>{
+    cd.data.forEach(item=>{
+      item.g.forEach((gr,gi)=>{
+        const key=`${item.id}_${gi}`;
+        const grLabel=gr.g?` ${gr.g}`:'';
+        allCols.push({key,header:`${cd.name}: ${item.id}.${item.l}${grLabel}`,chartType:cd.name.toLowerCase()});
+      });
+    });
+  });
+
+  const fpTests=['Countermovement Jump','Squat Jump','10 Hop Test','Plyometric PushUp','Isometric Test'];
+  fpTests.forEach((test,i)=>{
+    [{k:`fp_val_${i}`,s:'数値'},{k:`fp_react_${i}`,s:'Reaction'},{k:`fp_subj_${i}`,s:'主観'}].forEach(f=>{
+      allCols.push({key:f.k,header:`TRAITS: ${test} ${f.s}`,chartType:'traits'});
+    });
+  });
+
+  const senDef=[
+    {id:1,l:'バランス',g:['型','体幹','前腕']},
+    {id:2,l:'リズム',g:['指先系','部位','上下']},
+    {id:3,l:'姿勢',g:['脊柱','字型','頭部']},
+    {id:4,l:'体勢',g:['骨盤','大腿骨','屈伸','部位']},
+    {id:5,l:'連動',g:['肩甲骨','連動型','主体','キネ']},
+    {id:6,l:'出力づくり',g:['強度','部位']},
+    {id:7,l:'呼吸',g:['配分','部位','方向']}
+  ];
+  senDef.forEach(item=>{
+    item.g.forEach((gn,gi)=>{
+      allCols.push({key:`sen_${item.id}_${gi}`,header:`TRAITS: ${item.id}.${item.l} ${gn}`,chartType:'traits'});
+    });
+  });
+
+  // コメント列
+  allCols.push({key:'_comments',header:'COMMENTS',chartType:'comments'});
+
+  // CSV構築
+  const headers=['姓','名','生年月日','性別','チーム','所属','ポジション','担当者','身長cm','体重kg','最終測定日','C度',...allCols.map(c=>c.header)];
+  const esc=s=>'"'+(s||'').toString().replace(/"/g,'""')+'"';
+  const rows=[headers.map(h=>esc(h)).join(',')];
+
+  Object.values(grouped).forEach(g=>{
+    const r=g.info;
+    const base=[
+      esc(r.player_last_name||r.player_name),
+      esc(r.player_first_name||''),
+      r.player_dob||'',
+      esc(r.player_gender||''),
+      esc(r.player_team),
+      esc(r.player_level||''),
+      esc(r.player_position),
+      esc(r.trainer_name||''),
+      r.height_cm||'',
+      r.weight_kg||'',
+      r.assessment_date||'',
+      esc(r.c_degree)
+    ];
+
+    const valCols=allCols.map(col=>{
+      if(col.key==='_comments'){
+        const cr=g.charts['comments'];
+        if(!cr||!cr.values||!cr.values.entries) return '';
+        return esc(cr.values.entries.map(e=>'['+e.date+' '+e.author+'] '+e.text).join(' / '));
+      }
+      const chartRec=g.charts[col.chartType];
+      if(!chartRec) return '';
+      const v=(chartRec.values||{})[col.key];
+      return v!==undefined&&v!==null&&v!==''?esc(String(v)):'';
+    });
+
+    rows.push([...base,...valCols].join(','));
+  });
+
+  const bom='\uFEFF';
+  const blob=new Blob([bom+rows.join('\n')],{type:'text/csv;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;
+  const d=new Date().toISOString().slice(0,10);
+  a.download='SPONOBA_全会員_'+d+'.csv';
+  a.click();URL.revokeObjectURL(url);
+  const playerCount=Object.keys(grouped).length;
+  alert('✓ '+playerCount+'名のデータを出力しました（元データ'+data.length+'件）');
+}
+
+// ═══ SERVICE WORKER: 古いキャッシュを削除 ═══
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.getRegistrations().then(regs=>{
+    regs.forEach(r=>r.unregister());
+  });
+  if('caches' in window){
+    caches.keys().then(names=>{
+      names.forEach(n=>caches.delete(n));
+    });
+  }
+}
+
+// ═══ VIDEO LINK ═══
+function openVideo(){
+  const url = document.getElementById('pV').value.trim();
+  if(!url){ alert('動画URLを入力してください'); return; }
+  window.open(url, '_blank');
+}
+
+// ═══ DOB PICKER ═══
+function openDOBPicker(){
+  const picker = document.getElementById('pDOB_picker');
+  const cur = document.getElementById('pDOB').value;
+  if(cur && /^\d{4}-\d{2}-\d{2}$/.test(cur)) picker.value = cur;
+  if(picker.showPicker){ picker.showPicker(); }
+  else { picker.style.pointerEvents='auto'; picker.focus(); picker.click(); picker.style.pointerEvents='none'; }
+}
+function formatDOB(el){
+  let v = el.value.replace(/[^\d]/g,'');
+  if(v.length>8) v=v.slice(0,8);
+  if(v.length>=6) v=v.slice(0,4)+'-'+v.slice(4,6)+'-'+v.slice(6);
+  else if(v.length>=4) v=v.slice(0,4)+'-'+v.slice(4);
+  el.value=v;
+}
+function validateDOB(el){
+  const v=el.value;
+  if(!v) return;
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(v)){
+    el.style.borderColor='#B91C1C'; return;
+  }
+  const d=new Date(v);
+  if(isNaN(d.getTime())){ el.style.borderColor='#B91C1C'; return; }
+  el.style.borderColor='';
+}
+
+function toggleHistory(){document.getElementById('hp').classList.toggle('open');}
+function renderHist(){
+  const el=document.getElementById('hl');
+  if(!hist.length){el.innerHTML='<div class="he">まだ保存データはありません</div>';return;}
+  el.innerHTML=hist.map(h=>`<div class="hi"><span class="hn">${h.name}</span><span class="hm">${h.chart} | ${h.date} | ${h.time}</span></div>`).join('');
+}
+</script>
+</body>
+</html>
